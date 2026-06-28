@@ -1,0 +1,82 @@
+---
+/* GDPR cookie / storage consent bar.
+   This site sets NO tracking or advertising cookies. The only client storage is the
+   visitor's own consent choice (localStorage 'fs-cookie-consent'). The bar is wired so
+   that any future non-essential script (e.g. analytics) can gate itself on the
+   'fs-consent' event / window.fsConsent before loading. */
+---
+<div id="cookie-bar" class="cookie-bar" role="dialog" aria-label="Cookie notice" aria-live="polite" hidden>
+  <div class="wrap cb-inner">
+    <p class="cb-text">
+      We use only <strong>essential</strong> storage to make this site work and to remember this
+      choice — no advertising or cross-site tracking. See our
+      <a href="/privacy">Privacy&nbsp;Policy</a>.
+    </p>
+    <div class="cb-actions">
+      <button id="cb-decline" class="btn btn-ghost cb-btn" type="button">Decline</button>
+      <button id="cb-accept" class="btn btn-primary cb-btn" type="button">Accept</button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var KEY = 'fs-cookie-consent';
+    var bar = document.getElementById('cookie-bar');
+    if (!bar) return;
+    var stored = null;
+    try { stored = localStorage.getItem(KEY); } catch (e) {}
+    if (!stored) bar.hidden = false;
+    function choose(v) {
+      try { localStorage.setItem(KEY, v); } catch (e) {}
+      bar.hidden = true;
+      window.fsConsent = v;
+      window.dispatchEvent(new CustomEvent('fs-consent', { detail: v }));
+    }
+    var a = document.getElementById('cb-accept');
+    var d = document.getElementById('cb-decline');
+    if (a) a.addEventListener('click', function () { choose('accepted'); });
+    if (d) d.addEventListener('click', function () { choose('declined'); });
+  })();
+</script>
+
+<style>
+  .cookie-bar {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 18px;
+    z-index: 100;
+    width: min(960px, calc(100% - 28px));
+    background: var(--ink-2);
+    border: 1px solid var(--border-2);
+    border-radius: 14px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  }
+  .cb-inner {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 16px 20px;
+  }
+  .cb-text {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.5;
+    flex: 1;
+  }
+  .cb-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .cb-btn {
+    padding: 9px 18px;
+    font-size: 14.5px;
+  }
+  @media (max-width: 640px) {
+    .cb-inner { flex-direction: column; align-items: stretch; gap: 12px; }
+    .cb-actions { justify-content: flex-end; }
+  }
+</style>

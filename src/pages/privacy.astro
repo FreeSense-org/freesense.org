@@ -1,0 +1,124 @@
+---
+import Base from '../layouts/Base.astro';
+const updated = 'June 28, 2026';
+---
+
+<Base
+  title="Privacy Policy — FreeSense"
+  description="How freesense.org handles your data: no tracking, no advertising cookies, minimal essential storage."
+>
+  <section class="priv">
+    <div class="wrap priv-wrap">
+      <span class="eyebrow">Legal</span>
+      <h1>Privacy Policy</h1>
+      <p class="updated">Last updated: {updated}</p>
+
+      <p class="lede">
+        FreeSense respects your privacy. <strong>freesense.org</strong> is a static website with no
+        user accounts, no advertising, and no cross-site tracking. This page explains the little data
+        that is involved when you visit.
+      </p>
+
+      <div class="tldr">
+        <h2>The short version</h2>
+        <ul>
+          <li>✓ No advertising or tracking cookies.</li>
+          <li>✓ No analytics that profile you across sites.</li>
+          <li>✓ The only browser storage is your own cookie-consent choice.</li>
+          <li>✓ We never sell or share personal data — we don't collect any to begin with.</li>
+        </ul>
+      </div>
+
+      <h2>1. Who we are</h2>
+      <p>
+        This site is operated by <strong>The FreeSense Project</strong>, an open-source community
+        project. For privacy questions, contact us via the
+        <a href="https://github.com/FreeSense-org" rel="noopener">FreeSense-org GitHub organization</a>.
+      </p>
+
+      <h2>2. Cookies &amp; local storage</h2>
+      <p>
+        We do not use cookies for advertising or tracking. The site stores a single value in your
+        browser's <code>localStorage</code>, <code>fs-cookie-consent</code>, which simply records
+        whether you accepted or declined this notice so we don't ask again. It contains no personal
+        information and is never sent to a server. You can clear it any time via your browser
+        settings.
+      </p>
+
+      <h2>3. Server logs (hosting)</h2>
+      <p>
+        The site and download images are served by <strong>Cloudflare</strong> (Pages and R2). As
+        part of delivering and protecting the site, Cloudflare processes standard request metadata
+        such as your IP address, browser user-agent, and the page or file requested. This is used
+        only for operating the service, security, and abuse prevention, and is handled under
+        Cloudflare's own privacy terms. We do not combine it with anything else or use it to identify
+        you.
+      </p>
+
+      <h2>4. Third-party requests</h2>
+      <ul class="plain">
+        <li>
+          <strong>Google Fonts</strong> — the site loads the “Space Grotesk” webfont from Google's
+          font CDN, which means your browser sends a request (including your IP) to Google for the
+          font files. No cookies are set by this request.
+        </li>
+        <li>
+          <strong>Downloads</strong> — when you download an installer image or fetch the release list,
+          those requests go to <code>downloads.freesense.org</code> (Cloudflare R2). Package updates
+          from an installed FreeSense system go to <code>pkg.freesense.org</code>.
+        </li>
+        <li>
+          <strong>GitHub</strong> — links to source code and issues take you to github.com, which has
+          its own privacy policy.
+        </li>
+      </ul>
+
+      <h2>5. What we do not do</h2>
+      <p>
+        We do not run advertising networks, social-media trackers, session recording, or
+        fingerprinting. We do not create user profiles. We do not sell, rent, or share personal data.
+      </p>
+
+      <h2>6. Your rights</h2>
+      <p>
+        If you are in the EU/EEA or UK, the GDPR gives you rights to access, correct, or erase
+        personal data and to object to processing. Because this site does not collect or store
+        personal data beyond the transient server logs described above, there is normally nothing to
+        retrieve — but you are welcome to contact us with any request or question.
+      </p>
+
+      <h2>7. Changes</h2>
+      <p>
+        We may update this policy as the site evolves. Material changes will be reflected by the
+        “last updated” date above.
+      </p>
+
+      <p class="muted small">
+        This policy covers the website only. It does not govern the FreeSense software you install,
+        which runs entirely on your own hardware.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .priv { padding: 72px 0; }
+  .priv-wrap { max-width: 760px; }
+  .priv h1 { font-size: clamp(32px, 5vw, 48px); margin: 14px 0 6px; }
+  .updated { color: var(--muted-2); font-size: 14px; margin: 0 0 22px; }
+  .lede { font-size: clamp(16px, 2vw, 19px); color: var(--muted); margin: 0 0 28px; }
+
+  .tldr {
+    background: var(--ink-3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px 26px; margin-bottom: 12px;
+  }
+  .tldr h2 { margin: 0 0 12px; font-size: 18px; }
+  .tldr ul { margin: 0; padding-left: 2px; list-style: none; }
+  .tldr li { color: var(--muted); padding: 4px 0; font-size: 15px; }
+
+  .priv h2 { font-size: 21px; margin: 34px 0 10px; }
+  .priv p { color: var(--muted); font-size: 16px; margin: 0 0 12px; }
+  .priv ul.plain { color: var(--muted); padding-left: 20px; }
+  .priv ul.plain li { padding: 6px 0; font-size: 15.5px; }
+  .small { font-size: 13px; margin-top: 26px; }
+</style>

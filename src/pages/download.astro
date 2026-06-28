@@ -1,0 +1,195 @@
+---
+import Base from '../layouts/Base.astro';
+const MANIFEST = 'https://downloads.freesense.org/releases.json';
+const GITHUB = 'https://github.com/FreeSense-org';
+---
+
+<Base
+  title="Download FreeSense"
+  description="Download FreeSense installer images — stable and development channels for amd64."
+>
+  <section class="dl-hero">
+    <div class="wrap">
+      <span class="eyebrow">Download</span>
+      <h1>Get FreeSense</h1>
+      <p class="lede">
+        Installer images for <strong>amd64</strong> (UEFI &amp; BIOS). Pick <strong>Stable</strong>
+        for production, or <strong>Development</strong> to track the latest. Always verify the
+        SHA-256 after downloading.
+      </p>
+    </div>
+  </section>
+
+  <section class="dl-cards">
+    <div class="wrap">
+      <div id="channels" class="channels">
+        <!-- populated from the manifest; this is the loading/fallback state -->
+        <div class="loading">Loading the latest builds…</div>
+      </div>
+      <p class="dl-fallback">
+        Builds also available as
+        <a href={`${GITHUB}/freesense/releases`} rel="noopener">GitHub Releases</a>, or browse the
+        raw image archive at <a href="https://downloads.freesense.org/" rel="noopener">downloads.freesense.org</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- Install / verify -->
+  <section class="dl-steps">
+    <div class="wrap">
+      <h2 class="sec-title">Install in three steps</h2>
+      <div class="steps">
+        <div class="step">
+          <span class="num">1</span>
+          <h3>Verify &amp; decompress</h3>
+          <p>Check the hash, then unpack the gzip image.</p>
+          <pre class="mono"><code>sha256sum -c SHA256SUMS.txt
+gunzip FreeSense-*-amd64.iso.gz</code></pre>
+        </div>
+        <div class="step">
+          <span class="num">2</span>
+          <h3>Write to USB</h3>
+          <p>Flash the ISO to a USB stick (≥ 2 GB). On Windows use balenaEtcher.</p>
+          <pre class="mono"><code># macOS / Linux
+dd if=FreeSense-*-amd64.iso \
+   of=/dev/diskN bs=4m</code></pre>
+        </div>
+        <div class="step">
+          <span class="num">3</span>
+          <h3>Boot &amp; install</h3>
+          <p>
+            Boot the target from USB and follow the installer. Then open the web GUI and log in with
+            <code>admin</code> / <code>pfsense</code> (change it immediately).
+          </p>
+        </div>
+      </div>
+      <p class="reqs muted">
+        <strong>Minimum:</strong> 64-bit CPU · 1 GB RAM · 8 GB disk · two network interfaces (or one
+        + VLANs). See the <a href="https://docs.freesense.org/install/" rel="noopener">install guide</a> for details.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<script define:vars={{ MANIFEST }}>
+  const fmtSize = (b) =>
+    !b ? '' : b >= 1e9 ? (b / 1e9).toFixed(2) + ' GB' : (b / 1e6).toFixed(0) + ' MB';
+
+  const meta = {
+    stable: {
+      label: 'Stable',
+      tag: 'Recommended',
+      blurb: 'Tested release builds for production use.',
+      primary: true,
+    },
+    devel: {
+      label: 'Development',
+      tag: 'Latest',
+      blurb: 'Bleeding-edge snapshots — newest FreeBSD &amp; features.',
+      primary: false,
+    },
+  };
+
+  function card(key, r) {
+    const m = meta[key] || { label: key, blurb: '' };
+    if (!r || !r.url) {
+      return `<div class="ch">
+        <div class="ch-head"><h3>${m.label}</h3><span class="ch-tag">${m.tag || ''}</span></div>
+        <p class="ch-blurb">${m.blurb}</p>
+        <p class="ch-soon">Build publishing soon — check back shortly.</p>
+      </div>`;
+    }
+    const sha = r.sha256 ? `<details class="ch-sha"><summary>SHA-256</summary><code>${r.sha256}</code></details>` : '';
+    return `<div class="ch ${m.primary ? 'ch-primary' : ''}">
+      <div class="ch-head"><h3>${m.label}</h3><span class="ch-tag">${m.tag || ''}</span></div>
+      <p class="ch-blurb">${m.blurb}</p>
+      <div class="ch-ver">
+        <span class="ch-vlabel">Version</span>
+        <span class="mono">${r.version || '—'}</span>
+        ${r.size ? `<span class="ch-size">${fmtSize(r.size)} · ${r.date || ''}</span>` : ''}
+      </div>
+      <a class="btn ${m.primary ? 'btn-primary' : 'btn-ghost'} ch-btn" href="${r.url}">
+        ↓ ${r.iso ? r.iso : 'Download .iso.gz'}
+      </a>
+      ${sha}
+    </div>`;
+  }
+
+  async function load() {
+    const el = document.getElementById('channels');
+    try {
+      const res = await fetch(MANIFEST, { cache: 'no-store' });
+      if (!res.ok) throw new Error('no manifest');
+      const data = await res.json();
+      const ch = data.channels || data;
+      el.classList.remove('loading-wrap');
+      el.innerHTML = card('stable', ch.stable) + card('devel', ch.devel);
+    } catch (e) {
+      el.innerHTML = card('stable', null) + card('devel', null);
+    }
+  }
+  load();
+</script>
+
+<style>
+  .dl-hero { padding: 80px 0 24px; }
+  .dl-hero h1 { font-size: clamp(34px, 5vw, 52px); margin: 14px 0 0; }
+  .lede { max-width: 660px; font-size: clamp(16px, 2vw, 19px); color: var(--muted); margin-top: 16px; }
+  .dl-cards { padding-top: 24px; }
+
+  .channels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; min-height: 220px; }
+  .loading { grid-column: 1 / -1; color: var(--muted-2); text-align: center; padding: 80px 0; }
+
+  .ch {
+    background: var(--ink-3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px;
+    display: flex; flex-direction: column;
+  }
+  .ch-primary { border-color: rgba(234, 79, 45, 0.45); box-shadow: 0 0 0 1px rgba(234, 79, 45, 0.15); }
+  .ch-head { display: flex; align-items: center; justify-content: space-between; }
+  .ch-head h3 { font-size: 22px; margin: 0; }
+  .ch-tag {
+    font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--coral-hi); background: rgba(234, 79, 45, 0.12);
+    border: 1px solid rgba(234, 79, 45, 0.28); padding: 4px 10px; border-radius: 999px;
+  }
+  .ch-blurb { color: var(--muted); margin: 10px 0 18px; font-size: 15px; }
+  .ch-ver {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px;
+    padding: 14px 0; border-top: 1px solid var(--border); margin-top: auto;
+  }
+  .ch-vlabel { font-size: 13px; color: var(--muted-2); text-transform: uppercase; letter-spacing: 0.05em; }
+  .ch-size { color: var(--muted-2); font-size: 13.5px; }
+  .ch-btn { margin-top: 8px; justify-content: center; word-break: break-all; }
+  .ch-soon { color: var(--muted-2); font-style: italic; margin: 14px 0 0; padding-top: 14px; border-top: 1px solid var(--border); }
+  .ch-sha { margin-top: 14px; font-size: 13px; color: var(--muted); }
+  .ch-sha summary { cursor: pointer; }
+  .ch-sha code { display: block; margin-top: 8px; word-break: break-all; font-size: 12px; }
+
+  .dl-fallback { color: var(--muted-2); font-size: 14px; margin-top: 22px; text-align: center; }
+
+  .dl-steps { background: var(--ink-2); border-top: 1px solid var(--border); }
+  .sec-title { font-size: clamp(24px, 3.2vw, 34px); margin: 0 0 36px; }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .step { background: var(--ink-3); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+  .step .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; border-radius: 8px;
+    background: var(--coral); color: #fff; font-weight: 700; font-size: 15px;
+  }
+  .step h3 { margin: 14px 0 6px; font-size: 18px; }
+  .step p { color: var(--muted); font-size: 14.5px; margin: 0 0 14px; }
+  .step pre {
+    background: var(--ink); border: 1px solid var(--border); border-radius: 9px;
+    padding: 13px 14px; overflow-x: auto; font-size: 13px; margin: 0;
+  }
+  .step pre code { background: none; border: none; padding: 0; color: #cdd6e2; }
+  .reqs { margin-top: 26px; font-size: 14.5px; }
+
+  @media (max-width: 820px) {
+    .steps { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .channels { grid-template-columns: 1fr; }
+  }
+</style>

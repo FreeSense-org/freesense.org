@@ -1,0 +1,73 @@
+---
+const GITHUB = 'https://github.com/FreeSense-org';
+const year = 2026;
+---
+
+<footer class="ft">
+  <div class="wrap ft-inner">
+    <div class="ft-brand">
+      <img src="/brand/icon-reversed.svg" alt="" height="34" width="34" />
+      <p>The open-source firewall,<br />rebuilt in the open.</p>
+    </div>
+
+    <div class="ft-cols">
+      <div>
+        <h4>Project</h4>
+        <a href="/download">Download</a>
+        <a href="https://docs.freesense.org">Documentation</a>
+        <a href={GITHUB} rel="noopener">Source (GitHub)</a>
+        <a href={`${GITHUB}/freesense/issues`} rel="noopener">Issues</a>
+      </div>
+      <div>
+        <h4>Repositories</h4>
+        <a href={`${GITHUB}/freesense`} rel="noopener">freesense</a>
+        <a href={`${GITHUB}/freesense-ports`} rel="noopener">freesense-ports</a>
+        <a href={`${GITHUB}/freesense-os-base`} rel="noopener">freesense-os-base</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="/license">License (Apache-2.0)</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap ft-bottom">
+    <span>© {year} The FreeSense Project. Licensed under Apache-2.0.</span>
+    <span class="attr">
+      FreeSense is an independent, open-source derivative of pfSense® CE. Not affiliated with or
+      endorsed by Netgate or the pfSense project. pfSense is a registered trademark of Netgate.
+    </span>
+  </div>
+</footer>
+
+<style>
+  .ft {
+    border-top: 1px solid var(--border);
+    background: var(--ink-2);
+    padding: 56px 0 30px;
+    margin-top: 40px;
+  }
+  .ft-inner {
+    display: grid;
+    grid-template-columns: 1.2fr 2fr;
+    gap: 48px;
+  }
+  .ft-brand { display: flex; gap: 14px; align-items: flex-start; }
+  .ft-brand p { margin: 4px 0 0; color: var(--muted); font-size: 15px; line-height: 1.5; }
+  .ft-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .ft-cols h4 { margin: 0 0 14px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted-2); font-weight: 600; }
+  .ft-cols a { display: block; color: var(--muted); font-size: 15px; padding: 4px 0; }
+  .ft-cols a:hover { color: var(--coral-hi); }
+  .ft-bottom {
+    display: flex; flex-direction: column; gap: 10px;
+    margin-top: 44px; padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--muted-2); font-size: 13px;
+  }
+  .ft-bottom .attr { max-width: 720px; line-height: 1.5; }
+
+  @media (max-width: 760px) {
+    .ft-inner { grid-template-columns: 1fr; gap: 36px; }
+    .ft-cols { grid-template-columns: 1fr 1fr; }
+  }
+</style>

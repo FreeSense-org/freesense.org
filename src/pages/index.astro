@@ -1,0 +1,145 @@
+---
+import Base from '../layouts/Base.astro';
+
+const GITHUB = 'https://github.com/FreeSense-org';
+
+const features = [
+  {
+    title: 'Truly open source',
+    body: 'Every line — base OS, web GUI, packages, and the build pipeline — is public and Apache-2.0 licensed. Build your own from source, or run the signed official images.',
+  },
+  {
+    title: 'Built on FreeBSD',
+    body: 'A hardened FreeBSD foundation with pf, the same battle-tested packet filter trusted in production firewalls for two decades.',
+  },
+  {
+    title: 'Signed package updates',
+    body: 'Updates and plugins are delivered as cryptographically signed packages from pkg.freesense.org — no full reinstall to stay current.',
+  },
+  {
+    title: 'Familiar web GUI',
+    body: 'A complete web interface for firewall rules, NAT, VPNs, DHCP, DNS, traffic shaping, monitoring, and a full package manager.',
+  },
+  {
+    title: 'Reproducible builds',
+    body: 'The whole OS is rebuilt automatically on GitHub from upstream FreeBSD sources — no vendor lock-in, no hidden patches, no mystery binaries.',
+  },
+  {
+    title: 'Two release channels',
+    body: 'Run stable for production, or track development to ride the latest FreeBSD and features. Switch channels from the update page.',
+  },
+];
+---
+
+<Base>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <span class="pill">● Open source · Apache-2.0 · community-built</span>
+      <h1>The open-source firewall,<br /><span class="accent">rebuilt in the open.</span></h1>
+      <p class="lede">
+        FreeSense is a free, community-driven firewall &amp; router operating system — a fully
+        open derivative of pfSense® CE, built from source on FreeBSD with signed updates and zero
+        vendor lock-in.
+      </p>
+      <div class="hero-cta">
+        <a href="/download" class="btn btn-primary">↓ Download FreeSense</a>
+        <a href={GITHUB} class="btn btn-ghost" rel="noopener">★ View on GitHub</a>
+      </div>
+      <p class="hero-note mono">curl -O https://downloads.freesense.org/release/latest/ &nbsp;·&nbsp; amd64 · UEFI &amp; BIOS</p>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features">
+    <div class="wrap">
+      <span class="eyebrow">Why FreeSense</span>
+      <h2 class="sec-title">Everything you expect from a serious firewall — and nothing locked away.</h2>
+      <div class="grid">
+        {features.map((f) => (
+          <div class="card">
+            <h3>{f.title}</h3>
+            <p>{f.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Open about its roots -->
+  <section class="roots">
+    <div class="wrap roots-inner">
+      <div>
+        <span class="eyebrow">Honest about its roots</span>
+        <h2 class="sec-title">A community fork that gives back.</h2>
+        <p class="muted">
+          FreeSense stands on the shoulders of the pfSense® CE project and the FreeBSD operating
+          system. We rebuilt it as a fully open, independently maintained distribution — removing
+          vendor-specific infrastructure and rebuilding everything reproducibly from upstream
+          sources. FreeSense is not affiliated with or endorsed by Netgate.
+        </p>
+        <a href="/license" class="btn btn-ghost">Read the license &amp; attribution →</a>
+      </div>
+      <div class="roots-stats">
+        <div><strong>100%</strong><span>open source</span></div>
+        <div><strong>FreeBSD</strong><span>foundation</span></div>
+        <div><strong>Signed</strong><span>package repo</span></div>
+        <div><strong>2</strong><span>release channels</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="cta">
+    <div class="wrap cta-inner">
+      <h2>Ready to try it?</h2>
+      <p class="muted">Download an installer image and have a firewall running in minutes.</p>
+      <a href="/download" class="btn btn-primary">↓ Get FreeSense</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { padding: 96px 0 80px; text-align: center; }
+  .hero-inner { display: flex; flex-direction: column; align-items: center; }
+  h1 { font-size: clamp(38px, 6vw, 66px); margin: 22px 0 0; }
+  .accent { color: var(--coral); }
+  .lede { max-width: 660px; font-size: clamp(17px, 2.2vw, 21px); color: var(--muted); margin: 22px 0 0; }
+  .hero-cta { display: flex; gap: 14px; margin: 34px 0 0; flex-wrap: wrap; justify-content: center; }
+  .hero-note { margin-top: 26px; color: var(--muted-2); font-size: 13.5px; }
+
+  .sec-title { font-size: clamp(26px, 3.4vw, 38px); margin: 12px 0 40px; max-width: 760px; }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .card {
+    background: var(--ink-3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 26px 24px;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .card:hover { border-color: var(--border-2); transform: translateY(-2px); }
+  .card h3 { font-size: 19px; margin: 0 0 10px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15.5px; }
+
+  .roots { background: var(--ink-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .roots-inner { display: grid; grid-template-columns: 1.5fr 1fr; gap: 56px; align-items: center; }
+  .muted { color: var(--muted); }
+  .roots-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .roots-stats div {
+    background: var(--ink-3); border: 1px solid var(--border);
+    border-radius: 12px; padding: 22px; text-align: center;
+  }
+  .roots-stats strong { display: block; font-size: 26px; color: var(--coral-hi); }
+  .roots-stats span { color: var(--muted); font-size: 14px; }
+
+  .cta-inner { text-align: center; }
+  .cta-inner h2 { font-size: clamp(28px, 4vw, 42px); margin: 0 0 10px; }
+  .cta-inner p { margin: 0 0 26px; }
+
+  @media (max-width: 880px) {
+    .grid { grid-template-columns: 1fr 1fr; }
+    .roots-inner { grid-template-columns: 1fr; gap: 32px; }
+  }
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>

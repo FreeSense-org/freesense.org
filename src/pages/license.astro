@@ -1,0 +1,113 @@
+---
+import Base from '../layouts/Base.astro';
+const GITHUB = 'https://github.com/FreeSense-org';
+---
+
+<Base
+  title="License & Attribution — FreeSense"
+  description="FreeSense is licensed under the Apache License, Version 2.0. Attribution to pfSense CE and FreeBSD."
+>
+  <section class="lic">
+    <div class="wrap lic-wrap">
+      <span class="eyebrow">Legal</span>
+      <h1>License &amp; Attribution</h1>
+
+      <p class="lede">
+        FreeSense is free and open-source software, distributed under the
+        <strong>Apache License, Version 2.0</strong>. You are free to use, modify, and redistribute
+        it — including for commercial purposes — provided you retain the copyright and license
+        notices.
+      </p>
+
+      <div class="lic-card">
+        <h2>Attribution</h2>
+        <p>
+          FreeSense is an independent, community-maintained derivative of
+          <strong>pfSense® CE</strong>, which is itself derived from
+          <strong>m0n0wall</strong> and built on the <strong>FreeBSD</strong> operating system. We
+          are grateful to those projects and their contributors.
+        </p>
+        <p class="trademark">
+          FreeSense is <strong>not affiliated with, sponsored by, or endorsed by Netgate</strong> or
+          the pfSense project. <em>pfSense</em> is a registered trademark of Rubicon Communications,
+          LLC (Netgate). <em>FreeBSD</em> is a registered trademark of the FreeBSD Foundation. All
+          trademarks are the property of their respective owners.
+        </p>
+      </div>
+
+      <div class="lic-links">
+        <a class="btn btn-ghost" href={`${GITHUB}/freesense/blob/main/LICENSE`} rel="noopener">
+          Full LICENSE on GitHub →
+        </a>
+        <a class="btn btn-ghost" href="https://www.apache.org/licenses/LICENSE-2.0" rel="noopener">
+          Apache-2.0 official text →
+        </a>
+      </div>
+
+      <h2 class="ahead">Apache License 2.0 — summary</h2>
+      <div class="perm-grid">
+        <div class="perm">
+          <h3 class="ok">✓ Permissions</h3>
+          <ul>
+            <li>Commercial use</li>
+            <li>Modification</li>
+            <li>Distribution</li>
+            <li>Patent use</li>
+            <li>Private use</li>
+          </ul>
+        </div>
+        <div class="perm">
+          <h3 class="warn">! Conditions</h3>
+          <ul>
+            <li>License &amp; copyright notice</li>
+            <li>State changes</li>
+          </ul>
+        </div>
+        <div class="perm">
+          <h3 class="no">✕ Limitations</h3>
+          <ul>
+            <li>No trademark rights</li>
+            <li>No liability</li>
+            <li>No warranty</li>
+          </ul>
+        </div>
+      </div>
+      <p class="muted small">
+        This summary is provided for convenience and is not legal advice or a substitute for the
+        full license text linked above.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lic { padding: 72px 0; }
+  .lic-wrap { max-width: 820px; }
+  .lic h1 { font-size: clamp(32px, 5vw, 48px); margin: 14px 0 0; }
+  .lede { font-size: clamp(16px, 2vw, 19px); color: var(--muted); margin: 18px 0 0; }
+
+  .lic-card {
+    background: var(--ink-3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 26px 28px; margin: 34px 0;
+  }
+  .lic-card h2 { margin: 0 0 12px; font-size: 21px; }
+  .lic-card p { color: var(--muted); margin: 0 0 12px; font-size: 15.5px; }
+  .trademark { font-size: 14px !important; color: var(--muted-2) !important; }
+
+  .lic-links { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+
+  .ahead { margin: 44px 0 20px; font-size: 24px; }
+  .perm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .perm { background: var(--ink-3); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; }
+  .perm h3 { margin: 0 0 12px; font-size: 16px; }
+  .perm .ok { color: var(--good); }
+  .perm .warn { color: #e0b34a; }
+  .perm .no { color: #e0675a; }
+  .perm ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 14.5px; }
+  .perm li { padding: 3px 0; }
+  .small { font-size: 13px; margin-top: 18px; }
+
+  @media (max-width: 720px) {
+    .perm-grid { grid-template-columns: 1fr; }
+  }
+</style>

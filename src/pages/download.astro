@@ -90,6 +90,30 @@ dd if=FreeSense-*-amd64.iso \
     },
   };
 
+  const esc = (s) =>
+    String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+  function changelogBlock(r) {
+    const items = Array.isArray(r.changelog) ? r.changelog : [];
+    if (!items.length) return '';
+    const lis = items.map((c) => `<li>${esc(c)}</li>`).join('');
+    return `<details class="ch-extra"><summary>What's new (${items.length})</summary>
+      <ul class="ch-changelog">${lis}</ul></details>`;
+  }
+
+  function historyBlock(r) {
+    const h = Array.isArray(r.history) ? r.history : [];
+    if (!h.length) return '';
+    const rows = h.map((v) => {
+      const meta2 = [v.size ? fmtSize(v.size) : '', v.date || ''].filter(Boolean).join(' · ');
+      return `<li><a href="${esc(v.url)}">${esc(v.version)}</a>${meta2 ? `<span>${esc(meta2)}</span>` : ''}</li>`;
+    }).join('');
+    return `<details class="ch-extra"><summary>Previous versions (${h.length})</summary>
+      <ul class="ch-history">${rows}</ul></details>`;
+  }
+
   function card(key, r) {
     const m = meta[key] || { label: key, blurb: '' };
     if (!r || !r.url) {
@@ -99,18 +123,20 @@ dd if=FreeSense-*-amd64.iso \
         <p class="ch-soon">Build publishing soon — check back shortly.</p>
       </div>`;
     }
-    const sha = r.sha256 ? `<details class="ch-sha"><summary>SHA-256</summary><code>${r.sha256}</code></details>` : '';
+    const sha = r.sha256 ? `<details class="ch-extra ch-sha"><summary>SHA-256</summary><code>${esc(r.sha256)}</code></details>` : '';
     return `<div class="ch ${m.primary ? 'ch-primary' : ''}">
       <div class="ch-head"><h3>${m.label}</h3><span class="ch-tag">${m.tag || ''}</span></div>
       <p class="ch-blurb">${m.blurb}</p>
       <div class="ch-ver">
         <span class="ch-vlabel">Version</span>
-        <span class="mono">${r.version || '—'}</span>
-        ${r.size ? `<span class="ch-size">${fmtSize(r.size)} · ${r.date || ''}</span>` : ''}
+        <span class="mono">${esc(r.version) || '—'}</span>
+        ${r.size ? `<span class="ch-size">${fmtSize(r.size)} · ${esc(r.date)}</span>` : ''}
       </div>
-      <a class="btn ${m.primary ? 'btn-primary' : 'btn-ghost'} ch-btn" href="${r.url}">
-        ↓ ${r.iso ? r.iso : 'Download .iso.gz'}
+      <a class="btn ${m.primary ? 'btn-primary' : 'btn-ghost'} ch-btn" href="${esc(r.url)}">
+        ↓ ${r.iso ? esc(r.iso) : 'Download .iso.gz'}
       </a>
+      ${changelogBlock(r)}
+      ${historyBlock(r)}
       ${sha}
     </div>`;
   }
@@ -162,9 +188,18 @@ dd if=FreeSense-*-amd64.iso \
   .ch-size { color: var(--muted-2); font-size: 13.5px; }
   .ch-btn { margin-top: 8px; justify-content: center; word-break: break-all; }
   .ch-soon { color: var(--muted-2); font-style: italic; margin: 14px 0 0; padding-top: 14px; border-top: 1px solid var(--border); }
-  .ch-sha { margin-top: 14px; font-size: 13px; color: var(--muted); }
-  .ch-sha summary { cursor: pointer; }
-  .ch-sha code { display: block; margin-top: 8px; word-break: break-all; font-size: 12px; }
+  .ch-extra { margin-top: 12px; font-size: 13.5px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 12px; }
+  .ch-extra summary { cursor: pointer; color: var(--muted); font-weight: 500; }
+  .ch-extra summary:hover { color: var(--text); }
+  .ch-extra[open] summary { color: var(--text); margin-bottom: 8px; }
+  .ch-changelog { margin: 6px 0 0; padding-left: 18px; }
+  .ch-changelog li { padding: 2px 0; font-size: 14px; line-height: 1.4; }
+  .ch-history { margin: 6px 0 0; padding: 0; list-style: none; }
+  .ch-history li { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 5px 0; border-bottom: 1px dashed var(--border); }
+  .ch-history li:last-child { border-bottom: none; }
+  .ch-history a { font-family: var(--mono); font-size: 13px; word-break: break-all; }
+  .ch-history span { color: var(--muted-2); font-size: 12.5px; white-space: nowrap; }
+  .ch-sha code { display: block; margin-top: 4px; word-break: break-all; font-size: 12px; }
 
   .dl-fallback { color: var(--muted-2); font-size: 14px; margin-top: 22px; text-align: center; }
 

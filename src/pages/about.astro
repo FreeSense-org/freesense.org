@@ -1,0 +1,180 @@
+---
+import Base from '../layouts/Base.astro';
+const GITHUB = 'https://github.com/FreeSense-org';
+
+const removed = [
+  'Vendor registration & activation prompts',
+  'Dashboard & config phone-home telemetry',
+  'Automatic cloud config-backup upload',
+  'Proprietary repo client & update settings',
+  'Paid-support and store upsells in the GUI',
+];
+
+const kept = [
+  'The full firewall, NAT, VPN & routing stack',
+  'The package manager and plugin ecosystem',
+  'The battle-tested pf packet filter',
+  'A familiar, now-modernised web GUI',
+];
+---
+
+<Base
+  title="About FreeSense"
+  description="What FreeSense is, why it exists, and how it's built — a fully open firewall OS derived from pfSense CE and rebuilt from source on FreeBSD 16."
+>
+  <section class="ab-hero">
+    <div class="wrap">
+      <span class="eyebrow">About</span>
+      <h1>An open firewall, rebuilt from the ground up.</h1>
+      <p class="lede">
+        FreeSense is a free, community-driven firewall and router operating system. It takes the
+        proven ideas of the open-source <strong>pfSense® CE</strong> project and rebuilds them as a
+        fully open, independently maintained distribution — modern, transparent, and free of vendor
+        lock-in.
+      </p>
+    </div>
+  </section>
+
+  <section class="ab-body">
+    <div class="wrap ab-wrap">
+      <h2>Why FreeSense exists</h2>
+      <p>
+        Great firewall software should be something you can read, trust, and rebuild yourself — not a
+        black box tied to one vendor's cloud and roadmap. FreeSense exists to keep that promise:
+        every part of the system, down to the build pipeline that produces the official images, is
+        public and Apache-2.0 licensed. No accounts, no activation, no phone-home.
+      </p>
+      <p>
+        We track <strong>FreeBSD 16-CURRENT</strong> closely, so the base you run has the newest
+        kernel, drivers and security fixes rather than a snapshot from years ago — while still
+        shipping as signed, tested images you can rely on.
+      </p>
+
+      <h2>How it's built</h2>
+      <p>
+        FreeSense is built entirely from source, in the open, on a reproducible pipeline. There are
+        no hidden patches and no proprietary tooling — the whole thing runs from public repositories.
+      </p>
+      <div class="how">
+        <div class="how-card">
+          <span class="mono num">01</span>
+          <h3>Frozen upstream</h3>
+          <p>
+            Each release pins an exact FreeBSD 16 source snapshot and a frozen set of upstream
+            package sources, so a build is reproducible and never drifts out from under you.
+          </p>
+        </div>
+        <div class="how-card">
+          <span class="mono num">02</span>
+          <h3>Automated builds</h3>
+          <p>
+            The world, kernel and 570+ packages are compiled on clean CI runners — with our own
+            FreeBSD hardware for larger releases — then signed with the project key.
+          </p>
+        </div>
+        <div class="how-card">
+          <span class="mono num">03</span>
+          <h3>Signed delivery</h3>
+          <p>
+            Installer images and a signed package repository publish to a global CDN. Installed
+            systems fetch updates over the air, verified against our fingerprint — nothing else.
+          </p>
+        </div>
+      </div>
+      <p class="how-links">
+        <a href={`${GITHUB}/freesense`} rel="noopener">freesense</a> ·
+        <a href={`${GITHUB}/freesense-ports`} rel="noopener">freesense-ports</a> ·
+        <a href={`${GITHUB}/freesense-os-base`} rel="noopener">freesense-os-base</a>
+      </p>
+
+      <h2>Independent &amp; de-vendored</h2>
+      <p>
+        We kept everything that makes the firewall great and removed everything that tied it to a
+        single vendor's infrastructure.
+      </p>
+      <div class="two-col">
+        <div class="col">
+          <h3 class="ok">✓ Kept &amp; improved</h3>
+          <ul>{kept.map((k) => <li>{k}</li>)}</ul>
+        </div>
+        <div class="col">
+          <h3 class="rm">✕ Removed</h3>
+          <ul>{removed.map((r) => <li>{r}</li>)}</ul>
+        </div>
+      </div>
+
+      <div class="attribution">
+        <h2>Attribution</h2>
+        <p>
+          FreeSense is an independent, community-maintained derivative of <strong>pfSense® CE</strong>,
+          which is itself derived from <strong>m0n0wall</strong> and built on the
+          <strong>FreeBSD</strong> operating system. We're grateful to those projects and their
+          contributors, and we retain their copyright and license notices as required by the
+          Apache-2.0 license.
+        </p>
+        <p class="tm">
+          FreeSense is an independent project and is not affiliated with or endorsed by the pfSense
+          project. “pfSense” and “FreeBSD” are trademarks of their respective owners.
+        </p>
+        <a href="/license" class="btn btn-ghost">Full license &amp; attribution →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap cta-inner">
+      <h2>See it for yourself</h2>
+      <p class="muted">Download an image, or read the source line by line.</p>
+      <div class="cta-btns">
+        <a href="/download" class="btn btn-primary">↓ Download FreeSense</a>
+        <a href={GITHUB} class="btn btn-ghost" rel="noopener">★ Browse the source</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ab-hero { padding: 80px 0 8px; }
+  .ab-hero h1 { font-size: clamp(32px, 5vw, 52px); margin: 14px 0 0; max-width: 820px; }
+  .lede { max-width: 720px; font-size: clamp(16px, 2vw, 20px); color: var(--muted); margin: 20px 0 0; }
+
+  .ab-body { padding: 40px 0 24px; }
+  .ab-wrap { max-width: 820px; }
+  .ab-wrap h2 { font-size: clamp(22px, 3vw, 30px); margin: 44px 0 14px; }
+  .ab-wrap > p { color: var(--muted); font-size: 16.5px; margin: 0 0 14px; }
+  .ab-wrap strong { color: var(--text); }
+
+  .how { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 22px 0 12px; }
+  .how-card { background: var(--ink-3); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 22px; }
+  .num { color: var(--coral-hi); font-size: 13px; font-weight: 600; letter-spacing: 0.08em; }
+  .how-card h3 { font-size: 17px; margin: 10px 0 8px; }
+  .how-card p { margin: 0; color: var(--muted); font-size: 14.5px; }
+  .how-links { font-family: var(--mono); font-size: 14px; }
+  .how-links a { color: var(--coral-hi); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0 8px; }
+  .col { background: var(--ink-3); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; }
+  .col h3 { margin: 0 0 12px; font-size: 16px; }
+  .col .ok { color: var(--good); }
+  .col .rm { color: #e0675a; }
+  .col ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 15px; }
+  .col li { padding: 4px 0; }
+
+  .attribution {
+    background: var(--ink-2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 26px 28px; margin: 44px 0 0;
+  }
+  .attribution h2 { margin: 0 0 12px; font-size: 21px; }
+  .attribution p { color: var(--muted); font-size: 15.5px; margin: 0 0 12px; }
+  .attribution .tm { font-size: 13.5px; color: var(--muted-2); }
+
+  .cta-inner { text-align: center; }
+  .cta-inner h2 { font-size: clamp(26px, 4vw, 40px); margin: 0 0 10px; }
+  .cta-inner p { margin: 0 0 24px; }
+  .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  @media (max-width: 820px) {
+    .how { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+  }
+</style>

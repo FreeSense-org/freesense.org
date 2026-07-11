@@ -78,8 +78,14 @@ dd if=FreeSense-*-amd64.iso \
   const meta = {
     stable: {
       label: 'Stable',
-      tag: 'Recommended',
-      blurb: 'Tested release builds for production use.',
+      tag: 'Not available',
+      blurb: 'No production-supported FreeSense release is available yet.',
+      primary: false,
+    },
+    candidate: {
+      label: 'RC Preview',
+      tag: 'Unsupported',
+      blurb: 'FreeBSD 16-CURRENT preview for non-production testing only.',
       primary: true,
     },
     devel: {
@@ -116,11 +122,15 @@ dd if=FreeSense-*-amd64.iso \
 
   function card(key, r) {
     const m = meta[key] || { label: key, blurb: '' };
+    if (key === 'stable' && (!r || r.support_tier !== 'supported')) r = null;
     if (!r || !r.url) {
+      const unavailable = key === 'stable'
+        ? 'Stable is unavailable while FreeSense is based on FreeBSD 16-CURRENT.'
+        : 'Build publishing soon — check back shortly.';
       return `<div class="ch">
         <div class="ch-head"><h3>${m.label}</h3><span class="ch-tag">${m.tag || ''}</span></div>
         <p class="ch-blurb">${m.blurb}</p>
-        <p class="ch-soon">Build publishing soon — check back shortly.</p>
+        <p class="ch-soon">${unavailable}</p>
       </div>`;
     }
     const sha = r.sha256 ? `<details class="ch-extra ch-sha"><summary>SHA-256</summary><code>${esc(r.sha256)}</code></details>` : '';
@@ -129,7 +139,7 @@ dd if=FreeSense-*-amd64.iso \
       <p class="ch-blurb">${m.blurb}</p>
       <div class="ch-ver">
         <span class="ch-vlabel">Version</span>
-        <span class="mono">${esc(r.version) || '—'}</span>
+        <span class="mono">${esc(r.display_name || r.version) || '—'}</span>
         ${r.size ? `<span class="ch-size">${fmtSize(r.size)} · ${esc(r.date)}</span>` : ''}
       </div>
       <a class="btn ${m.primary ? 'btn-primary' : 'btn-ghost'} ch-btn" href="${esc(r.url)}">
@@ -149,9 +159,9 @@ dd if=FreeSense-*-amd64.iso \
       const data = await res.json();
       const ch = data.channels || data;
       el.classList.remove('loading-wrap');
-      el.innerHTML = card('stable', ch.stable) + card('devel', ch.devel);
+      el.innerHTML = card('stable', ch.stable) + card('candidate', ch.candidate) + card('devel', ch.devel);
     } catch (e) {
-      el.innerHTML = card('stable', null) + card('devel', null);
+      el.innerHTML = card('stable', null) + card('candidate', null) + card('devel', null);
     }
   }
   load();
@@ -163,7 +173,7 @@ dd if=FreeSense-*-amd64.iso \
   .lede { max-width: 660px; font-size: clamp(16px, 2vw, 19px); color: var(--muted); margin-top: 16px; }
   .dl-cards { padding-top: 24px; }
 
-  .channels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; min-height: 220px; }
+  .channels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; min-height: 220px; }
   .loading { grid-column: 1 / -1; color: var(--muted-2); text-align: center; padding: 80px 0; }
 
   .ch {
@@ -221,6 +231,9 @@ dd if=FreeSense-*-amd64.iso \
   .step pre code { background: none; border: none; padding: 0; color: #cdd6e2; }
   .reqs { margin-top: 26px; font-size: 14.5px; }
 
+  @media (max-width: 1000px) {
+    .channels { grid-template-columns: 1fr 1fr; }
+  }
   @media (max-width: 820px) {
     .steps { grid-template-columns: 1fr; }
   }

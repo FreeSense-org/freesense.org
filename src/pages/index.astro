@@ -9,24 +9,24 @@ const features = [
     body: 'Built on FreeBSD 16-CURRENT — the newest kernel, drivers and hardware support, with upstream security fixes landing first. You run the modern base, not a years-old snapshot.',
   },
   {
-    title: 'Automatic, signed updates',
-    body: 'Fresh signed installer images ship on a ~14-day cadence, and package & security updates flow continuously over the air. Stay current in a click — no reinstall, ever.',
+    title: 'Sealed, signed releases',
+    body: 'Every build resolves source, ports, OS definition, and FreeBSD revisions once. Candidate artifacts are tested and promoted without being rebuilt.',
   },
   {
     title: 'Open all the way down',
     body: 'The base OS, the web GUI, every package, and the entire build pipeline are public and Apache-2.0. Build your own from source, or run the signed official images. Nothing hidden.',
   },
   {
-    title: 'Reproducible builds',
-    body: 'The whole OS is rebuilt automatically from a frozen snapshot of upstream FreeBSD sources — deterministic, auditable, no mystery binaries and no vendor lock-in.',
+    title: 'Curated package platform',
+    body: 'A focused catalog of 32 integrated packages declares capabilities, services, support state, and resource impact before installation.',
   },
   {
-    title: 'Refreshed web GUI',
-    body: 'A complete web interface — firewall rules, NAT, VPNs, DHCP/DNS, traffic shaping, monitoring and a full package manager — rebuilt on Bootstrap 5 and dark by default.',
+    title: 'Security-first WebUI',
+    body: 'Bootstrap 5 package interfaces, Suricata 8 events and validation, CrowdSec response, ZeroTier networking, and safer consolidated diagnostics.',
   },
   {
-    title: 'Signed repo & channels',
-    body: 'Cryptographically signed packages from pkg.freesense.org. Run stable for production or development to ride the latest — switch channels right from the update page.',
+    title: 'Explicit release channels',
+    body: 'Stable, Candidate, and Development have clear support boundaries. Signed repositories and manifest-driven downloads expose what you are installing.',
   },
 ];
 
@@ -39,7 +39,7 @@ const build = [
   {
     step: '02',
     title: 'Automated CI builds',
-    body: 'The world, kernel and 570+ packages are compiled from source on clean CI runners — and our own hardware for big releases — then cryptographically signed.',
+    body: 'The world, kernel, and curated package set are built on clean runners from one sealed manifest, then cryptographically signed.',
   },
   {
     step: '03',
@@ -106,8 +106,8 @@ const build = [
       <div class="build-stats">
         <div><strong>100%</strong><span>open source</span></div>
         <div><strong>FreeBSD 16</strong><span>current base</span></div>
-        <div><strong>570+</strong><span>signed packages</span></div>
-        <div><strong>~14&nbsp;days</strong><span>image cadence</span></div>
+        <div><strong>32</strong><span>curated packages</span></div>
+        <div><strong>4 SHAs</strong><span>sealed provenance</span></div>
       </div>
       <p class="build-foot">
         FreeSense is an independent, open derivative of pfSense® CE, built on FreeBSD.

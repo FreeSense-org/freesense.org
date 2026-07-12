@@ -33,6 +33,7 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   min-width: 320px;
+  overflow-x: clip;
 }
 
 body::before {
@@ -66,7 +67,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 
 h1, h2, h3 { line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
 
-.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+.wrap { width: 100%; max-width: var(--maxw); min-width: 0; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
 
 .btn {
   display: inline-flex; align-items: center; gap: 9px;

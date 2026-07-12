@@ -2,187 +2,256 @@
 import Base from '../layouts/Base.astro';
 
 const GITHUB = 'https://github.com/FreeSense-org';
+const DOCS = 'https://docs.freesense.org';
 
-const features = [
-  {
-    title: 'Bleeding-edge FreeBSD 16',
-    body: 'Built on FreeBSD 16-CURRENT — the newest kernel, drivers and hardware support, with upstream security fixes landing first. You run the modern base, not a years-old snapshot.',
-  },
-  {
-    title: 'Sealed, signed releases',
-    body: 'Every build resolves source, ports, OS definition, and FreeBSD revisions once. Candidate artifacts are tested and promoted without being rebuilt.',
-  },
-  {
-    title: 'Open all the way down',
-    body: 'The base OS, the web GUI, every package, and the entire build pipeline are public and Apache-2.0. Build your own from source, or run the signed official images. Nothing hidden.',
-  },
-  {
-    title: 'Curated package platform',
-    body: 'A focused catalog of 32 integrated packages declares capabilities, services, support state, and resource impact before installation.',
-  },
-  {
-    title: 'Security-first WebUI',
-    body: 'Bootstrap 5 package interfaces, Suricata 8 events and validation, CrowdSec response, ZeroTier networking, and safer consolidated diagnostics.',
-  },
-  {
-    title: 'Explicit release channels',
-    body: 'Stable, Candidate, and Development have clear support boundaries. Signed repositories and manifest-driven downloads expose what you are installing.',
-  },
+const capabilities = [
+  { icon: 'route', title: 'Routing without limits', body: 'Multi-WAN, policy routing, VLANs, traffic shaping, CARP high availability, and a modern FreeBSD 16 network stack.' },
+  { icon: 'shield', title: 'Defense in depth', body: 'Suricata 8 IDS/IPS, CrowdSec response, pfBlockerNG, DNS filtering, and firewall telemetry in one control plane.' },
+  { icon: 'blocks', title: 'A curated platform', body: 'A focused package catalog with capabilities, support status, resource impact, and native WebUI integration before you install.' },
 ];
 
-const build = [
-  {
-    step: '01',
-    title: 'Frozen upstream',
-    body: 'Every release pins an exact FreeBSD 16 source snapshot, frozen in place so builds are reproducible and never drift out from under you.',
-  },
-  {
-    step: '02',
-    title: 'Automated CI builds',
-    body: 'The world, kernel, and curated package set are built on clean runners from one sealed manifest, then cryptographically signed.',
-  },
-  {
-    step: '03',
-    title: 'Signed & delivered',
-    body: 'Images and a signed package repo publish to a global CDN. Your firewall pulls updates over the air, verified against our key — no phone-home, no accounts.',
-  },
+const vpns = [
+  { name: 'WireGuard', tag: 'Fast & simple', color: '#ff6b4a', text: 'Lean site-to-site and remote access tunnels with first-class interface and firewall integration.' },
+  { name: 'OpenVPN', tag: 'Flexible', color: '#50b7ff', text: 'Battle-tested remote access, certificates, client export, and guided configuration.' },
+  { name: 'IPsec', tag: 'Enterprise', color: '#a78bfa', text: 'StrongSwan tunnels, VTI routing, mobile clients, and high-availability synchronization.' },
+  { name: 'Tailscale', tag: 'Mesh', color: '#42d392', text: 'Connect users, branches, and services through a modern identity-aware mesh.' },
+  { name: 'ZeroTier', tag: 'Overlay', color: '#f6c85f', text: 'Build encrypted virtual networks across clouds, homes, labs, and remote sites.' },
 ];
 ---
 
-<Base>
-  <!-- Hero -->
+<Base
+  title="FreeSense — the modern open firewall"
+  description="FreeSense is a modern open-source firewall and router built on FreeBSD 16, with ZFS boot environments, integrated VPN, IDS/IPS, and signed updates."
+>
   <section class="hero">
-    <div class="wrap hero-inner">
-      <span class="pill">● Open source · Apache-2.0 · community-built</span>
-      <h1>The open-source firewall,<br /><span class="accent">rebuilt in the open.</span></h1>
-      <p class="lede">
-        FreeSense is a free, community-driven firewall &amp; router operating system — an open
-        derivative of pfSense® CE, rebuilt from source on the latest FreeBSD with signed, automatic
-        updates and zero vendor lock-in.
-      </p>
-      <div class="hero-cta">
-        <a href="/download" class="btn btn-primary">↓ Download FreeSense</a>
-        <a href={GITHUB} class="btn btn-ghost" rel="noopener">★ View on GitHub</a>
+    <div class="hero-glow"></div>
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <a class="release-pill" href="/download">
+          <span class="pulse"></span>
+          FreeSense 1.1 development builds are live
+          <span aria-hidden="true">→</span>
+        </a>
+        <h1>Your network.<br /><span>Fully in your hands.</span></h1>
+        <p class="lede">A fast, transparent firewall operating system for people who want serious control without a closed platform. Built on FreeBSD 16 and rebuilt for what comes next.</p>
+        <div class="hero-cta">
+          <a href="/download" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 21h14"/></svg>
+            Download FreeSense
+          </a>
+          <a href={DOCS} class="btn btn-ghost">Explore the docs <span>→</span></a>
+        </div>
+        <div class="hero-meta">
+          <span><i class="check">✓</i> Apache-2.0</span>
+          <span><i class="check">✓</i> Signed updates</span>
+          <span><i class="check">✓</i> No accounts</span>
+        </div>
       </div>
-      <p class="hero-note mono">amd64 · UEFI &amp; BIOS · FreeBSD 16 · signed OTA updates</p>
+
+      <div class="product-shot" aria-label="FreeSense dashboard preview">
+        <div class="shot-chrome">
+          <span class="brand-mini"><b>F<span>S</span></b> FreeSense</span>
+          <span class="chrome-nav">System&nbsp;&nbsp; Interfaces&nbsp;&nbsp; Firewall&nbsp;&nbsp; VPN</span>
+          <span class="status-dot"></span>
+        </div>
+        <div class="shot-body">
+          <div class="shot-title"><span>Status</span> / Dashboard <small>Secure · Up to date</small></div>
+          <div class="metric-row">
+            <div class="metric"><span>WAN</span><strong>2.5 Gb/s</strong><small>Online</small></div>
+            <div class="metric"><span>Threats blocked</span><strong>1,284</strong><small>Last 24 hours</small></div>
+            <div class="metric"><span>VPN tunnels</span><strong>08</strong><small>All healthy</small></div>
+          </div>
+          <div class="dash-grid">
+            <div class="traffic-panel">
+              <div class="panel-head"><strong>Live traffic</strong><span>24 hours</span></div>
+              <svg class="chart" viewBox="0 0 520 175" preserveAspectRatio="none" aria-hidden="true">
+                <defs><linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6243" stop-opacity=".38"/><stop offset="1" stop-color="#ff6243" stop-opacity="0"/></linearGradient></defs>
+                <path class="gridline" d="M0 35H520M0 87H520M0 139H520"/>
+                <path class="area" d="M0 152 C35 145 42 96 76 108 S130 155 162 99 S211 82 238 116 S290 142 317 66 S369 52 397 91 S452 135 520 38 V175 H0Z"/>
+                <path class="line" d="M0 152 C35 145 42 96 76 108 S130 155 162 99 S211 82 238 116 S290 142 317 66 S369 52 397 91 S452 135 520 38"/>
+              </svg>
+              <div class="chart-labels"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>Now</span></div>
+            </div>
+            <div class="services-panel">
+              <div class="panel-head"><strong>Services</strong><span class="healthy">● Healthy</span></div>
+              {['Suricata IDS', 'WireGuard', 'Kea DHCP', 'Unbound DNS'].map((service) => (
+                <div class="service"><span class="service-icon">✓</span><span>{service}</span><small>Running</small></div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div class="shot-orbit orbit-one"></div><div class="shot-orbit orbit-two"></div>
+      </div>
     </div>
   </section>
 
-  <!-- Features -->
-  <section id="features">
+  <section class="trust-strip" aria-label="FreeSense technology highlights">
+    <div class="wrap trust-inner">
+      <span>POWERED BY <strong>FreeBSD 16</strong></span><i></i>
+      <span>FILESYSTEM <strong>ZFS</strong></span><i></i>
+      <span>FIREWALL <strong>pf</strong></span><i></i>
+      <span>IDS / IPS <strong>Suricata 8</strong></span><i></i>
+      <span>BUILT <strong>entirely in public</strong></span>
+    </div>
+  </section>
+
+  <section id="features" class="capabilities">
     <div class="wrap">
-      <span class="eyebrow">Why FreeSense</span>
-      <h2 class="sec-title">Everything you expect from a serious firewall — and nothing locked away.</h2>
-      <div class="grid">
-        {features.map((f) => (
-          <div class="card">
-            <h3>{f.title}</h3>
-            <p>{f.body}</p>
-          </div>
+      <div class="section-heading split-heading">
+        <div><span class="eyebrow">The control plane</span><h2>One system. Your entire edge.</h2></div>
+        <p>From a quiet home lab to a multi-gigabit branch, FreeSense puts routing, security, VPN, and observability in one coherent interface.</p>
+      </div>
+      <div class="cap-grid">
+        {capabilities.map((item, i) => (
+          <article class:list={['cap-card', `cap-${i + 1}`]}>
+            <span class="cap-icon">
+              {item.icon === 'route' && <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><path d="M7 12h3a4 4 0 0 0 4-4 3 3 0 0 1 3-3M7 12h3a4 4 0 0 1 4 4 3 3 0 0 0 3 3"/></svg>}
+              {item.icon === 'shield' && <svg viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 7.9 7.5 9.5 4.4-1.6 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>}
+              {item.icon === 'blocks' && <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M17.5 14v7M14 17.5h7"/></svg>}
+            </span>
+            <span class="card-number">0{i + 1}</span>
+            <h3>{item.title}</h3><p>{item.body}</p>
+          </article>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- How it's built -->
-  <section id="build" class="build">
-    <div class="wrap">
-      <span class="eyebrow">Built in the open</span>
-      <h2 class="sec-title">A firewall you can actually audit — and rebuild yourself.</h2>
-      <p class="build-lede muted">
-        There are no hidden patches and no proprietary tooling. The exact pipeline that produces the
-        official images lives in public repositories — clone it and you can reproduce a release
-        yourself, byte for byte.
-      </p>
-      <div class="steps">
-        {build.map((b) => (
-          <div class="bstep">
-            <span class="bnum mono">{b.step}</span>
-            <h3>{b.title}</h3>
-            <p>{b.body}</p>
-          </div>
-        ))}
+  <section class="be-section">
+    <div class="wrap be-grid">
+      <div class="be-copy">
+        <span class="eyebrow">ZFS boot environments</span>
+        <h2>Upgrade boldly.<br />Roll back calmly.</h2>
+        <p>FreeSense can snapshot the complete operating system before an upgrade—not just the configuration. If something goes wrong, choose a known-good environment from the WebUI or boot menu and get back online.</p>
+        <ul>
+          <li><span>✓</span><div><strong>Automatic safety snapshots</strong><small>Create and retain boot environments around upgrades.</small></div></li>
+          <li><span>✓</span><div><strong>Whole-system recovery</strong><small>Restore the OS, packages, and system state together.</small></div></li>
+          <li><span>✓</span><div><strong>Visible storage health</strong><small>Monitor ZFS pool health from the dashboard widget.</small></div></li>
+        </ul>
+        <a href={DOCS + '/operations/zfs-boot-environments/'}>Learn about boot environments <span>→</span></a>
       </div>
-      <div class="build-stats">
-        <div><strong>100%</strong><span>open source</span></div>
-        <div><strong>FreeBSD 16</strong><span>current base</span></div>
-        <div><strong>32</strong><span>curated packages</span></div>
-        <div><strong>4 SHAs</strong><span>sealed provenance</span></div>
+      <div class="be-visual" aria-label="Boot environment timeline preview">
+        <div class="be-window-head"><span>Boot Environments</span><div><i></i><i></i><i></i></div></div>
+        <div class="be-current">
+          <div class="be-badge">CURRENT</div><strong>FreeSense 1.1 Development</strong><small>Healthy · Active now</small>
+          <div class="health-ring"><span>✓</span></div>
+        </div>
+        <div class="timeline">
+          <div class="timeline-line"></div>
+          <div class="snapshot active"><i></i><div><strong>Current system</strong><small>Today, 16:26 · 3.5 GB</small></div><span>Running</span></div>
+          <div class="snapshot"><i></i><div><strong>Before system update</strong><small>Today, 14:49 · 2.1 GB</small></div><button>Activate</button></div>
+          <div class="snapshot"><i></i><div><strong>Known-good baseline</strong><small>July 11 · 1.3 GB</small></div><button>Activate</button></div>
+        </div>
+        <div class="be-footer"><span>● ZFS pool healthy</span><small>3 environments retained</small></div>
       </div>
-      <p class="build-foot">
-        FreeSense is an independent, open derivative of pfSense® CE, built on FreeBSD.
-        <a href="/about">Read the story &amp; how it's built →</a>
-      </p>
     </div>
   </section>
 
-  <!-- Final CTA -->
-  <section class="cta">
-    <div class="wrap cta-inner">
-      <h2>Ready to try it?</h2>
-      <p class="muted">Download an installer image and have a firewall running in minutes.</p>
-      <a href="/download" class="btn btn-primary">↓ Get FreeSense</a>
+  <section class="vpn-section">
+    <div class="wrap">
+      <div class="section-heading centered"><span class="eyebrow">Connect everything</span><h2>One firewall. Every kind of VPN.</h2><p>Traditional standards, modern mesh networking, and everything between—integrated with the same interfaces, rules, routing, and visibility.</p></div>
+      <div class="vpn-grid">
+        {vpns.map((vpn) => (
+          <article class="vpn-card" style={`--vpn-color: ${vpn.color}`}>
+            <div class="vpn-mark"><span></span><span></span><span></span></div>
+            <div><h3>{vpn.name}</h3><span class="vpn-tag">{vpn.tag}</span></div>
+            <p>{vpn.text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="security-section">
+    <div class="wrap security-grid">
+      <div class="security-visual">
+        <div class="radar">
+          <div class="radar-sweep"></div><i class="r1"></i><i class="r2"></i><i class="r3"></i><i class="r4"></i>
+          <span class="node n1"></span><span class="node n2"></span><span class="node n3"></span><span class="node n4"></span>
+          <div class="radar-center"><svg viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 7.9 7.5 9.5 4.4-1.6 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg></div>
+        </div>
+        <div class="threat-card"><span>Threat blocked</span><strong>Command &amp; control traffic</strong><small>Suricata · 2 seconds ago</small></div>
+      </div>
+      <div class="security-copy">
+        <span class="eyebrow">Security that works together</span><h2>See the threat.<br />Stop it at the edge.</h2>
+        <p>Inspect traffic with Suricata 8, enrich decisions with CrowdSec, block unwanted networks and DNS content, then investigate through consolidated diagnostics.</p>
+        <div class="security-list">
+          <span><b>Suricata 8</b><small>IDS / IPS and event visibility</small></span>
+          <span><b>CrowdSec</b><small>Collaborative threat intelligence</small></span>
+          <span><b>pfBlockerNG</b><small>IP and DNS reputation controls</small></span>
+          <span><b>ACME</b><small>Automated certificate lifecycle</small></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="build" class="open-section">
+    <div class="wrap">
+      <div class="section-heading centered"><span class="eyebrow">Open by construction</span><h2>Trust the code. Verify the build.</h2><p>FreeSense resolves and seals every source revision, builds in public CI, signs the package repository, and publishes traceable release artifacts.</p></div>
+      <div class="pipeline">
+        <div><span>01</span><strong>Pin</strong><small>Exact FreeBSD and source revisions</small></div><i>→</i>
+        <div><span>02</span><strong>Build</strong><small>Clean, observable CI workers</small></div><i>→</i>
+        <div><span>03</span><strong>Sign</strong><small>Packages and images verified</small></div><i>→</i>
+        <div><span>04</span><strong>Publish</strong><small>Channel-aware delivery</small></div>
+      </div>
+      <div class="open-actions"><a href={GITHUB} class="btn btn-ghost">View the source on GitHub <span>↗</span></a><a href="/about">How FreeSense is built →</a></div>
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <div class="wrap cta-box">
+      <div><span class="eyebrow">Ready when you are</span><h2>Take control of your edge.</h2><p>Install FreeSense on your own hardware or virtual machine. No license keys. No accounts. No artificial limits.</p></div>
+      <div class="cta-actions"><a href="/download" class="btn btn-primary">Download FreeSense</a><a href={DOCS} class="btn btn-ghost">Read the docs</a></div>
     </div>
   </section>
 </Base>
 
 <style>
-  .hero { padding: 96px 0 80px; text-align: center; }
-  .hero-inner { display: flex; flex-direction: column; align-items: center; }
-  h1 { font-size: clamp(38px, 6vw, 66px); margin: 22px 0 0; }
-  .accent { color: var(--coral); }
-  .lede { max-width: 680px; font-size: clamp(17px, 2.2vw, 21px); color: var(--muted); margin: 22px 0 0; }
-  .hero-cta { display: flex; gap: 14px; margin: 34px 0 0; flex-wrap: wrap; justify-content: center; }
-  .hero-note { margin-top: 26px; color: var(--muted-2); font-size: 13.5px; }
+  .hero { padding: 82px 0 88px; overflow: hidden; min-height: 720px; display: flex; align-items: center; }
+  .hero-glow { position: absolute; width: 700px; height: 700px; right: -180px; top: -190px; border-radius: 50%; background: radial-gradient(circle, rgba(234,79,45,.19), transparent 66%); filter: blur(5px); }
+  .hero-grid { display: grid; grid-template-columns: .87fr 1.13fr; align-items: center; gap: 58px; }
+  .release-pill { display: inline-flex; align-items: center; gap: 9px; border: 1px solid rgba(255,107,74,.27); border-radius: 999px; padding: 7px 12px; color: #d4dbe4; background: rgba(234,79,45,.08); font-size: 12.5px; }
+  .release-pill:hover { color: #fff; border-color: var(--coral); }
+  .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 5px rgba(62,207,142,.1); }
+  h1 { font-size: clamp(48px, 5.3vw, 76px); line-height: .99; letter-spacing: -.055em; margin: 25px 0 24px; max-width: 640px; }
+  h1 span { color: var(--coral-hi); }
+  .lede { color: var(--muted); font-size: 19px; line-height: 1.65; max-width: 610px; margin: 0; }
+  .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 32px; }
+  .hero-cta svg { width: 19px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .hero-meta { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 25px; color: var(--muted-2); font-size: 12.5px; }
+  .check { font-style: normal; color: var(--good); margin-right: 4px; }
 
-  .sec-title { font-size: clamp(26px, 3.4vw, 38px); margin: 12px 0 40px; max-width: 780px; }
+  .product-shot { position: relative; border: 1px solid #344257; border-radius: 15px; background: #111720; box-shadow: 0 40px 100px rgba(0,0,0,.48), 0 0 0 9px rgba(255,255,255,.015); transform: perspective(1200px) rotateY(-3deg) rotateX(1deg); min-width: 0; }
+  .shot-chrome { height: 49px; padding: 0 17px; display: flex; align-items: center; gap: 24px; border-bottom: 1px solid #293447; background: #151c27; border-radius: 15px 15px 0 0; font-size: 9px; color: #8794a8; }
+  .brand-mini { color: #dfe5ed; font-size: 12px; white-space: nowrap; }.brand-mini b { font-size: 16px; margin-right: 5px; }.brand-mini b span { color: var(--coral-hi); }
+  .chrome-nav { flex: 1; text-align: center; }.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--good); }
+  .shot-body { padding: 18px; }.shot-title { font-weight: 600; font-size: 13px; }.shot-title > span { color: var(--coral-hi); }.shot-title small { float: right; color: var(--good); font-weight: 500; font-size: 9px; }
+  .metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin: 15px 0 10px; }.metric { border: 1px solid #293548; border-radius: 9px; padding: 12px; background: #192230; }.metric span,.metric small { display: block; font-size: 8px; color: #8e9caf; }.metric strong { display: block; font-size: 18px; margin: 2px 0; }.metric small { color: var(--good); }
+  .dash-grid { display: grid; grid-template-columns: 1.55fr .8fr; gap: 9px; }.traffic-panel,.services-panel { border: 1px solid #293548; background: #171f2b; border-radius: 9px; padding: 12px; min-width: 0; }.panel-head { display: flex; justify-content: space-between; font-size: 9px; color: #738198; }.panel-head strong { color: #dfe5ed; font-size: 10px; }.healthy { color: var(--good); }
+  .chart { width: 100%; height: 135px; overflow: visible; }.gridline { stroke: #2a3547; stroke-width: 1; }.area { fill: url(#chartFill); }.line { fill: none; stroke: var(--coral-hi); stroke-width: 2.3; vector-effect: non-scaling-stroke; }.chart-labels { display: flex; justify-content: space-between; font-size: 7px; color: #59667a; }
+  .service { display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 5px; padding: 10px 0; border-bottom: 1px solid #273143; font-size: 9px; }.service:last-child { border: 0; }.service-icon { display: grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: rgba(62,207,142,.13); color: var(--good); font-size: 8px; }.service small { color: #718095; font-size: 7px; }
+  .shot-orbit { position: absolute; border-radius: 50%; border: 1px solid rgba(255,107,74,.25); pointer-events: none; }.orbit-one { width: 90px; height: 90px; right: -44px; bottom: 42px; }.orbit-two { width: 35px; height: 35px; right: -16px; bottom: 70px; background: rgba(234,79,45,.17); }
 
-  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-  .card {
-    background: var(--ink-3); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 26px 24px;
-    transition: border-color 0.15s ease, transform 0.15s ease;
+  .trust-strip { padding: 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(19,25,34,.78); }.trust-inner { min-height: 84px; display: flex; align-items: center; justify-content: space-between; gap: 20px; color: #667287; font-size: 10px; letter-spacing: .12em; }.trust-inner strong { display: block; color: #cfd6df; font-size: 13px; letter-spacing: 0; margin-top: 3px; }.trust-inner i { height: 28px; width: 1px; background: var(--border); }
+  .section-heading h2,.be-copy h2,.security-copy h2 { font-size: clamp(35px, 4vw, 51px); margin: 10px 0 0; letter-spacing: -.045em; }.section-heading > p { color: var(--muted); max-width: 580px; margin: 0; }.split-heading { display: flex; justify-content: space-between; align-items: end; gap: 50px; margin-bottom: 46px; }.centered { text-align: center; max-width: 760px; margin: 0 auto 45px; }.centered > p { margin: 17px auto 0; }
+
+  .capabilities { padding: 108px 0; }.cap-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }.cap-card { min-height: 305px; background: linear-gradient(145deg,#1a2230,#151c26); border: 1px solid var(--border); border-radius: 18px; padding: 27px; position: relative; overflow: hidden; transition: transform .2s,border-color .2s; }.cap-card:hover { transform: translateY(-4px); border-color: #48556a; }.cap-card::after { content:''; position:absolute; width:180px;height:180px;border-radius:50%;right:-90px;top:-90px;background:radial-gradient(circle,rgba(234,79,45,.12),transparent 68%); }.cap-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 11px; background: var(--coral-soft); color: var(--coral-hi); }.cap-icon svg { width: 23px; fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round; }.card-number { position:absolute;right:22px;top:21px;color:#3d4859;font-family:var(--mono);font-size:13px; }.cap-card h3 { font-size:22px;margin:57px 0 12px; }.cap-card p { color:var(--muted);font-size:15px;margin:0; }
+
+  .be-section { padding: 112px 0; background: #111720; border-block: 1px solid var(--border); }.be-grid { display:grid;grid-template-columns:.87fr 1.13fr;gap:78px;align-items:center; }.be-copy > p,.security-copy > p { color:var(--muted);font-size:17px;margin:22px 0 28px; }.be-copy ul { list-style:none;padding:0;margin:0 0 26px;display:grid;gap:18px; }.be-copy li { display:flex;gap:12px; }.be-copy li>span { width:23px;height:23px;border-radius:50%;background:rgba(62,207,142,.13);color:var(--good);display:grid;place-items:center;font-size:11px;flex:none;margin-top:2px; }.be-copy li strong,.be-copy li small { display:block; }.be-copy li strong { font-size:15px; }.be-copy li small { color:var(--muted-2);font-size:13px;margin-top:2px; }.be-copy>a { font-weight:600;font-size:14px; }
+  .be-visual { background:#171f2b;border:1px solid #354157;border-radius:16px;box-shadow:0 25px 70px rgba(0,0,0,.35);overflow:hidden; }.be-window-head { height:53px;padding:0 19px;display:flex;align-items:center;justify-content:space-between;background:#202a39;border-bottom:1px solid #303c50;font-size:13px;font-weight:600; }.be-window-head div { display:flex;gap:6px; }.be-window-head i { width:7px;height:7px;border-radius:50%;background:#4e5a6c; }.be-current { margin:18px;background:linear-gradient(120deg,rgba(234,79,45,.15),rgba(234,79,45,.025));border:1px solid rgba(255,107,74,.27);border-radius:11px;padding:17px 62px 17px 17px;position:relative; }.be-badge { color:var(--coral-hi);font-size:8px;letter-spacing:.1em;margin-bottom:4px; }.be-current strong,.be-current small { display:block; }.be-current strong { font-size:14px; }.be-current small { color:var(--good);font-size:10px;margin-top:4px; }.health-ring { position:absolute;right:17px;top:17px;width:36px;height:36px;border:2px solid var(--good);border-radius:50%;display:grid;place-items:center;color:var(--good); }.timeline { padding:4px 25px 12px;position:relative; }.timeline-line { position:absolute;left:33px;top:16px;bottom:31px;width:1px;background:#344055; }.snapshot { position:relative;display:grid;grid-template-columns:19px 1fr auto;gap:12px;align-items:center;padding:12px 0; }.snapshot>i { width:17px;height:17px;border-radius:50%;background:#263245;border:4px solid #171f2b;outline:1px solid #526076;z-index:1; }.snapshot.active>i { background:var(--good);outline-color:var(--good);box-shadow:0 0 0 4px rgba(62,207,142,.08); }.snapshot strong,.snapshot small { display:block; }.snapshot strong { font-size:12px; }.snapshot small { font-size:9px;color:#718096;margin-top:2px; }.snapshot>span { font-size:9px;color:var(--good); }.snapshot button { border:1px solid #3b485c;background:#202a38;color:#cdd5df;border-radius:6px;font-size:9px;padding:5px 8px; }.be-footer { border-top:1px solid #2c3749;padding:12px 18px;display:flex;justify-content:space-between;font-size:9px; }.be-footer span { color:var(--good); }.be-footer small { color:#728095; }
+
+  .vpn-section { padding:110px 0; }.vpn-grid { display:grid;grid-template-columns:repeat(5,1fr);gap:12px; }.vpn-card { border:1px solid var(--border);border-radius:15px;background:#171f2b;padding:21px;min-height:245px;transition:transform .2s,border-color .2s; }.vpn-card:hover { transform:translateY(-4px);border-color:var(--vpn-color); }.vpn-mark { height:44px;display:flex;align-items:center; }.vpn-mark span { width:25px;height:25px;border:1px solid var(--vpn-color);border-radius:50%;margin-right:-8px;background:color-mix(in srgb,var(--vpn-color) 10%,transparent); }.vpn-card h3 { margin:17px 0 6px;font-size:19px; }.vpn-tag { color:var(--vpn-color);font-size:10px;text-transform:uppercase;letter-spacing:.08em; }.vpn-card p { color:var(--muted);font-size:13px;line-height:1.55;margin:23px 0 0; }
+
+  .security-section { padding:110px 0;background:#111720;border-block:1px solid var(--border);overflow:hidden; }.security-grid { display:grid;grid-template-columns:1fr 1fr;gap:90px;align-items:center; }.security-visual { min-height:480px;position:relative;display:grid;place-items:center; }.radar { width:min(440px,90vw);aspect-ratio:1;border:1px solid #354155;border-radius:50%;position:relative;overflow:hidden;background:repeating-radial-gradient(circle,transparent 0 66px,rgba(111,131,157,.13) 67px 68px),linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:auto,34px 34px,34px 34px; }.radar::before,.radar::after { content:'';position:absolute;background:#344055;opacity:.7; }.radar::before { width:1px;height:100%;left:50%; }.radar::after { height:1px;width:100%;top:50%; }.radar-sweep { position:absolute;inset:50% 0 0 50%;transform-origin:0 0;background:conic-gradient(from 270deg,rgba(62,207,142,.27),transparent 55deg);animation:sweep 6s linear infinite; }.radar-center { position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:66px;height:66px;border-radius:50%;display:grid;place-items:center;background:#18222c;border:1px solid var(--good);box-shadow:0 0 35px rgba(62,207,142,.18);z-index:3; }.radar-center svg { width:30px;fill:none;stroke:var(--good);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round; }.node { position:absolute;width:7px;height:7px;background:var(--coral-hi);border-radius:50%;box-shadow:0 0 0 5px rgba(234,79,45,.12);z-index:2; }.n1{left:27%;top:30%}.n2{right:19%;top:45%}.n3{left:37%;bottom:18%}.n4{right:35%;top:19%}.threat-card { position:absolute;right:-10px;bottom:25px;padding:13px 17px;background:#202936;border:1px solid #3b4758;border-left:3px solid var(--coral-hi);border-radius:8px;box-shadow:0 12px 35px rgba(0,0,0,.4); }.threat-card span,.threat-card strong,.threat-card small { display:block; }.threat-card span { color:var(--coral-hi);font-size:9px;text-transform:uppercase;letter-spacing:.08em; }.threat-card strong{font-size:12px;margin:3px 0}.threat-card small{font-size:8px;color:#718096}.security-list { display:grid;grid-template-columns:1fr 1fr;gap:10px; }.security-list span { border:1px solid var(--border);border-radius:10px;padding:13px;background:#171f2b; }.security-list b,.security-list small { display:block; }.security-list b { font-size:14px; }.security-list small { color:var(--muted-2);font-size:10px;margin-top:3px; }
+  @keyframes sweep { to { transform:rotate(360deg); } }
+
+  .open-section { padding:110px 0; }.pipeline { display:flex;align-items:center;justify-content:center;gap:17px;margin:50px 0 38px; }.pipeline div { width:220px;min-height:150px;padding:20px;border:1px solid var(--border);border-radius:13px;background:#171f2b; }.pipeline div>span { color:var(--coral-hi);font:11px var(--mono); }.pipeline strong,.pipeline small { display:block; }.pipeline strong { margin:22px 0 4px;font-size:18px; }.pipeline small { color:var(--muted-2);font-size:11px; }.pipeline>i { color:#4a586c;font-style:normal; }.open-actions { display:flex;align-items:center;justify-content:center;gap:24px;font-size:14px; }
+  .final-cta { padding:20px 0 100px; }.cta-box { min-height:290px;border:1px solid rgba(255,107,74,.25);border-radius:22px;padding:55px;background:radial-gradient(circle at 85% 20%,rgba(234,79,45,.21),transparent 37%),linear-gradient(135deg,#1d2532,#151b25);display:flex;align-items:center;justify-content:space-between;gap:40px;overflow:hidden; }.cta-box h2 { font-size:clamp(34px,4vw,50px);margin:9px 0 12px; }.cta-box p { color:var(--muted);max-width:620px;margin:0; }.cta-actions { display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end; }
+
+  @media (max-width: 1000px) {
+    .hero-grid,.be-grid,.security-grid { grid-template-columns:minmax(0,1fr); }.hero-copy { text-align:center; }.hero-copy>* { margin-left:auto;margin-right:auto; }.hero-cta,.hero-meta { justify-content:center; }.product-shot { max-width:760px;margin:20px auto 0;transform:none;overflow:hidden; }.vpn-grid { grid-template-columns:repeat(3,1fr); }.be-grid,.security-grid { gap:50px; }.be-copy,.security-copy { max-width:700px; }.pipeline { display:grid;grid-template-columns:1fr 1fr; }.pipeline>i { display:none; }.pipeline div { width:auto; }.cta-box { align-items:flex-start;flex-direction:column; }.cta-actions { justify-content:flex-start; }
   }
-  .card:hover { border-color: var(--border-2); transform: translateY(-2px); }
-  .card h3 { font-size: 19px; margin: 0 0 10px; }
-  .card p { margin: 0; color: var(--muted); font-size: 15.5px; }
-
-  /* How it's built */
-  .build { background: var(--ink-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-  .build .sec-title { margin-bottom: 16px; }
-  .build-lede { max-width: 720px; margin: 0 0 40px; font-size: 17px; }
-  .muted { color: var(--muted); }
-  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-  .bstep {
-    background: var(--ink-3); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 26px 24px; position: relative;
-  }
-  .bnum { color: var(--coral-hi); font-size: 14px; font-weight: 600; letter-spacing: 0.08em; }
-  .bstep h3 { font-size: 18px; margin: 12px 0 8px; }
-  .bstep p { margin: 0; color: var(--muted); font-size: 15px; }
-
-  .build-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 32px; }
-  .build-stats div {
-    background: var(--ink-3); border: 1px solid var(--border);
-    border-radius: 12px; padding: 22px; text-align: center;
-  }
-  .build-stats strong { display: block; font-size: 24px; color: var(--coral-hi); }
-  .build-stats span { color: var(--muted); font-size: 14px; }
-
-  .build-foot { margin: 30px 0 0; color: var(--muted-2); font-size: 14.5px; }
-  .build-foot a { color: var(--coral-hi); }
-  .build-foot a:hover { color: var(--text); }
-
-  .cta-inner { text-align: center; }
-  .cta-inner h2 { font-size: clamp(28px, 4vw, 42px); margin: 0 0 10px; }
-  .cta-inner p { margin: 0 0 26px; }
-
-  @media (max-width: 880px) {
-    .grid { grid-template-columns: 1fr 1fr; }
-    .steps { grid-template-columns: 1fr; }
-    .build-stats { grid-template-columns: 1fr 1fr; }
-  }
-  @media (max-width: 600px) {
-    .grid { grid-template-columns: 1fr; }
+  @media (max-width: 720px) {
+    .hero { padding:60px 0;min-height:auto; }.hero-grid { gap:42px;width:100%;overflow:hidden; }.hero-copy,.product-shot { width:100%;min-width:0; }.hero-copy h1 { font-size:clamp(42px,13vw,56px);overflow-wrap:anywhere; }.release-pill { font-size:11px;max-width:100%; }.hero-cta { width:100%; }.hero-cta .btn { flex:1 1 210px;justify-content:center; }.shot-chrome .chrome-nav { display:none; }.shot-chrome { justify-content:space-between; }.dash-grid { grid-template-columns:1fr; }.services-panel { display:none; }.metric-row { grid-template-columns:1fr 1fr; }.metric:last-child { display:none; }.trust-inner { overflow-x:auto;justify-content:flex-start;padding-block:18px; }.trust-inner span { min-width:130px; }.split-heading { flex-direction:column;align-items:flex-start;margin-bottom:30px; }.cap-grid,.vpn-grid { grid-template-columns:1fr; }.cap-card { min-height:250px; }.be-section,.capabilities,.vpn-section,.security-section,.open-section { padding:75px 0; }.security-visual { min-height:380px; }.threat-card { right:0; }.security-list { grid-template-columns:1fr; }.pipeline { grid-template-columns:1fr; }.open-actions { flex-direction:column; }.cta-box { padding:34px 25px; }.cta-actions { flex-direction:column;width:100%; }.cta-actions .btn { justify-content:center; }.be-current { margin:12px; }.timeline { padding-inline:17px; }.timeline-line { left:25px; }.snapshot { grid-template-columns:19px 1fr; }.snapshot>span,.snapshot>button { display:none; }
   }
 </style>

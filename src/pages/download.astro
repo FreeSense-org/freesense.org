@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 
-const MANIFEST = 'https://downloads.freesense.org/releases.json';
+const MANIFEST = '/releases.json';
 const DOCS = 'https://docs.freesense.org';
 ---
 
@@ -49,14 +49,14 @@ const DOCS = 'https://docs.freesense.org';
           <span class="eyebrow">Release channels</span>
           <h2>Pick the right level of change.</h2>
         </div>
-        <p>Stable is promotion-only. Candidate and Development builds are for testing until the supported 1.0 line is ready.</p>
+        <p>Development builds are for testing. Stable remains unavailable until an exact, verified build is promoted.</p>
       </div>
       <div id="channels" class="channels" aria-live="polite">
-        <div class="loading"><span></span>Reading the signed release manifest...</div>
+        <div class="loading"><span></span>Reading the release manifest...</div>
       </div>
       <p class="manifest-note">
-        Channel data is read live from <a href={MANIFEST}>releases.json</a>. If no cards are available,
-        the clean release pipeline is still publishing its first artifacts.
+        Channel data currently comes from the website's <a href={MANIFEST}>release manifest</a>.
+        Automated publication will replace this temporary manifest.
       </p>
     </div>
   </section>
@@ -82,8 +82,8 @@ const DOCS = 'https://docs.freesense.org';
         <p>Use a dedicated appliance or VM with at least two interfaces, or one VLAN-capable interface.</p>
       </div>
       <ol class="install-steps">
-        <li><span>01</span><div><h3>Verify the download</h3><p>Compare the published SHA-256 before decompressing the image.</p><code>sha256sum FreeSense-*.iso.gz</code></div></li>
-        <li><span>02</span><div><h3>Write the installer</h3><p>Decompress and flash the ISO to a 2 GB or larger USB device.</p><code>gunzip FreeSense-*.iso.gz</code></div></li>
+        <li><span>01</span><div><h3>Verify the download</h3><p>Compare the ISO with the published SHA-256 checksum.</p><code>sha256sum FreeSense-*.iso</code></div></li>
+        <li><span>02</span><div><h3>Write the installer</h3><p>Flash the ISO directly to a 4 GB or larger USB device with Rufus, Etcher, or dd.</p><code>dd if=FreeSense-*.iso of=/dev/DEVICE bs=4M conv=fsync</code></div></li>
         <li><span>03</span><div><h3>Boot and configure</h3><p>Assign WAN and LAN, open the WebUI, then replace the initial administrator password.</p><a href={`${DOCS}/getting-started/first-boot/`}>First-boot guide</a></div></li>
       </ol>
       <div class="requirements"><b>Recommended starting point</b><span>64-bit CPU</span><span>4 GB RAM</span><span>16 GB storage</span><span>2 network interfaces</span></div>
@@ -93,9 +93,8 @@ const DOCS = 'https://docs.freesense.org';
 
 <script define:vars={{ MANIFEST }}>
   const channelMeta = {
-    stable: { label: 'Stable', badge: 'Production', description: 'Promoted, immutable artifacts for supported deployments.', featured: true },
-    candidate: { label: 'Candidate', badge: 'Preview', description: 'Release-candidate artifacts for installation, upgrade, and rollback testing.' },
-    devel: { label: 'Development', badge: 'Latest', description: 'Continuously integrated snapshots for contributors and early testing.' },
+    stable: { label: 'Stable', badge: 'Production', description: 'Promoted, immutable artifacts for supported deployments.' },
+    devel: { label: 'Development', badge: 'Latest', description: 'Verified snapshots for contributors and early testing.', featured: true },
   };
 
   const escapeHtml = (value) => String(value ?? '')
@@ -142,9 +141,9 @@ const DOCS = 'https://docs.freesense.org';
       if (!response.ok) throw new Error('release manifest unavailable');
       const data = await response.json();
       const channels = data.channels || data;
-      target.innerHTML = ['stable', 'candidate', 'devel'].map((key) => channelCard(key, channels[key])).join('');
+      target.innerHTML = ['stable', 'devel'].map((key) => channelCard(key, channels[key])).join('');
     } catch {
-      target.innerHTML = ['stable', 'candidate', 'devel'].map((key) => channelCard(key, null)).join('');
+      target.innerHTML = ['stable', 'devel'].map((key) => channelCard(key, null)).join('');
     }
   }
   loadChannels();
@@ -177,7 +176,7 @@ const DOCS = 'https://docs.freesense.org';
   .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 48px; margin-bottom: 38px; }
   .section-heading h2, .architecture-section h2 { margin: 10px 0 0; font-size: clamp(30px, 4vw, 46px); }
   .section-heading > p { max-width: 470px; color: var(--muted); margin: 0; }
-  .channels { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
+  .channels { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
   .loading { grid-column: 1/-1; display: flex; justify-content: center; align-items: center; gap: 12px; min-height: 270px; color: var(--muted); }
   .loading span { width: 10px; height: 10px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 8px var(--coral-soft); animation: pulse 1.4s infinite; }
   @keyframes pulse { 50% { opacity: .45; transform: scale(.8); } }

@@ -21,15 +21,27 @@ for channel in stable devel; do
 
   case "${canonical_status}:${public_status}" in
     200:200)
-      grep -Eqi '^x-freesense-release-source: canonical\r?$' "${work}/${channel}.headers"
+      grep -Eqi '^x-freesense-release-source: canonical\r?$' "${work}/${channel}.headers" || {
+        echo "${channel} website response lacks the canonical source header" >&2
+        exit 1
+      }
       jq -e --arg channel "${channel}" \
         '.schema_version == "freesense.download/v1" and .channel == $channel' \
-        "${work}/${channel}.canonical.json" >/dev/null
+        "${work}/${channel}.canonical.json" >/dev/null || {
+          echo "${channel} canonical document has an invalid schema or channel" >&2
+          exit 1
+        }
       diff <(jq -S . "${work}/${channel}.canonical.json") \
-        <(jq -S . "${work}/${channel}.public.json")
+        <(jq -S . "${work}/${channel}.public.json") || {
+          echo "${channel} website response differs from the canonical document" >&2
+          exit 1
+        }
       ;;
     404:404)
-      grep -Eqi '^x-freesense-release-source: not-published\r?$' "${work}/${channel}.headers"
+      grep -Eqi '^x-freesense-release-source: not-published\r?$' "${work}/${channel}.headers" || {
+        echo "${channel} website 404 lacks the not-published source header" >&2
+        exit 1
+      }
       ;;
     *)
       echo "${channel} release mismatch: canonical=${canonical_status}, website=${public_status}" >&2

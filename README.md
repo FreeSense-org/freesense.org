@@ -41,9 +41,15 @@ The download page fetches independent same-origin Stable and Development documen
 routed Cloudflare Pages Functions pass through and validate the canonical documents published
 at `pkg.freesense.org/v1/releases/stable.json` and `devel.json`, so releases appear without a
 website rebuild. The OS release pipeline owns those files and publishes each channel only after
-the ISO completion marker and KVM boot smoke pass, and their installer URLs point to immutable
-objects on `downloads.freesense.org`. This repository contains no release metadata;
-the hourly workflow only verifies that the website responses match the canonical documents.
+the ISO completion marker and KVM boot smoke pass. It uploads the verified installer to an
+immutable object on `downloads.freesense.org` before updating the small channel document. This
+repository contains no release metadata; the hourly workflow only verifies that the website
+responses match the canonical documents.
+
+Stable is the supported, immutable 1.0.x line. Necessary maintenance or security updates are
+published as explicit patch releases such as 1.0.1. Development is the rolling 1.1 line: it is
+experimental, intended for test and lab use, and has no support commitment. Stable and Development
+are independent; publishing either document never overwrites the other.
 
 ## Deploy (Cloudflare Pages)
 

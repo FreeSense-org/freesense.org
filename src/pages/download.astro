@@ -15,8 +15,9 @@ const DOCS = 'https://docs.freesense.org';
         <span class="eyebrow">Download center</span>
         <h1>Your firewall starts<br /><span>with a verifiable build.</span></h1>
         <p class="lede">
-          Choose a release channel, verify one checksum, and install on standard amd64 hardware.
-          Every published image is tied to exact source, ports, OS-definition, and FreeBSD revisions.
+          Choose the supported Stable line or an experimental Development build, verify one
+          checksum, and install on standard amd64 hardware. Every published image is tied to exact
+          source, ports, OS-definition, and FreeBSD revisions.
         </p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#release-channels">View available images</a>
@@ -49,17 +50,31 @@ const DOCS = 'https://docs.freesense.org';
           <span class="eyebrow">Release channels</span>
           <h2>Pick the right level of change.</h2>
         </div>
-        <p>Development builds are for testing. Stable contains immutable 1.0.x releases and advances only through explicit patch releases.</p>
+        <p>Stable 1.0.x is the supported production line. Development 1.1 is experimental, intended only for testing, and comes without support.</p>
       </div>
       <div id="channels" class="channels" aria-live="polite">
         <div class="loading"><span></span>Reading the release manifest...</div>
       </div>
       <p class="manifest-note">
-        Channel data comes from the independently published
-        <a href={`${MANIFEST}/stable.json`}>Stable</a> and
-        <a href={`${MANIFEST}/devel.json`}>Development</a> documents after repository
-        verification and an installer boot smoke test.
+        The website stores no release versions. It reads independently published{' '}
+        <a href={`${MANIFEST}/stable.json`}>Stable</a>{' '}and{' '}
+        <a href={`${MANIFEST}/devel.json`}>Development</a>{' '}documents live from the package service;
+        installer links point to immutable files on the download service.
       </p>
+    </div>
+  </section>
+
+  <section class="pipeline-section">
+    <div class="wrap">
+      <div class="section-heading compact">
+        <div><span class="eyebrow">Independent build flow</span><h2>Rebuild only what changed.</h2></div>
+        <p>System updates and optional packages have separate fingerprints, repositories, and publication decisions.</p>
+      </div>
+      <div class="pipeline-grid">
+        <article><span>01</span><h3>Check the System</h3><p>A daily planner builds and publishes the System repository only when its sealed inputs change.</p></article>
+        <article><span>02</span><h3>Reuse optional packages</h3><p>Optional packages are reused while their sources and the pinned FreeBSD platform are unchanged. A System-only change does not rebuild them.</p></article>
+        <article><span>03</span><h3>Publish after verification</h3><p>The exact ISO must pass integrity and boot-smoke checks. It is published to the download service before that channel's small release document is updated.</p></article>
+      </div>
     </div>
   </section>
 
@@ -71,7 +86,7 @@ const DOCS = 'https://docs.freesense.org';
         <article><strong>32</strong><h3>Curated packages</h3><p>Each package declares capabilities, services, support state, and resource impact before installation.</p></article>
         <article><strong>8</strong><h3>Suricata generation</h3><p>Validated atomic configuration, EVE event browsing, service controls, and a focused security overview.</p></article>
         <article><strong>2</strong><h3>Modern network additions</h3><p>First-class CrowdSec response and consent-driven ZeroTier networking, integrated into the WebUI.</p></article>
-        <article><strong>1</strong><h3>Sealed build set</h3><p>Every stage consumes the same resolved commits. Tested candidates are promoted, never rebuilt.</p></article>
+        <article><strong>1</strong><h3>Sealed build set</h3><p>Every stage consumes the same resolved commits. Channel metadata points to exact verified artifacts; publication never rebuilds them.</p></article>
       </div>
       <a class="text-link" href={`${DOCS}/packages/installing-packages/`}>Explore the package platform <span aria-hidden="true">-&gt;</span></a>
     </div>
@@ -95,8 +110,8 @@ const DOCS = 'https://docs.freesense.org';
 
 <script define:vars={{ MANIFEST }}>
   const channelMeta = {
-    stable: { label: 'Stable', badge: 'Production', description: 'Promoted, immutable artifacts for supported deployments.' },
-    devel: { label: 'Development', badge: 'Latest', description: 'Verified snapshots for contributors and early testing.', featured: true },
+    stable: { label: 'Stable', badge: 'Supported', description: 'Immutable 1.0.x releases for production deployments.', featured: true },
+    devel: { label: 'Development', badge: 'Experimental', description: 'Rolling 1.1 builds for contributors, labs, and early testing.' },
   };
 
   const escapeHtml = (value) => String(value ?? '')
@@ -122,11 +137,14 @@ const DOCS = 'https://docs.freesense.org';
 
   function channelCard(key, release) {
     const meta = channelMeta[key];
+    const warning = key === 'devel'
+      ? '<div class="channel-warning"><strong>Experimental — no support</strong><span>Do not use this channel for production or support-dependent deployments.</span></div>'
+      : '';
     const supported = key !== 'stable' || release?.support_tier === 'supported';
     if (!release?.url || !supported) {
       return `<article class="channel-card unavailable">
         <div class="channel-title"><h3>${meta.label}</h3><span>${meta.badge}</span></div>
-        <p>${meta.description}</p><div class="not-available">No published artifact</div>
+        <p>${meta.description}</p>${warning}<div class="not-available">No published artifact</div>
       </article>`;
     }
     const version = release.display_name || release.version || release.release_id || 'Current build';
@@ -135,6 +153,7 @@ const DOCS = 'https://docs.freesense.org';
     return `<article class="channel-card ${meta.featured ? 'featured' : ''}">
       <div class="channel-title"><h3>${meta.label}</h3><span>${meta.badge}</span></div>
       <p>${meta.description}</p>
+      ${warning}
       <div class="version"><small>Available build</small><strong>${escapeHtml(version)}</strong><span>${escapeHtml(metadata)}</span></div>
       <a class="btn ${meta.featured ? 'btn-primary' : 'btn-ghost'}" href="${escapeHtml(release.url)}">Download installer</a>
       ${provenanceBlock(release)}${checksum}
@@ -199,6 +218,9 @@ const DOCS = 'https://docs.freesense.org';
   :global(.channel-title h3) { margin: 0; font-size: 23px; }
   :global(.channel-title span) { color: var(--coral-hi); border: 1px solid rgba(234,79,45,.35); background: var(--coral-soft); padding: 4px 9px; border-radius: 999px; font-size: 11px; text-transform: uppercase; letter-spacing: .07em; }
   :global(.channel-card > p) { color: var(--muted); font-size: 14px; min-height: 67px; }
+  :global(.channel-warning) { display: flex; flex-direction: column; gap: 3px; margin: 0 0 16px; padding: 12px 14px; border: 1px solid rgba(234,79,45,.35); border-radius: 9px; background: var(--coral-soft); font-size: 13px; }
+  :global(.channel-warning strong) { color: var(--coral-hi); }
+  :global(.channel-warning span) { color: var(--muted); }
   :global(.version) { display: flex; flex-direction: column; gap: 4px; padding: 16px 0; border-top: 1px solid var(--border); margin-top: auto; }
   :global(.version small) { color: var(--muted-2); text-transform: uppercase; letter-spacing: .06em; }
   :global(.version strong) { font: 600 16px var(--mono); word-break: break-word; }
@@ -212,6 +234,13 @@ const DOCS = 'https://docs.freesense.org';
   :global(.channel-details dd) { margin: 0; font-family: var(--mono); color: var(--text); }
   :global(.checksum code) { display: block; margin-top: 8px; overflow-wrap: anywhere; }
   .manifest-note { text-align: center; color: var(--muted-2); font-size: 13px; margin: 24px 0 0; }
+
+  .pipeline-section { padding-block: 90px; border-bottom: 1px solid var(--border); }
+  .pipeline-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
+  .pipeline-grid article { padding: 26px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--ink-2); }
+  .pipeline-grid article > span { color: var(--coral-hi); font: 600 13px var(--mono); }
+  .pipeline-grid h3 { margin: 14px 0 8px; font-size: 19px; }
+  .pipeline-grid p { color: var(--muted); font-size: 14px; margin: 0; }
 
   .architecture-section { padding-block: 90px; }
   .architecture-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 36px 0 24px; }
@@ -235,6 +264,7 @@ const DOCS = 'https://docs.freesense.org';
     .hero-grid { grid-template-columns: 1fr; gap: 42px; }
     .release-terminal { max-width: 560px; transform: none; }
     .channels { grid-template-columns: 1fr; }
+    .pipeline-grid { grid-template-columns: 1fr; }
     .architecture-grid { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 700px) {

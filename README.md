@@ -25,41 +25,24 @@ npm run preview  # serve the built site
 public/brand/        logo lockups + icons (Space Grotesk, embedded)
 public/favicon.svg   FS monogram favicon
 public/_headers      Cloudflare Pages caching + security headers
+public/_routes.json  invokes Pages Functions only for the two release documents
+functions/           same-origin pass-throughs for the canonical release documents
 src/layouts/         Base.astro (head, fonts, nav, footer)
 src/components/       Nav.astro, Footer.astro
 src/pages/
   index.astro        landing page
-  download.astro     download page (reads public/releases.json at runtime)
+  download.astro     download page (reads the two canonical channel documents)
   license.astro      /license — Apache-2.0 + attribution (the GUI links here)
 ```
 
 ## Download page data
 
-The download page fetches same-origin `/releases.json`. The OS release pipeline publishes the
-canonical feed to `pkg.freesense.org` only after the ISO completion marker and KVM boot smoke
-pass. This repository's hourly deployment imports that feed before building Cloudflare Pages;
-the checked file is only a bootstrap fallback before the first release. Stable cards are shown
-only when `support_tier` is `supported`.
-
-```json
-{
-  "generated": "2026-07-11T12:00:00Z",
-  "channels": {
-    "devel": {
-      "version": "1.1",
-      "release_id": "1.1-g14",
-      "display_name": "FreeSense 1.1 Development — Generation 14",
-      "support_tier": "development",
-      "iso": "...",
-      "url": "...",
-      "size": 0,
-      "sha256": "...",
-      "published_at": "...",
-      "provenance": { "source": "...", "ports": "...", "os_definition": "...", "freebsd": "..." }
-    }
-  }
-}
-```
+The download page fetches independent same-origin Stable and Development documents. Narrowly
+routed Cloudflare Pages Functions pass through and validate the canonical documents published
+at `pkg.freesense.org/v1/releases/stable.json` and `devel.json`, so releases appear without a
+website rebuild. The OS release pipeline owns those files and publishes each channel only after
+the ISO completion marker and KVM boot smoke pass. This repository contains no release metadata;
+the hourly workflow only verifies that the website responses match the canonical documents.
 
 ## Deploy (Cloudflare Pages)
 

@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 
-const MANIFEST = '/releases.json';
+const MANIFEST = '/releases';
 const DOCS = 'https://docs.freesense.org';
 ---
 
@@ -55,8 +55,10 @@ const DOCS = 'https://docs.freesense.org';
         <div class="loading"><span></span>Reading the release manifest...</div>
       </div>
       <p class="manifest-note">
-        Channel data comes from the automatically published <a href={MANIFEST}>release manifest</a>
-        after repository verification and an installer boot smoke test.
+        Channel data comes from the independently published
+        <a href={`${MANIFEST}/stable.json`}>Stable</a> and
+        <a href={`${MANIFEST}/devel.json`}>Development</a> documents after repository
+        verification and an installer boot smoke test.
       </p>
     </div>
   </section>
@@ -141,15 +143,21 @@ const DOCS = 'https://docs.freesense.org';
 
   async function loadChannels() {
     const target = document.getElementById('channels');
-    try {
-      const response = await fetch(MANIFEST, { cache: 'no-store' });
-      if (!response.ok) throw new Error('release manifest unavailable');
-      const data = await response.json();
-      const channels = data.channels || data;
-      target.innerHTML = ['stable', 'devel'].map((key) => channelCard(key, channels[key])).join('');
-    } catch {
-      target.innerHTML = ['stable', 'devel'].map((key) => channelCard(key, null)).join('');
-    }
+    const channels = Object.fromEntries(await Promise.all(['stable', 'devel'].map(async (key) => {
+      try {
+        const response = await fetch(`${MANIFEST}/${key}.json`, { cache: 'no-store' });
+        if (response.status === 404) return [key, null];
+        if (!response.ok) throw new Error('release document unavailable');
+        const release = await response.json();
+        if (release.schema_version !== 'freesense.download/v1' || release.channel !== key) {
+          throw new Error('release document invalid');
+        }
+        return [key, release];
+      } catch {
+        return [key, null];
+      }
+    })));
+    target.innerHTML = ['stable', 'devel'].map((key) => channelCard(key, channels[key])).join('');
   }
   loadChannels();
 </script>

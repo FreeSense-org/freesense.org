@@ -49,7 +49,7 @@ jobs:
             | tail -n1)"
           test -n "$css_path"
 
-          for attempt in {1..6}; do
+          for attempt in {1..12}; do
             content_type="$(curl --silent --show-error --output /dev/null \
               --write-out '%{content_type}' "https://freesense.org${css_path}")"
             if [[ "$content_type" == text/css* ]]; then
@@ -57,7 +57,9 @@ jobs:
               exit 0
             fi
             echo "Attempt ${attempt}: ${css_path} returned ${content_type:-no content type}"
-            sleep 10
+            if [[ "$attempt" -lt 12 ]]; then
+              sleep 10
+            fi
           done
 
           echo "The deployed download stylesheet is not being served as CSS" >&2

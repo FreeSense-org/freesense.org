@@ -99,7 +99,12 @@ const DOCS = 'https://docs.freesense.org';
 
   const escapeHtml = (value) => String(value ?? '')
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  const size = (bytes) => !bytes ? '' : bytes >= 1e9 ? `${(bytes / 1e9).toFixed(2)} GB` : `${Math.round(bytes / 1e6)} MB`;
+  const size = (bytes) => {
+    const value = Number(bytes);
+    if (!Number.isFinite(value) || value <= 0) return '';
+    if (value >= 1024 ** 3) return `${(value / 1024 ** 3).toFixed(2)} GiB`;
+    return `${Math.round(value / 1024 ** 2)} MiB`;
+  };
   const shortSha = (value) => value ? String(value).slice(0, 12) : 'not recorded';
 
   function provenanceBlock(release) {
@@ -150,7 +155,7 @@ const DOCS = 'https://docs.freesense.org';
 </script>
 
 <style>
-  .download-hero { padding: 112px 0 84px; overflow: hidden; }
+  .download-hero { position: relative; padding: 112px 0 84px; overflow: hidden; }
   .hero-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr); gap: 72px; align-items: center; }
   h1 { margin: 16px 0 0; font-size: clamp(44px, 6vw, 74px); letter-spacing: -.055em; }
   h1 span { color: var(--coral-hi); }

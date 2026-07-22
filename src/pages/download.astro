@@ -49,14 +49,14 @@ const DOCS = 'https://docs.freesense.org';
           <span class="eyebrow">Release channels</span>
           <h2>Pick the right level of change.</h2>
         </div>
-        <p>Development builds are for testing. Stable remains unavailable until an exact, verified build is promoted.</p>
+        <p>Development builds are for testing. Stable contains immutable 1.0.x releases and advances only through explicit patch releases.</p>
       </div>
       <div id="channels" class="channels" aria-live="polite">
         <div class="loading"><span></span>Reading the release manifest...</div>
       </div>
       <p class="manifest-note">
-        Channel data currently comes from the website's <a href={MANIFEST}>release manifest</a>.
-        Automated publication will replace this temporary manifest.
+        Channel data comes from the automatically published <a href={MANIFEST}>release manifest</a>
+        after repository verification and an installer boot smoke test.
       </p>
     </div>
   </section>

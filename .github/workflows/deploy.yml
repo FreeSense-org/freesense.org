@@ -1,7 +1,7 @@
 name: Deploy to Cloudflare Pages
 
-# Builds the Astro site and deploys it to the Cloudflare Pages project "freesense"
-# (freesense.org / www.freesense.org) on every push to main. Manual runs allowed too.
+# Pushes and manual runs deploy the Astro site and its live release-feed Function.
+# The hourly schedule only verifies that the canonical and website feeds agree.
 on:
   push:
     branches: [main]
@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -30,24 +31,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Import the canonical release feed
-        shell: bash
-        run: |
-          set -euo pipefail
-          candidate=$(mktemp)
-          trap 'rm -f "$candidate"' EXIT
-          if curl --fail --silent --show-error --location --max-time 30 \
-            https://pkg.freesense.org/v1/releases.json --output "$candidate"; then
-            jq -e '.schema_version == "freesense.downloads/v1" and
-              (.channels | type == "object") and
-              (has("generated"))' "$candidate" >/dev/null
-            mv "$candidate" public/releases.json
-          else
-            echo "Canonical feed is not published yet; retaining the checked bootstrap feed."
-          fi
-
       - name: Build site
-        run: npm run build
+        run: npm test && npm run build
 
       - name: Deploy to Cloudflare Pages
         id: deploy
@@ -55,30 +40,42 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=freesense --branch=main
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: pages deploy dist --project-name=freesense --branch=main --commit-dirty=true
 
-      - name: Verify deployed download assets
+      - name: Verify the exact Pages deployment
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
         shell: bash
         run: |
           set -euo pipefail
-
+          [[ "${DEPLOYMENT_URL}" =~ ^https://[a-z0-9-]+\.freesense\.pages\.dev/?$ ]]
           css_path="$(grep -oE 'href="/_astro/[^"]+\.css"' dist/download/index.html \
             | cut -d'"' -f2 \
             | tail -n1)"
           test -n "$css_path"
+          content_type="$(curl --fail --silent --show-error --output /dev/null \
+            --write-out '%{content_type}' "${DEPLOYMENT_URL%/}${css_path}")"
+          [[ "$content_type" == text/css* ]]
 
-          for attempt in {1..12}; do
-            content_type="$(curl --silent --show-error --output /dev/null \
-              --write-out '%{content_type}' "https://freesense.org${css_path}")"
-            if [[ "$content_type" == text/css* ]]; then
-              echo "Verified ${css_path} (${content_type})"
+          bash scripts/verify-release-feeds.sh "${DEPLOYMENT_URL}"
+
+  reconcile:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify the production website mirrors the canonical release feed
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in {1..6}; do
+            if bash scripts/verify-release-feeds.sh https://freesense.org; then
+              echo "The production website serves the canonical release feed."
               exit 0
             fi
-            echo "Attempt ${attempt}: ${css_path} returned ${content_type:-no content type}"
-            if [[ "$attempt" -lt 12 ]]; then
-              sleep 10
-            fi
+            echo "Attempt ${attempt}: production release feed has not converged."
+            if [[ "$attempt" -lt 6 ]]; then sleep 10; fi
           done
-
-          echo "The deployed download stylesheet is not being served as CSS" >&2
+          echo "The production website release feed differs from the canonical feed." >&2
           exit 1

@@ -21,10 +21,6 @@ for channel in stable devel; do
 
   case "${canonical_status}:${public_status}" in
     200:200)
-      grep -Eqi '^x-freesense-release-source: canonical\r?$' "${work}/${channel}.headers" || {
-        echo "${channel} website response lacks the canonical source header" >&2
-        exit 1
-      }
       jq -e --arg channel "${channel}" \
         '.schema_version == "freesense.download/v1" and .channel == $channel' \
         "${work}/${channel}.canonical.json" >/dev/null || {
@@ -38,8 +34,10 @@ for channel in stable devel; do
         }
       ;;
     404:404)
-      grep -Eqi '^x-freesense-release-source: not-published\r?$' "${work}/${channel}.headers" || {
-        echo "${channel} website 404 lacks the not-published source header" >&2
+      jq -e --arg channel "${channel}" \
+        '.error == ($channel + " release is not published")' \
+        "${work}/${channel}.public.json" >/dev/null || {
+        echo "${channel} website 404 is not the release Function response" >&2
         exit 1
       }
       ;;

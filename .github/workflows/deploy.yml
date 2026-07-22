@@ -55,7 +55,7 @@ jobs:
             | tail -n1)"
           test -n "$css_path"
           verified=false
-          for attempt in {1..12}; do
+          for attempt in {1..36}; do
             content_type="$(curl --fail --silent --show-error --max-time 30 \
               --output /dev/null --write-out '%{content_type}' \
               "${DEPLOYMENT_URL%/}${css_path}" 2>/dev/null || true)"
@@ -64,8 +64,8 @@ jobs:
               verified=true
               break
             fi
-            echo "Attempt ${attempt}: exact deployment has not converged."
-            [[ "$attempt" == 12 ]] || sleep 5
+            echo "Attempt ${attempt}: exact deployment has not converged (CSS type: ${content_type:-none})."
+            [[ "$attempt" == 36 ]] || sleep 5
           done
           [[ "$verified" == true ]]
 

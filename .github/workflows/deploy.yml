@@ -54,11 +54,20 @@ jobs:
             | cut -d'"' -f2 \
             | tail -n1)"
           test -n "$css_path"
-          content_type="$(curl --fail --silent --show-error --output /dev/null \
-            --write-out '%{content_type}' "${DEPLOYMENT_URL%/}${css_path}")"
-          [[ "$content_type" == text/css* ]]
-
-          bash scripts/verify-release-feeds.sh "${DEPLOYMENT_URL}"
+          verified=false
+          for attempt in {1..12}; do
+            content_type="$(curl --fail --silent --show-error --max-time 30 \
+              --output /dev/null --write-out '%{content_type}' \
+              "${DEPLOYMENT_URL%/}${css_path}" 2>/dev/null || true)"
+            if [[ "$content_type" == text/css* ]] && \
+                bash scripts/verify-release-feeds.sh "${DEPLOYMENT_URL}"; then
+              verified=true
+              break
+            fi
+            echo "Attempt ${attempt}: exact deployment has not converged."
+            [[ "$attempt" == 12 ]] || sleep 5
+          done
+          [[ "$verified" == true ]]
 
   reconcile:
     if: github.event_name == 'schedule'

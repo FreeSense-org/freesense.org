@@ -6,6 +6,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
 
 concurrency:
   group: pages-deploy
@@ -27,6 +29,22 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Import the canonical release feed
+        shell: bash
+        run: |
+          set -euo pipefail
+          candidate=$(mktemp)
+          trap 'rm -f "$candidate"' EXIT
+          if curl --fail --silent --show-error --location --max-time 30 \
+            https://pkg.freesense.org/v1/releases.json --output "$candidate"; then
+            jq -e '.schema_version == "freesense.downloads/v1" and
+              (.channels | type == "object") and
+              (has("generated"))' "$candidate" >/dev/null
+            mv "$candidate" public/releases.json
+          else
+            echo "Canonical feed is not published yet; retaining the checked bootstrap feed."
+          fi
 
       - name: Build site
         run: npm run build

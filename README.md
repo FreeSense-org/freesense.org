@@ -35,10 +35,11 @@ src/pages/
 
 ## Download page data
 
-The download page temporarily fetches `/releases.json` from this website. Update that file only
-with an ISO whose public completion marker and KVM boot smoke have passed. A future release
-publisher will replace this committed manifest with an automatically signed channel manifest.
-Stable cards are displayed only when `support_tier` is `supported`.
+The download page fetches same-origin `/releases.json`. The OS release pipeline publishes the
+canonical feed to `pkg.freesense.org` only after the ISO completion marker and KVM boot smoke
+pass. This repository's hourly deployment imports that feed before building Cloudflare Pages;
+the checked file is only a bootstrap fallback before the first release. Stable cards are shown
+only when `support_tier` is `supported`.
 
 ```json
 {

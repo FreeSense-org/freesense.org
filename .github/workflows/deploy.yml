@@ -61,11 +61,19 @@ jobs:
 
           verified=false
           for attempt in {1..24}; do
-            if bash scripts/verify-release-feeds.sh https://freesense.org; then
+            production_html="${RUNNER_TEMP}/production-download.html"
+            if curl --fail --silent --show-error --max-time 30 \
+                 "https://freesense.org/download/?deploy=${GITHUB_SHA}-${attempt}" \
+                 --output "${production_html}" &&
+               grep -Fq "href=\"${css_path}\"" "${production_html}" &&
+               [[ "$(curl --fail --silent --show-error --max-time 30 \
+                    --output /dev/null --write-out '%{content_type}' \
+                    "https://freesense.org${css_path}")" == text/css* ]] &&
+               bash scripts/verify-release-feeds.sh https://freesense.org; then
               verified=true
               break
             fi
-            echo "Attempt ${attempt}: production release routes have not converged."
+            echo "Attempt ${attempt}: production HTML, assets, or release routes have not converged."
             [[ "$attempt" == 24 ]] || sleep 5
           done
           [[ "$verified" == true ]]

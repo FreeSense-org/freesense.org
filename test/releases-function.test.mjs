@@ -24,6 +24,9 @@ const release = {
   size: 1024,
   sha256: 'a'.repeat(64),
   published_at: '2026-07-22T22:09:10Z',
+  changes: [
+    { type: 'fix', title: 'Recover configurations from legacy ZFS layouts', scope: 'Installer' },
+  ],
   provenance: {
     source: 'd'.repeat(40),
     ports: 'e'.repeat(40),
@@ -68,6 +71,16 @@ test('rejects a non-canonical artifact URL', async () => {
   globalThis.fetch = async () => Response.json({
     ...release,
     url: 'https://example.com/FreeSense-1.0.0-amd64.iso',
+  });
+  const response = await createReleaseHandler('stable')(context());
+  assert.equal(response.status, 502);
+  assert.equal(response.headers.get('x-freesense-release-source'), 'invalid');
+});
+
+test('rejects malformed release changes', async () => {
+  globalThis.fetch = async () => Response.json({
+    ...release,
+    changes: [{ type: 'surprise', title: '<script>alert(1)</script>' }],
   });
   const response = await createReleaseHandler('stable')(context());
   assert.equal(response.status, 502);

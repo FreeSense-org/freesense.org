@@ -76,8 +76,9 @@ const kept = [
           <span class="mono num">03</span>
           <h3>Signed delivery</h3>
           <p>
-            Installer images and a signed package repository publish to a global CDN. Installed
-            systems fetch updates over the air, verified against our fingerprint — nothing else.
+            Installed systems make anonymous HTTPS reads to <code>pkg.freesense.org</code> for the
+            signed update manifest, repository metadata, and packages. They send no device ID,
+            telemetry, configuration, or usage report to the project.
           </p>
         </div>
       </div>

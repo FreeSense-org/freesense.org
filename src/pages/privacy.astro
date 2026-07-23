@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-const updated = 'June 28, 2026';
+const updated = 'July 23, 2026';
 ---
 
 <Base
@@ -25,6 +25,7 @@ const updated = 'June 28, 2026';
           <li>✓ No advertising or tracking cookies.</li>
           <li>✓ No analytics that profile you across sites.</li>
           <li>✓ The only browser storage is your own cookie-consent choice.</li>
+          <li>✓ The installed firewall sends no telemetry, device ID, or configuration to us.</li>
           <li>✓ We never sell or share personal data — we don't collect any to begin with.</li>
         </ul>
       </div>
@@ -47,8 +48,8 @@ const updated = 'June 28, 2026';
 
       <h2>3. Server logs (hosting)</h2>
       <p>
-        The site and download images are served by <strong>Cloudflare</strong> (Pages and R2). As
-        part of delivering and protecting the site, Cloudflare processes standard request metadata
+        The website, package service, and download images are served by <strong>Cloudflare</strong>
+        (Pages and R2). As part of delivering and protecting them, Cloudflare processes standard request metadata
         such as your IP address, browser user-agent, and the page or file requested. This is used
         only for operating the service, security, and abuse prevention, and is handled under
         Cloudflare's own privacy terms. We do not combine it with anything else or use it to identify
@@ -63,8 +64,10 @@ const updated = 'June 28, 2026';
           font files. No cookies are set by this request.
         </li>
         <li>
-          <strong>Downloads</strong> — the release list is served by this website. Installer images and
-          package updates are served from <code>pkg.freesense.org</code> (Cloudflare R2).
+          <strong>Releases and updates</strong> — the website reads public release documents from
+          <code>pkg.freesense.org</code>. Installer images are served by
+          <code>downloads.freesense.org</code>; update manifests, repository metadata, and packages
+          are served by <code>pkg.freesense.org</code>.
         </li>
         <li>
           <strong>GitHub</strong> — links to source code and issues take you to github.com, which has
@@ -72,13 +75,23 @@ const updated = 'June 28, 2026';
         </li>
       </ul>
 
-      <h2>5. What we do not do</h2>
+      <h2>5. Installed FreeSense systems</h2>
+      <p>
+        FreeSense contains no project telemetry, device registration, automatic configuration
+        upload, or usage reporting. The updater makes unauthenticated HTTPS requests to
+        <code>pkg.freesense.org</code> for a signed repository manifest, update notes, repository
+        metadata, and packages. The appliance does not contact the marketing website for updates.
+        Network services and optional packages you enable may contact the upstream services you
+        configure; those connections are separate from FreeSense project telemetry.
+      </p>
+
+      <h2>6. What we do not do</h2>
       <p>
         We do not run advertising networks, social-media trackers, session recording, or
         fingerprinting. We do not create user profiles. We do not sell, rent, or share personal data.
       </p>
 
-      <h2>6. Your rights</h2>
+      <h2>7. Your rights</h2>
       <p>
         If you are in the EU/EEA or UK, the GDPR gives you rights to access, correct, or erase
         personal data and to object to processing. Because this site does not collect or store
@@ -86,16 +99,13 @@ const updated = 'June 28, 2026';
         retrieve — but you are welcome to contact us with any request or question.
       </p>
 
-      <h2>7. Changes</h2>
+      <h2>8. Changes</h2>
       <p>
         We may update this policy as the site evolves. Material changes will be reflected by the
         “last updated” date above.
       </p>
 
-      <p class="muted small">
-        This policy covers the website only. It does not govern the FreeSense software you install,
-        which runs entirely on your own hardware.
-      </p>
+      <p class="muted small">FreeSense runs on your own hardware. Its source code and outbound update paths are public and auditable.</p>
     </div>
   </section>
 </Base>

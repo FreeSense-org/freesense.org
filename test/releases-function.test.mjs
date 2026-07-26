@@ -35,6 +35,33 @@ const release = {
   },
 };
 
+const bundleRelease = {
+  schema_version: 'freesense.download/v2',
+  channel: 'stable',
+  version: '1.0.5',
+  release_id: '1.0.5',
+  support_tier: 'supported',
+  generation: 5,
+  bundle_fingerprint: '1'.repeat(64),
+  system: '2'.repeat(64),
+  published_at: '2026-07-26T12:00:00Z',
+  provenance: release.provenance,
+  artifacts: [
+    ['installer', 'iso', 'none', null, 'FreeSense-1.0.5-amd64.iso', '3', 1024],
+    ['cloud', 'qcow2', 'xz', 'ufs', 'FreeSense-1.0.5-amd64-ufs.qcow2.xz', '4', 2048],
+    ['cloud', 'raw', 'xz', 'ufs', 'FreeSense-1.0.5-amd64-ufs.raw.xz', '5', 3072],
+    ['cloud', 'qcow2', 'xz', 'zfs', 'FreeSense-1.0.5-amd64-zfs.qcow2.xz', '8', 4096],
+    ['cloud', 'raw', 'xz', 'zfs', 'FreeSense-1.0.5-amd64-zfs.raw.xz', '9', 5120],
+  ].map(([kind, format, compression, filesystem, file, sha, size]) => ({
+    kind, format, compression, filesystem, file, size,
+    sha256: sha.repeat(64),
+    build_fingerprint: (format === 'iso' ? '6' : '7').repeat(64),
+    marker_url: `https://pkg.freesense.org/v1/artifacts/${format === 'iso' ? 'iso' : 'cloud'}/${(format === 'iso' ? '6' : '7').repeat(64)}/complete.json`,
+    url: `https://downloads.freesense.org/v1/releases/stable/1.0.5/${file}`,
+    ...(kind === 'cloud' ? { virtual_size: (filesystem === 'ufs' ? 16 : 32) * 1024 ** 3 } : {}),
+  })),
+};
+
 function context(method = 'GET') {
   return { request: new Request('https://freesense.org/releases/stable.json', { method }) };
 }
@@ -50,6 +77,31 @@ test('serves the exact canonical channel document', async () => {
   assert.equal(await response.text(), body);
   assert.equal(response.headers.get('x-freesense-release-source'), 'canonical');
   assert.equal(response.headers.get('etag'), '"stable-release"');
+});
+
+test('serves an atomic v2 installer and cloud bundle', async () => {
+  globalThis.fetch = async () => Response.json(bundleRelease);
+  const response = await createReleaseHandler('stable')(context());
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).artifacts.length, 5);
+});
+
+test('keeps interim UFS-only v2 documents readable', async () => {
+  globalThis.fetch = async () => Response.json({
+    ...bundleRelease,
+    artifacts: bundleRelease.artifacts.slice(0, 3),
+  });
+  const response = await createReleaseHandler('stable')(context());
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).artifacts.length, 3);
+});
+
+test('rejects a ZFS artifact with the UFS virtual size', async () => {
+  const artifacts = structuredClone(bundleRelease.artifacts);
+  artifacts[3].virtual_size = 16 * 1024 ** 3;
+  globalThis.fetch = async () => Response.json({ ...bundleRelease, artifacts });
+  const response = await createReleaseHandler('stable')(context());
+  assert.equal(response.status, 502);
 });
 
 test('maps an unpublished channel to a cache-bounded 404', async () => {

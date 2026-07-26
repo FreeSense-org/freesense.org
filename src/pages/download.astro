@@ -16,7 +16,7 @@ const DOCS = 'https://docs.freesense.org';
         <h1>Your firewall starts<br /><span>with a verifiable build.</span></h1>
         <p class="lede">
           Choose the supported Stable line or an experimental Development build, verify one
-          checksum, and install on standard amd64 hardware. Every published image is tied to exact
+          checksum, and install or import on standard amd64 hardware. Every published image is tied to exact
           source, ports, OS-definition, and FreeBSD revisions.
         </p>
         <div class="hero-actions">
@@ -59,7 +59,7 @@ const DOCS = 'https://docs.freesense.org';
         The website stores no release versions. It reads independently published{' '}
         <a href={`${MANIFEST}/stable.json`}>Stable</a>{' '}and{' '}
         <a href={`${MANIFEST}/devel.json`}>Development</a>{' '}documents live from the package service;
-        installer links point to immutable files on the download service.
+        installer and cloud-image links point to immutable files on the download service.
       </p>
     </div>
   </section>
@@ -73,7 +73,7 @@ const DOCS = 'https://docs.freesense.org';
       <div class="pipeline-grid">
         <article><span>01</span><h3>Check the System</h3><p>A daily planner builds and publishes the System repository only when its sealed inputs change.</p></article>
         <article><span>02</span><h3>Reuse optional packages</h3><p>Optional packages are reused while their sources and the pinned FreeBSD platform are unchanged. A System-only change does not rebuild them.</p></article>
-        <article><span>03</span><h3>Publish after verification</h3><p>The exact ISO must pass integrity and boot-smoke checks. It is published to the download service before that channel's small release document is updated.</p></article>
+        <article><span>03</span><h3>Publish after verification</h3><p>The ISO, QCOW2, and raw image must all pass integrity and boot-smoke checks. All immutable files are public before the channel document advances.</p></article>
       </div>
     </div>
   </section>
@@ -104,6 +104,7 @@ const DOCS = 'https://docs.freesense.org';
         <li><span>03</span><div><h3>Boot and configure</h3><p>Assign WAN and LAN, open the WebUI, then replace the initial administrator password.</p><a href={`${DOCS}/getting-started/first-boot/`}>First-boot guide</a></div></li>
       </ol>
       <div class="requirements"><b>Recommended starting point</b><span>64-bit CPU</span><span>4 GB RAM</span><span>16 GB storage</span><span>2 network interfaces</span></div>
+      <p class="cloud-warning"><strong>Cloud networking:</strong> Use two NICs so management remains on LAN. A one-NIC image permits key-only WAN SSH only when metadata supplies a valid key; restrict it with a cloud security group. The WebUI is never opened on WAN automatically.</p>
     </div>
   </section>
 </Base>
@@ -182,7 +183,13 @@ const DOCS = 'https://docs.freesense.org';
       ? '<div class="channel-notice experimental"><strong>Experimental &mdash; no support</strong><span>For labs and testing, never production.</span></div>'
       : '<div class="channel-notice supported"><strong>Recommended for production</strong><span>Immutable and supported throughout the 1.0.x line.</span></div>';
     const supported = key !== 'stable' || release?.support_tier === 'supported';
-    if (!release?.url || !supported) {
+    const artifacts = release?.schema_version === 'freesense.download/v2'
+      ? release.artifacts
+      : release?.url ? [{
+        kind: 'installer', format: 'iso', url: release.url, size: release.size,
+        sha256: release.sha256,
+      }] : [];
+    if (!Array.isArray(artifacts) || artifacts.length === 0 || !supported) {
       return `<article class="channel-card unavailable">
         <div class="channel-title"><h3>${meta.label}</h3><span>${meta.badge}</span></div>
         <p>${meta.description}</p>${notice}<div class="not-available">No published artifact</div>
@@ -193,12 +200,18 @@ const DOCS = 'https://docs.freesense.org';
       ? `<span class="generation">Generation ${release.generation}</span>`
       : '<span class="generation stable">Stable release</span>';
     const metadata = [
-      size(release.size) ? `<span><b>Size</b>${escapeHtml(size(release.size))}</span>` : '',
       releaseDate(release.published_at || release.date)
         ? `<span><b>Published</b>${escapeHtml(releaseDate(release.published_at || release.date))}</span>`
         : '',
     ].filter(Boolean).join('');
-    const checksum = release.sha256 ? `<details class="channel-details checksum"><summary>SHA-256 checksum</summary><code>${escapeHtml(release.sha256)}</code></details>` : '';
+    const labels = { iso: 'Installer ISO', qcow2: 'QCOW2 cloud image', raw: 'Raw GPT cloud image' };
+    const downloads = artifacts.map((artifact) => `
+      <a class="btn ${artifact.format === 'iso' && meta.featured ? 'btn-primary' : 'btn-ghost'}"
+        href="${escapeHtml(artifact.url)}">${labels[artifact.format] || artifact.format}
+        <small>${escapeHtml(size(artifact.size))}</small></a>`).join('');
+    const checksum = `<details class="channel-details checksum"><summary>SHA-256 checksums</summary>
+      ${artifacts.map((artifact) => `<p><b>${escapeHtml(labels[artifact.format] || artifact.format)}</b><code>${escapeHtml(artifact.sha256)}</code></p>`).join('')}
+    </details>`;
     return `<article class="channel-card ${meta.featured ? 'featured' : ''}">
       <div class="channel-title"><h3>${meta.label}</h3><span>${meta.badge}</span></div>
       <p>${meta.description}</p>
@@ -208,7 +221,7 @@ const DOCS = 'https://docs.freesense.org';
         <div class="version-line"><strong>${escapeHtml(version)}</strong>${generation}</div>
         <div class="release-meta">${metadata}</div>
       </div>
-      <a class="btn ${meta.featured ? 'btn-primary' : 'btn-ghost'}" href="${escapeHtml(release.url)}">Download installer</a>
+      <div class="artifact-downloads">${downloads}</div>
       <div class="release-details">${changesBlock(release)}${provenanceBlock(release)}${checksum}</div>
     </article>`;
   }
@@ -221,7 +234,8 @@ const DOCS = 'https://docs.freesense.org';
         if (response.status === 404) return [key, null];
         if (!response.ok) throw new Error('release document unavailable');
         const release = await response.json();
-        if (release.schema_version !== 'freesense.download/v1' || release.channel !== key) {
+        if (!['freesense.download/v1', 'freesense.download/v2'].includes(release.schema_version)
+            || release.channel !== key) {
           throw new Error('release document invalid');
         }
         return [key, release];
@@ -288,6 +302,11 @@ const DOCS = 'https://docs.freesense.org';
   :global(.release-meta span) { display: flex; gap: 6px; }
   :global(.release-meta b) { color: var(--muted-2); font-weight: 500; }
   :global(.channel-card .btn) { justify-content: center; margin: 14px 0 10px; text-align: center; }
+  :global(.artifact-downloads) { display: grid; gap: 8px; margin: 10px 0; }
+  :global(.artifact-downloads .btn) { display: flex; justify-content: space-between; margin: 0; }
+  :global(.artifact-downloads small) { opacity: .72; }
+  :global(.checksum p) { margin: 10px 0; }
+  :global(.checksum b) { display: block; color: var(--text); margin-bottom: 4px; }
   :global(.not-available) { margin-top: auto; border-top: 1px solid var(--border); padding-top: 18px; color: var(--muted-2); font: 13px var(--mono); }
   :global(.release-details) { border-top: 1px solid var(--border); }
   :global(.channel-details) { padding: 10px 0; border-bottom: 1px solid var(--border); color: var(--muted); font-size: 12px; }
@@ -333,6 +352,8 @@ const DOCS = 'https://docs.freesense.org';
   .install-steps p { color: var(--muted); margin: 0 0 10px; }
   .requirements { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 28px; color: var(--muted); font-size: 14px; }
   .requirements b { color: var(--text); }
+  .cloud-warning { margin: 18px 0 0; padding: 14px; border: 1px solid rgba(234,79,45,.35); border-radius: 9px; background: var(--coral-soft); color: var(--muted); font-size: 13px; }
+  .cloud-warning strong { color: var(--coral-hi); }
 
   @media (max-width: 960px) {
     .hero-grid { grid-template-columns: 1fr; gap: 42px; }

@@ -22,7 +22,10 @@ for channel in stable devel; do
   case "${canonical_status}:${public_status}" in
     200:200)
       jq -e --arg channel "${channel}" \
-        '.schema_version == "freesense.download/v1" and .channel == $channel' \
+        '(.schema_version == "freesense.download/v1" or
+          (.schema_version == "freesense.download/v2" and
+           ([.artifacts[].format] | sort) == ["iso","qcow2","raw"])) and
+         .channel == $channel' \
         "${work}/${channel}.canonical.json" >/dev/null || {
           echo "${channel} canonical document has an invalid schema or channel" >&2
           exit 1

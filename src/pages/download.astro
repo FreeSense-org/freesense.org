@@ -73,7 +73,7 @@ const DOCS = 'https://docs.freesense.org';
       <div class="pipeline-grid">
         <article><span>01</span><h3>Check the System</h3><p>A daily planner builds and publishes the System repository only when its sealed inputs change.</p></article>
         <article><span>02</span><h3>Reuse optional packages</h3><p>Optional packages are reused while their sources and the pinned FreeBSD platform are unchanged. A System-only change does not rebuild them.</p></article>
-        <article><span>03</span><h3>Publish after verification</h3><p>The ISO, QCOW2, and raw image must all pass integrity and boot-smoke checks. All immutable files are public before the channel document advances.</p></article>
+        <article><span>03</span><h3>Publish after verification</h3><p>The ISO and every UFS/ZFS cloud image must pass integrity and boot-smoke checks. All immutable files are public before the channel document advances.</p></article>
       </div>
     </div>
   </section>
@@ -204,13 +204,26 @@ const DOCS = 'https://docs.freesense.org';
         ? `<span><b>Published</b>${escapeHtml(releaseDate(release.published_at || release.date))}</span>`
         : '',
     ].filter(Boolean).join('');
-    const labels = { iso: 'Installer ISO', qcow2: 'QCOW2 cloud image', raw: 'Raw GPT cloud image' };
-    const downloads = artifacts.map((artifact) => `
+    const artifactLabel = (artifact) => {
+      if (artifact.format === 'iso') return 'Installer ISO';
+      const filesystem = artifact.filesystem?.toUpperCase() || 'Cloud';
+      const format = artifact.format === 'qcow2' ? 'QCOW2' : 'Raw GPT';
+      return `${filesystem} ${format} cloud image`;
+    };
+    const artifactButtons = (items) => items.map((artifact) => `
       <a class="btn ${artifact.format === 'iso' && meta.featured ? 'btn-primary' : 'btn-ghost'}"
-        href="${escapeHtml(artifact.url)}">${labels[artifact.format] || artifact.format}
+        href="${escapeHtml(artifact.url)}">${escapeHtml(artifactLabel(artifact))}
         <small>${escapeHtml(size(artifact.size))}</small></a>`).join('');
+    const groups = [
+      ['Installer', artifacts.filter((artifact) => artifact.kind === 'installer')],
+      ['UFS cloud — recommended', artifacts.filter((artifact) => artifact.filesystem === 'ufs')],
+      ['ZFS cloud — boot environments', artifacts.filter((artifact) => artifact.filesystem === 'zfs')],
+    ].filter(([, items]) => items.length > 0);
+    const downloads = groups.map(([label, items]) => `
+      <section class="artifact-group"><h4>${escapeHtml(label)}</h4>${artifactButtons(items)}</section>
+    `).join('');
     const checksum = `<details class="channel-details checksum"><summary>SHA-256 checksums</summary>
-      ${artifacts.map((artifact) => `<p><b>${escapeHtml(labels[artifact.format] || artifact.format)}</b><code>${escapeHtml(artifact.sha256)}</code></p>`).join('')}
+      ${artifacts.map((artifact) => `<p><b>${escapeHtml(artifactLabel(artifact))}</b><code>${escapeHtml(artifact.sha256)}</code></p>`).join('')}
     </details>`;
     return `<article class="channel-card ${meta.featured ? 'featured' : ''}">
       <div class="channel-title"><h3>${meta.label}</h3><span>${meta.badge}</span></div>
@@ -303,6 +316,8 @@ const DOCS = 'https://docs.freesense.org';
   :global(.release-meta b) { color: var(--muted-2); font-weight: 500; }
   :global(.channel-card .btn) { justify-content: center; margin: 14px 0 10px; text-align: center; }
   :global(.artifact-downloads) { display: grid; gap: 8px; margin: 10px 0; }
+  :global(.artifact-group) { display: grid; gap: 8px; }
+  :global(.artifact-group h4) { margin: 8px 0 0; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
   :global(.artifact-downloads .btn) { display: flex; justify-content: space-between; margin: 0; }
   :global(.artifact-downloads small) { opacity: .72; }
   :global(.checksum p) { margin: 10px 0; }

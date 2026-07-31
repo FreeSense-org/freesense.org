@@ -21,7 +21,7 @@ const vpns = [
 
 <Base
   title="FreeSense — the modern open firewall"
-  description="FreeSense is a modern open-source firewall and router with signed updates, no accounts, and no telemetry or phone-home."
+  description="FreeSense is a modern open-source firewall and router with signed installer and cloud images, no accounts, and no telemetry or phone-home."
 >
   <section class="hero">
     <div class="hero-glow"></div>
@@ -33,7 +33,7 @@ const vpns = [
           <span aria-hidden="true">→</span>
         </a>
         <h1>Your network.<br /><span>Fully in your hands.</span></h1>
-        <p class="lede">A fast, transparent firewall operating system for people who want serious control without a closed platform. Built on FreeBSD 16 and rebuilt for what comes next.</p>
+        <p class="lede">A fast, transparent firewall operating system for people who want serious control without a closed platform. Install it on hardware or launch an official cloud image, all built on FreeBSD 16.</p>
         <div class="hero-cta">
           <a href="/download" class="btn btn-primary">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 21h14"/></svg>
@@ -89,10 +89,53 @@ const vpns = [
   <section class="trust-strip" aria-label="FreeSense technology highlights">
     <div class="wrap trust-inner">
       <span>POWERED BY <strong>FreeBSD 16</strong></span><i></i>
-      <span>FILESYSTEM <strong>ZFS</strong></span><i></i>
+      <span>FILESYSTEMS <strong>ZFS recommended · UFS supported</strong></span><i></i>
       <span>FIREWALL <strong>pf</strong></span><i></i>
       <span>IDS / IPS <strong>Suricata 8</strong></span><i></i>
       <span>BUILT <strong>entirely in public</strong></span>
+    </div>
+  </section>
+
+  <section class="cloud-section">
+    <div class="wrap cloud-grid">
+      <div class="cloud-copy">
+        <span class="eyebrow">Official cloud images</span>
+        <h2>Boot the firewall.<br />Skip the installer.</h2>
+        <p>Import a preinstalled amd64 disk into Proxmox, OpenStack, QEMU/KVM, bhyve, or another compatible platform. FreeSense supports BIOS and UEFI boot, automatic root-disk growth, and metadata-driven first boot.</p>
+        <div class="cloud-points" aria-label="Cloud image capabilities">
+          <span><i>✓</i> QCOW2 and raw GPT</span>
+          <span><i>✓</i> NoCloud, ConfigDrive, and OpenStack</span>
+          <span><i>✓</i> QEMU guest agent included</span>
+        </div>
+        <div class="cloud-actions">
+          <a href="/download/?image=ufs&amp;format=qcow2#release-channels" class="btn btn-primary">Choose a cloud image</a>
+          <a href={DOCS + '/getting-started/cloud-images/'}>Cloud deployment guide <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+
+      <div class="cloud-console" aria-label="FreeSense cloud image options">
+        <div class="cloud-console-head">
+          <span>FreeSense cloud disk</span>
+          <small><i></i> READY TO IMPORT</small>
+        </div>
+        <div class="cloud-options">
+          <div class="cloud-option recommended">
+            <span class="disk-mark">U</span>
+            <div><small>RECOMMENDED IN CLOUD</small><strong>UFS</strong><p>Compact 16 GiB sparse disk</p></div>
+            <span class="option-check">✓</span>
+          </div>
+          <div class="cloud-option">
+            <span class="disk-mark">Z</span>
+            <div><small>BOOT ENVIRONMENTS</small><strong>ZFS</strong><p>Rollback-ready 32 GiB sparse disk</p></div>
+          </div>
+        </div>
+        <div class="cloud-specs">
+          <div><span>FORMATS</span><strong>QCOW2 · RAW GPT</strong></div>
+          <div><span>BOOT</span><strong>BIOS · UEFI</strong></div>
+          <div><span>PROVISIONING</span><strong>CLOUD-INIT METADATA</strong></div>
+        </div>
+        <div class="cloud-console-foot"><span>amd64</span><span>signed &amp; checksummed</span></div>
+      </div>
     </div>
   </section>
 
@@ -201,7 +244,7 @@ const vpns = [
 
   <section class="final-cta">
     <div class="wrap cta-box">
-      <div><span class="eyebrow">Ready when you are</span><h2>Take control of your edge.</h2><p>Install FreeSense on your own hardware or virtual machine. No license keys. No accounts. No artificial limits.</p></div>
+      <div><span class="eyebrow">Ready when you are</span><h2>Take control of your edge.</h2><p>Install FreeSense on your own hardware, a virtual machine, or a cloud disk. No license keys. No accounts. No artificial limits.</p></div>
       <div class="cta-actions"><a href="/download" class="btn btn-primary">Download FreeSense</a><a href={DOCS} class="btn btn-ghost">Read the docs</a></div>
     </div>
   </section>
@@ -236,6 +279,8 @@ const vpns = [
   .trust-strip { padding: 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(19,25,34,.78); }.trust-inner { min-height: 84px; display: flex; align-items: center; justify-content: space-between; gap: 20px; color: #667287; font-size: 10px; letter-spacing: .12em; }.trust-inner strong { display: block; color: #cfd6df; font-size: 13px; letter-spacing: 0; margin-top: 3px; }.trust-inner i { height: 28px; width: 1px; background: var(--border); }
   .section-heading h2,.be-copy h2,.security-copy h2 { font-size: clamp(35px, 4vw, 51px); margin: 10px 0 0; letter-spacing: -.045em; }.section-heading > p { color: var(--muted); max-width: 580px; margin: 0; }.split-heading { display: flex; justify-content: space-between; align-items: end; gap: 50px; margin-bottom: 46px; }.centered { text-align: center; max-width: 760px; margin: 0 auto 45px; }.centered > p { margin: 17px auto 0; }
 
+  .cloud-section { padding: 110px 0; background: #111720; border-bottom: 1px solid var(--border); overflow: hidden; }.cloud-grid { display:grid;grid-template-columns:.9fr 1.1fr;gap:78px;align-items:center; }.cloud-copy h2 { font-size:clamp(35px,4vw,51px);margin:10px 0 0;letter-spacing:-.045em; }.cloud-copy>p { color:var(--muted);font-size:17px;margin:22px 0 27px;max-width:610px; }.cloud-points { display:grid;gap:11px;margin-bottom:30px;color:#cbd3de;font-size:14px; }.cloud-points span { display:flex;align-items:center;gap:10px; }.cloud-points i { width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:rgba(62,207,142,.12);color:var(--good);font-style:normal;font-size:10px;flex:none; }.cloud-actions { display:flex;align-items:center;gap:23px;flex-wrap:wrap;font-size:14px;font-weight:600; }.cloud-console { border:1px solid #354157;border-radius:17px;background:#171f2b;box-shadow:0 28px 75px rgba(0,0,0,.38);overflow:hidden; }.cloud-console-head { min-height:56px;padding:0 19px;display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid #303c50;background:#202a39;font-size:13px;font-weight:600; }.cloud-console-head small { color:var(--good);font:9px var(--mono);letter-spacing:.08em;white-space:nowrap; }.cloud-console-head small i { display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px rgba(62,207,142,.09);margin-right:7px; }.cloud-options { display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:18px; }.cloud-option { min-width:0;min-height:132px;padding:17px;border:1px solid #354157;border-radius:12px;display:grid;grid-template-columns:40px 1fr auto;gap:13px;align-items:start;background:#151c27; }.cloud-option.recommended { border-color:rgba(62,207,142,.4);background:linear-gradient(135deg,rgba(62,207,142,.105),rgba(62,207,142,.018)); }.disk-mark { width:40px;height:40px;border:1px solid #48566b;border-radius:10px;display:grid;place-items:center;color:#d9e0e9;background:#202a38;font:700 16px var(--mono); }.cloud-option small,.cloud-option strong,.cloud-option p { display:block; }.cloud-option small { color:var(--coral-hi);font:8px var(--mono);letter-spacing:.07em;margin:2px 0 5px; }.cloud-option.recommended small { color:var(--good); }.cloud-option strong { font-size:19px; }.cloud-option p { color:var(--muted-2);font-size:10px;line-height:1.45;margin:4px 0 0; }.option-check { color:var(--good);font-size:15px; }.cloud-specs { display:grid;grid-template-columns:1fr 1fr 1.25fr;margin:0 18px 18px;border:1px solid #2e394b;border-radius:11px;overflow:hidden;background:#141b25; }.cloud-specs div { min-width:0;padding:13px 14px;border-right:1px solid #2e394b; }.cloud-specs div:last-child { border:0; }.cloud-specs span,.cloud-specs strong { display:block; }.cloud-specs span { color:#69778c;font:8px var(--mono);letter-spacing:.08em; }.cloud-specs strong { color:#cbd3de;font-size:10px;margin-top:5px;overflow-wrap:anywhere; }.cloud-console-foot { min-height:42px;padding:0 19px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #2c3749;color:#718096;font:9px var(--mono);text-transform:uppercase; }
+
   .capabilities { padding: 108px 0; }.cap-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }.cap-card { min-height: 305px; background: linear-gradient(145deg,#1a2230,#151c26); border: 1px solid var(--border); border-radius: 18px; padding: 27px; position: relative; overflow: hidden; transition: transform .2s,border-color .2s; }.cap-card:hover { transform: translateY(-4px); border-color: #48556a; }.cap-card::after { content:''; position:absolute; width:180px;height:180px;border-radius:50%;right:-90px;top:-90px;background:radial-gradient(circle,rgba(234,79,45,.12),transparent 68%); }.cap-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 11px; background: var(--coral-soft); color: var(--coral-hi); }.cap-icon svg { width: 23px; fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round; }.card-number { position:absolute;right:22px;top:21px;color:#3d4859;font-family:var(--mono);font-size:13px; }.cap-card h3 { font-size:22px;margin:57px 0 12px; }.cap-card p { color:var(--muted);font-size:15px;margin:0; }
 
   .be-section { padding: 112px 0; background: #111720; border-block: 1px solid var(--border); }.be-grid { display:grid;grid-template-columns:.87fr 1.13fr;gap:78px;align-items:center; }.be-copy > p,.security-copy > p { color:var(--muted);font-size:17px;margin:22px 0 28px; }.be-copy ul { list-style:none;padding:0;margin:0 0 26px;display:grid;gap:18px; }.be-copy li { display:flex;gap:12px; }.be-copy li>span { width:23px;height:23px;border-radius:50%;background:rgba(62,207,142,.13);color:var(--good);display:grid;place-items:center;font-size:11px;flex:none;margin-top:2px; }.be-copy li strong,.be-copy li small { display:block; }.be-copy li strong { font-size:15px; }.be-copy li small { color:var(--muted-2);font-size:13px;margin-top:2px; }.be-copy>a { font-weight:600;font-size:14px; }
@@ -250,9 +295,9 @@ const vpns = [
   .final-cta { padding:20px 0 100px; }.cta-box { min-height:290px;border:1px solid rgba(255,107,74,.25);border-radius:22px;padding:55px;background:radial-gradient(circle at 85% 20%,rgba(234,79,45,.21),transparent 37%),linear-gradient(135deg,#1d2532,#151b25);display:flex;align-items:center;justify-content:space-between;gap:40px;overflow:hidden; }.cta-box h2 { font-size:clamp(34px,4vw,50px);margin:9px 0 12px; }.cta-box p { color:var(--muted);max-width:620px;margin:0; }.cta-actions { display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end; }
 
   @media (max-width: 1000px) {
-    .hero-grid,.be-grid,.security-grid { grid-template-columns:minmax(0,1fr); }.hero-copy { text-align:center; }.hero-copy>* { margin-left:auto;margin-right:auto; }.hero-cta,.hero-meta { justify-content:center; }.product-shot { max-width:760px;margin:20px auto 0;transform:none;overflow:hidden; }.vpn-grid { grid-template-columns:repeat(3,1fr); }.be-grid,.security-grid { gap:50px; }.be-copy,.security-copy { max-width:700px; }.pipeline { display:grid;grid-template-columns:1fr 1fr; }.pipeline>i { display:none; }.pipeline div { width:auto; }.cta-box { align-items:flex-start;flex-direction:column; }.cta-actions { justify-content:flex-start; }
+    .hero-grid,.cloud-grid,.be-grid,.security-grid { grid-template-columns:minmax(0,1fr); }.hero-copy { text-align:center; }.hero-copy>* { margin-left:auto;margin-right:auto; }.hero-cta,.hero-meta { justify-content:center; }.product-shot { max-width:760px;margin:20px auto 0;transform:none;overflow:hidden; }.vpn-grid { grid-template-columns:repeat(3,1fr); }.cloud-grid,.be-grid,.security-grid { gap:50px; }.cloud-copy,.be-copy,.security-copy { max-width:700px; }.cloud-console { width:100%;max-width:760px; }.pipeline { display:grid;grid-template-columns:1fr 1fr; }.pipeline>i { display:none; }.pipeline div { width:auto; }.cta-box { align-items:flex-start;flex-direction:column; }.cta-actions { justify-content:flex-start; }
   }
   @media (max-width: 720px) {
-    .hero { padding:60px 0;min-height:auto; }.hero-grid { gap:42px;width:100%;overflow:hidden; }.hero-copy,.product-shot { width:100%;min-width:0; }.hero-copy h1 { font-size:clamp(42px,13vw,56px);overflow-wrap:anywhere; }.release-pill { font-size:11px;max-width:100%; }.hero-cta { width:100%; }.hero-cta .btn { flex:1 1 210px;justify-content:center; }.shot-chrome .chrome-nav { display:none; }.shot-chrome { justify-content:space-between; }.dash-grid { grid-template-columns:1fr; }.services-panel { display:none; }.metric-row { grid-template-columns:1fr 1fr; }.metric:last-child { display:none; }.trust-inner { overflow-x:auto;justify-content:flex-start;padding-block:18px; }.trust-inner span { min-width:130px; }.split-heading { flex-direction:column;align-items:flex-start;margin-bottom:30px; }.cap-grid,.vpn-grid { grid-template-columns:1fr; }.cap-card { min-height:250px; }.be-section,.capabilities,.vpn-section,.security-section,.open-section { padding:75px 0; }.security-visual { min-height:380px; }.threat-card { right:0; }.security-list { grid-template-columns:1fr; }.pipeline { grid-template-columns:1fr; }.open-actions { flex-direction:column; }.cta-box { padding:34px 25px; }.cta-actions { flex-direction:column;width:100%; }.cta-actions .btn { justify-content:center; }.be-current { margin:12px; }.timeline { padding-inline:17px; }.timeline-line { left:25px; }.snapshot { grid-template-columns:19px 1fr; }.snapshot>span,.snapshot>button { display:none; }
+    .hero { padding:60px 0;min-height:auto; }.hero-grid { gap:42px;width:100%;overflow:hidden; }.hero-copy,.product-shot { width:100%;min-width:0; }.hero-copy h1 { font-size:clamp(42px,13vw,56px);overflow-wrap:anywhere; }.release-pill { font-size:11px;max-width:100%; }.hero-cta { width:100%; }.hero-cta .btn { flex:1 1 210px;justify-content:center; }.shot-chrome .chrome-nav { display:none; }.shot-chrome { justify-content:space-between; }.dash-grid { grid-template-columns:1fr; }.services-panel { display:none; }.metric-row { grid-template-columns:1fr 1fr; }.metric:last-child { display:none; }.trust-inner { overflow-x:auto;justify-content:flex-start;padding-block:18px; }.trust-inner span { min-width:130px; }.trust-inner span:nth-of-type(2) { min-width:225px; }.split-heading { flex-direction:column;align-items:flex-start;margin-bottom:30px; }.cap-grid,.vpn-grid { grid-template-columns:1fr; }.cap-card { min-height:250px; }.cloud-section,.be-section,.capabilities,.vpn-section,.security-section,.open-section { padding:75px 0; }.cloud-options { grid-template-columns:1fr; }.cloud-specs { grid-template-columns:1fr; }.cloud-specs div { border-right:0;border-bottom:1px solid #2e394b; }.cloud-specs div:last-child { border-bottom:0; }.cloud-actions { align-items:flex-start;flex-direction:column; }.cloud-actions .btn { width:100%;justify-content:center; }.security-visual { min-height:380px; }.threat-card { right:0; }.security-list { grid-template-columns:1fr; }.pipeline { grid-template-columns:1fr; }.open-actions { flex-direction:column; }.cta-box { padding:34px 25px; }.cta-actions { flex-direction:column;width:100%; }.cta-actions .btn { justify-content:center; }.be-current { margin:12px; }.timeline { padding-inline:17px; }.timeline-line { left:25px; }.snapshot { grid-template-columns:19px 1fr; }.snapshot>span,.snapshot>button { display:none; }
   }
 </style>

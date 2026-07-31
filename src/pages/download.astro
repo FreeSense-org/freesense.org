@@ -47,16 +47,16 @@ const DOCS = 'https://docs.freesense.org';
     <div class="wrap">
       <div class="section-heading">
         <div>
-          <span class="eyebrow">Release channels</span>
-          <h2>Pick the right level of change.</h2>
+          <span class="eyebrow">Guided download</span>
+          <h2>Choose the image that fits.</h2>
         </div>
-        <p>Stable 1.0.x is the supported production line. Development 1.1 is experimental, intended only for testing, and comes without support.</p>
+        <p>Start with Stable for production. Cloud users can then choose UFS or ZFS and the disk format their platform expects.</p>
       </div>
-      <div id="channels" class="channels" aria-live="polite">
+      <div id="download-picker" class="download-picker-shell" aria-live="polite">
         <div class="loading"><span></span>Reading the release manifest...</div>
       </div>
       <p class="manifest-note">
-        The website stores no release versions. It reads independently published{' '}
+        This picker stores no release versions. It reads independently published{' '}
         <a href={`${MANIFEST}/stable.json`}>Stable</a>{' '}and{' '}
         <a href={`${MANIFEST}/devel.json`}>Development</a>{' '}documents live from the package service;
         installer and cloud-image links point to immutable files on the download service.
@@ -109,10 +109,10 @@ const DOCS = 'https://docs.freesense.org';
   </section>
 </Base>
 
-<script define:vars={{ MANIFEST }}>
+<script define:vars={{ MANIFEST, DOCS }}>
   const channelMeta = {
-    stable: { label: 'Stable', badge: 'Supported', description: 'Immutable 1.0.x releases for production deployments.', featured: true },
-    devel: { label: 'Development', badge: 'Experimental', description: 'Rolling 1.1 builds for contributors, labs, and early testing.' },
+    stable: { label: 'Stable' },
+    devel: { label: 'Development' },
   };
 
   const escapeHtml = (value) => String(value ?? '')
@@ -177,70 +177,211 @@ const DOCS = 'https://docs.freesense.org';
     </details>`;
   }
 
-  function channelCard(key, release) {
-    const meta = channelMeta[key];
-    const notice = key === 'devel'
-      ? '<div class="channel-notice experimental"><strong>Experimental &mdash; no support</strong><span>For labs and testing, never production.</span></div>'
-      : '<div class="channel-notice supported"><strong>Recommended for production</strong><span>Immutable and supported throughout the 1.0.x line.</span></div>';
-    const supported = key !== 'stable' || release?.support_tier === 'supported';
-    const artifacts = release?.schema_version === 'freesense.download/v2'
-      ? release.artifacts
-      : release?.url ? [{
-        kind: 'installer', format: 'iso', url: release.url, size: release.size,
-        sha256: release.sha256,
-      }] : [];
-    if (!Array.isArray(artifacts) || artifacts.length === 0 || !supported) {
-      return `<article class="channel-card unavailable">
-        <div class="channel-title"><h3>${meta.label}</h3><span>${meta.badge}</span></div>
-        <p>${meta.description}</p>${notice}<div class="not-available">No published artifact</div>
-      </article>`;
+  const artifactTypes = {
+    installer: {
+      label: 'Installer',
+      title: 'Installer ISO',
+      description: 'Bootable installation media for dedicated hardware and virtual machines.',
+    },
+    ufs: {
+      label: 'UFS cloud',
+      title: 'UFS cloud image',
+      description: 'The recommended cloud image: compact, straightforward, and ready for root-disk growth.',
+    },
+    zfs: {
+      label: 'ZFS cloud',
+      title: 'ZFS cloud image',
+      description: 'A larger cloud image with ZFS datasets and boot-environment support.',
+    },
+  };
+  const artifactFormats = {
+    iso: { label: 'ISO image', action: 'Download ISO' },
+    qcow2: { label: 'QCOW2 (recommended)', action: 'Download QCOW2' },
+    raw: { label: 'Raw GPT', action: 'Download raw GPT' },
+  };
+  const typeOrder = ['installer', 'ufs', 'zfs'];
+  const formatOrder = ['iso', 'qcow2', 'raw'];
+
+  function artifactsForRelease(release) {
+    if (release?.schema_version === 'freesense.download/v2' && Array.isArray(release.artifacts)) {
+      return release.artifacts.filter((artifact) => artifact?.url && artifact?.format);
     }
-    const version = release.version ? `FreeSense ${release.version}` : 'Current build';
-    const generation = key === 'devel' && Number.isInteger(release.generation)
-      ? `<span class="generation">Generation ${release.generation}</span>`
-      : '<span class="generation stable">Stable release</span>';
-    const metadata = [
-      releaseDate(release.published_at || release.date)
-        ? `<span><b>Published</b>${escapeHtml(releaseDate(release.published_at || release.date))}</span>`
-        : '',
-    ].filter(Boolean).join('');
-    const artifactLabel = (artifact) => {
-      if (artifact.format === 'iso') return 'Installer ISO';
-      const filesystem = artifact.filesystem?.toUpperCase() || 'Cloud';
-      const format = artifact.format === 'qcow2' ? 'QCOW2' : 'Raw GPT';
-      return `${filesystem} ${format} cloud image`;
-    };
-    const artifactButtons = (items) => items.map((artifact) => `
-      <a class="btn ${artifact.format === 'iso' && meta.featured ? 'btn-primary' : 'btn-ghost'}"
-        href="${escapeHtml(artifact.url)}">${escapeHtml(artifactLabel(artifact))}
-        <small>${escapeHtml(size(artifact.size))}</small></a>`).join('');
-    const groups = [
-      ['Installer', artifacts.filter((artifact) => artifact.kind === 'installer')],
-      ['UFS cloud — recommended', artifacts.filter((artifact) => artifact.filesystem === 'ufs')],
-      ['ZFS cloud — boot environments', artifacts.filter((artifact) => artifact.filesystem === 'zfs')],
-    ].filter(([, items]) => items.length > 0);
-    const downloads = groups.map(([label, items]) => `
-      <div class="artifact-group"><h4>${escapeHtml(label)}</h4>${artifactButtons(items)}</div>
-    `).join('');
-    const checksum = `<details class="channel-details checksum"><summary>SHA-256 checksums</summary>
+    if (!release?.url) return [];
+    return [{
+      kind: 'installer',
+      format: 'iso',
+      file: release.iso,
+      url: release.url,
+      size: release.size,
+      sha256: release.sha256,
+    }];
+  }
+
+  function artifactType(artifact) {
+    if (artifact?.kind === 'installer' || artifact?.format === 'iso') return 'installer';
+    return Object.hasOwn(artifactTypes, artifact?.filesystem) ? artifact.filesystem : '';
+  }
+
+  function artifactLabel(artifact) {
+    const type = artifactTypes[artifactType(artifact)]?.title || 'Download image';
+    const format = artifactFormats[artifact?.format]?.label || artifact?.format;
+    return artifact?.format === 'iso' ? type : `${type} — ${format}`;
+  }
+
+  function checksumBlock(artifacts) {
+    return `<details class="channel-details checksum"><summary>SHA-256 checksums</summary>
       ${artifacts.map((artifact) => `<p><b>${escapeHtml(artifactLabel(artifact))}</b><code>${escapeHtml(artifact.sha256)}</code></p>`).join('')}
     </details>`;
-    return `<article class="channel-card ${meta.featured ? 'featured' : ''}">
-      <div class="channel-title"><h3>${meta.label}</h3><span>${meta.badge}</span></div>
-      <p>${meta.description}</p>
-      ${notice}
-      <div class="version">
-        <small>Latest installer</small>
-        <div class="version-line"><strong>${escapeHtml(version)}</strong>${generation}</div>
-        <div class="release-meta">${metadata}</div>
+  }
+
+  function noticeBlock(key) {
+    return key === 'devel'
+      ? '<div class="channel-notice experimental"><strong>Experimental &mdash; no support</strong><span>For labs and testing, never production.</span></div>'
+      : '<div class="channel-notice supported"><strong>Recommended for production</strong><span>Immutable and supported throughout the 1.0.x line.</span></div>';
+  }
+
+  function pickerMarkup() {
+    return `<div class="download-picker">
+      <div class="picker-head">
+        <div><span class="picker-kicker">Build your download</span>
+          <h3>One clear path to the right image.</h3>
+          <p>Choose a release, deployment type, and file format. The matching verified artifact appears below.</p>
+        </div>
+        <div class="platform-lock"><span>Platform</span><strong>amd64</strong><small>x86-64 &middot; UEFI + BIOS</small></div>
       </div>
-      <div class="artifact-downloads">${downloads}</div>
-      <div class="release-details">${changesBlock(release)}${provenanceBlock(release)}${checksum}</div>
-    </article>`;
+      <div class="picker-controls" aria-label="Download options">
+        <label class="picker-field"><span><b>1</b> Release</span>
+          <select id="release-select" aria-label="Release"></select>
+          <small>Stable is recommended.</small>
+        </label>
+        <label class="picker-field"><span><b>2</b> Image type</span>
+          <select id="image-select" aria-label="Image type"></select>
+          <small>Installer or cloud filesystem.</small>
+        </label>
+        <label class="picker-field"><span><b>3</b> Format</span>
+          <select id="format-select" aria-label="Image format"></select>
+          <small>Use QCOW2 unless raw is required.</small>
+        </label>
+      </div>
+      <div id="picker-notice" class="picker-notice"></div>
+      <div id="picker-result" class="picker-result" aria-live="polite"></div>
+      <div id="picker-details" class="picker-details"></div>
+    </div>`;
+  }
+
+  function mountPicker(target, channels) {
+    const available = ['stable', 'devel'].filter((key) => {
+      const release = channels[key];
+      return artifactsForRelease(release).length > 0
+        && (key !== 'stable' || release.support_tier === 'supported');
+    });
+    if (available.length === 0) {
+      target.innerHTML = '<div class="not-available">No published release artifacts are currently available.</div>';
+      return;
+    }
+
+    target.innerHTML = pickerMarkup();
+    const releaseSelect = document.getElementById('release-select');
+    const imageSelect = document.getElementById('image-select');
+    const formatSelect = document.getElementById('format-select');
+    const notice = document.getElementById('picker-notice');
+    const result = document.getElementById('picker-result');
+    const details = document.getElementById('picker-details');
+    const requested = new URLSearchParams(window.location.search);
+
+    const replaceOptions = (select, options, preferred) => {
+      select.replaceChildren(...options.map(({ value, label }) => {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = label;
+        return option;
+      }));
+      select.value = options.some((option) => option.value === preferred)
+        ? preferred
+        : options[0].value;
+      select.disabled = options.length === 1;
+    };
+
+    replaceOptions(releaseSelect, available.map((key) => {
+      const release = channels[key];
+      const generation = key === 'devel' && Number.isInteger(release.generation)
+        ? ` (g${release.generation})` : '';
+      return {
+        value: key,
+        label: `${channelMeta[key].label} ${release.version || ''}${generation}`,
+      };
+    }), requested.get('channel') || available[0]);
+
+    const selectedRelease = () => channels[releaseSelect.value];
+    const selectedArtifacts = () => artifactsForRelease(selectedRelease());
+
+    const render = () => {
+      const key = releaseSelect.value;
+      const release = selectedRelease();
+      const artifacts = selectedArtifacts();
+      const artifact = artifacts.find((item) => artifactType(item) === imageSelect.value
+        && item.format === formatSelect.value);
+      if (!artifact) {
+        result.innerHTML = '<div class="not-available">This artifact combination is not published.</div>';
+        return;
+      }
+
+      const type = artifactTypes[imageSelect.value];
+      const format = artifactFormats[artifact.format];
+      const version = release.version ? `FreeSense ${release.version}` : 'Current build';
+      const generation = key === 'devel' && Number.isInteger(release.generation)
+        ? `Generation ${release.generation}` : 'Stable release';
+      const published = releaseDate(release.published_at || release.date);
+      const file = artifact.file || String(artifact.url).split('/').pop();
+      notice.innerHTML = noticeBlock(key);
+      result.innerHTML = `<div class="result-copy">
+        <span class="picker-kicker">Selected download</span>
+        <div class="result-title"><h3>${escapeHtml(type.title)}</h3><span>${escapeHtml(size(artifact.size))}</span></div>
+        <p>${escapeHtml(type.description)}</p>
+        <div class="result-tags"><span>${escapeHtml(version)}</span><span>${escapeHtml(generation)}</span><span>amd64</span>${published ? `<span>${escapeHtml(published)}</span>` : ''}</div>
+        <dl class="artifact-facts"><div><dt>File</dt><dd>${escapeHtml(file)}</dd></div>
+          <div><dt>SHA-256</dt><dd>${escapeHtml(artifact.sha256 || 'not recorded')}</dd></div></dl>
+      </div>
+      <div class="result-action">
+        <a class="btn btn-primary" href="${escapeHtml(artifact.url)}">${escapeHtml(format.action)}<small>${escapeHtml(size(artifact.size))}</small></a>
+        <a href="${DOCS}/getting-started/installation/">Installation guidance <span aria-hidden="true">&rarr;</span></a>
+      </div>`;
+      details.innerHTML = `<div class="release-details">${changesBlock(release)}${provenanceBlock(release)}${checksumBlock(artifacts)}</div>`;
+      const url = new URL(window.location.href);
+      url.searchParams.set('channel', releaseSelect.value);
+      url.searchParams.set('image', imageSelect.value);
+      url.searchParams.set('format', formatSelect.value);
+      window.history.replaceState(null, '', url);
+    };
+
+    const refreshFormats = (preferred) => {
+      const formats = formatOrder.filter((format) => selectedArtifacts().some((artifact) => (
+        artifactType(artifact) === imageSelect.value && artifact.format === format
+      )));
+      replaceOptions(formatSelect, formats.map((format) => ({
+        value: format,
+        label: artifactFormats[format]?.label || format,
+      })), preferred);
+      render();
+    };
+
+    const refreshTypes = (preferred, preferredFormat = formatSelect.value) => {
+      const types = typeOrder.filter((type) => selectedArtifacts().some((artifact) => artifactType(artifact) === type));
+      replaceOptions(imageSelect, types.map((type) => ({
+        value: type,
+        label: artifactTypes[type].label,
+      })), preferred);
+      refreshFormats(preferredFormat);
+    };
+
+    releaseSelect.addEventListener('change', () => refreshTypes(imageSelect.value));
+    imageSelect.addEventListener('change', () => refreshFormats(formatSelect.value));
+    formatSelect.addEventListener('change', render);
+    refreshTypes(requested.get('image') || 'installer', requested.get('format') || 'iso');
   }
 
   async function loadChannels() {
-    const target = document.getElementById('channels');
+    const target = document.getElementById('download-picker');
     const channels = Object.fromEntries(await Promise.all(['stable', 'devel'].map(async (key) => {
       try {
         const response = await fetch(`${MANIFEST}/${key}.json`, { cache: 'no-store' });
@@ -256,7 +397,7 @@ const DOCS = 'https://docs.freesense.org';
         return [key, null];
       }
     })));
-    target.innerHTML = ['stable', 'devel'].map((key) => channelCard(key, channels[key])).join('');
+    mountPicker(target, channels);
   }
   loadChannels();
 </script>
@@ -288,41 +429,54 @@ const DOCS = 'https://docs.freesense.org';
   .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 48px; margin-bottom: 38px; }
   .section-heading h2, .architecture-section h2 { margin: 10px 0 0; font-size: clamp(30px, 4vw, 46px); }
   .section-heading > p { max-width: 470px; color: var(--muted); margin: 0; }
-  .channels { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); align-items: start; gap: 20px; }
+  .download-picker-shell { min-height: 270px; }
   .loading { grid-column: 1/-1; display: flex; justify-content: center; align-items: center; gap: 12px; min-height: 270px; color: var(--muted); }
   .loading span { width: 10px; height: 10px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 8px var(--coral-soft); animation: pulse 1.4s infinite; }
   @keyframes pulse { 50% { opacity: .45; transform: scale(.8); } }
-  :global(.channel-card) { display: flex; flex-direction: column; padding: 24px; border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(145deg, var(--ink-3), rgba(19,25,34,.82)); }
-  :global(.channel-card.featured) { border-color: rgba(234,79,45,.55); box-shadow: inset 0 1px rgba(255,255,255,.04), 0 18px 45px rgba(0,0,0,.18); }
-  :global(.channel-title) { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
-  :global(.channel-title h3) { margin: 0; font-size: 23px; }
-  :global(.channel-title span) { color: var(--coral-hi); border: 1px solid rgba(234,79,45,.35); background: var(--coral-soft); padding: 4px 9px; border-radius: 999px; font-size: 11px; text-transform: uppercase; letter-spacing: .07em; }
-  :global(.channel-card > p) { color: var(--muted); font-size: 14px; margin: 10px 0 18px; }
-  :global(.channel-notice) { display: flex; flex-direction: column; justify-content: center; gap: 2px; min-height: 62px; padding: 10px 13px; border: 1px solid var(--border); border-radius: 9px; background: rgba(13,17,23,.34); font-size: 12px; }
+  :global(.download-picker) { overflow: hidden; border: 1px solid var(--border-2); border-radius: 18px; background: linear-gradient(145deg, var(--ink-3), rgba(13,17,23,.9)); box-shadow: inset 0 1px rgba(255,255,255,.04), 0 22px 60px rgba(0,0,0,.2); }
+  :global(.picker-head) { display: flex; align-items: center; justify-content: space-between; gap: 28px; padding: 28px 30px; }
+  :global(.picker-head h3) { margin: 6px 0 8px; font-size: clamp(22px, 3vw, 30px); }
+  :global(.picker-head p) { max-width: 680px; margin: 0; color: var(--muted); font-size: 14px; }
+  :global(.picker-kicker) { color: var(--coral-hi); font: 600 11px var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+  :global(.platform-lock) { flex: 0 0 auto; display: grid; min-width: 180px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 11px; background: rgba(13,17,23,.6); }
+  :global(.platform-lock span) { color: var(--muted-2); font: 10px var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+  :global(.platform-lock strong) { margin-top: 3px; font: 600 18px var(--mono); }
+  :global(.platform-lock small) { color: var(--muted); font-size: 11px; }
+  :global(.picker-controls) { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1px; padding: 1px 0; border-block: 1px solid var(--border); background: var(--border); }
+  :global(.picker-field) { display: grid; gap: 8px; padding: 22px 24px; background: rgba(13,17,23,.82); }
+  :global(.picker-field > span) { display: flex; align-items: center; gap: 8px; color: var(--text); font-size: 13px; font-weight: 600; }
+  :global(.picker-field > span b) { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--coral-soft); color: var(--coral-hi); font: 600 10px var(--mono); }
+  :global(.picker-field select) { width: 100%; min-height: 48px; padding: 0 13px; border: 1px solid var(--border-2); border-radius: 9px; outline: none; background: var(--ink-2); color: var(--text); color-scheme: dark; font: 600 14px var(--sans); }
+  :global(.picker-field select:focus) { border-color: var(--coral); box-shadow: 0 0 0 3px var(--coral-soft); }
+  :global(.picker-field select:disabled) { color: var(--muted); opacity: .8; cursor: not-allowed; }
+  :global(.picker-field > small) { color: var(--muted-2); font-size: 11px; }
+  :global(.picker-notice) { margin: 20px 30px 0; }
+  :global(.channel-notice) { display: flex; flex-direction: column; justify-content: center; gap: 2px; min-height: 54px; padding: 10px 13px; border: 1px solid var(--border); border-radius: 9px; background: rgba(13,17,23,.34); font-size: 12px; }
   :global(.channel-notice strong) { color: var(--text); }
   :global(.channel-notice span) { color: var(--muted); }
   :global(.channel-notice.experimental) { border-color: rgba(234,79,45,.35); background: var(--coral-soft); }
   :global(.channel-notice.experimental strong) { color: var(--coral-hi); }
   :global(.channel-notice.supported) { border-color: rgba(62,207,142,.24); background: rgba(62,207,142,.055); }
   :global(.channel-notice.supported strong) { color: var(--good); }
-  :global(.version) { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; padding: 15px; border: 1px solid var(--border); border-radius: 10px; background: rgba(13,17,23,.42); }
-  :global(.version small) { color: var(--muted-2); text-transform: uppercase; letter-spacing: .06em; }
-  :global(.version-line) { display: flex; align-items: center; flex-wrap: wrap; justify-content: space-between; gap: 8px 14px; }
-  :global(.version strong) { font: 600 18px var(--mono); word-break: break-word; }
-  :global(.version .generation) { flex: 0 0 auto; color: var(--coral-hi); border: 1px solid rgba(234,79,45,.3); border-radius: 999px; padding: 3px 8px; background: var(--coral-soft); font: 600 10px var(--mono); text-transform: uppercase; letter-spacing: .04em; }
-  :global(.version .generation.stable) { color: var(--good); border-color: rgba(62,207,142,.24); background: rgba(62,207,142,.055); }
-  :global(.release-meta) { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted); font-size: 12px; }
-  :global(.release-meta span) { display: flex; gap: 6px; }
-  :global(.release-meta b) { color: var(--muted-2); font-weight: 500; }
-  :global(.channel-card .btn) { justify-content: center; margin: 14px 0 10px; text-align: center; }
-  :global(.artifact-downloads) { display: grid; gap: 8px; margin: 10px 0; }
-  :global(.artifact-group) { display: grid; gap: 8px; padding: 0; }
-  :global(.artifact-group h4) { margin: 8px 0 0; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
-  :global(.artifact-downloads .btn) { display: flex; justify-content: space-between; margin: 0; }
-  :global(.artifact-downloads small) { opacity: .72; }
+  :global(.picker-result) { display: grid; grid-template-columns: minmax(0,1fr) minmax(270px, .36fr); gap: 30px; align-items: center; margin: 14px 30px 0; padding: 24px; border: 1px solid var(--border); border-radius: 12px; background: rgba(13,17,23,.55); }
+  :global(.result-title) { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 14px; margin-top: 5px; }
+  :global(.result-title h3) { margin: 0; font-size: 24px; }
+  :global(.result-title > span) { color: var(--good); border: 1px solid rgba(62,207,142,.24); border-radius: 999px; padding: 3px 8px; background: rgba(62,207,142,.055); font: 600 10px var(--mono); }
+  :global(.result-copy > p) { max-width: 720px; margin: 8px 0 13px; color: var(--muted); font-size: 14px; }
+  :global(.result-tags) { display: flex; flex-wrap: wrap; gap: 7px; }
+  :global(.result-tags span) { padding: 4px 8px; border: 1px solid var(--border); border-radius: 7px; color: var(--muted); background: rgba(19,25,34,.72); font: 10px var(--mono); }
+  :global(.artifact-facts) { display: grid; gap: 7px; margin: 16px 0 0; }
+  :global(.artifact-facts div) { display: grid; grid-template-columns: 62px minmax(0,1fr); gap: 10px; }
+  :global(.artifact-facts dt) { color: var(--muted-2); font-size: 11px; }
+  :global(.artifact-facts dd) { min-width: 0; margin: 0; color: var(--text); font: 11px var(--mono); overflow-wrap: anywhere; }
+  :global(.result-action) { display: grid; gap: 12px; align-content: center; }
+  :global(.result-action .btn) { display: flex; justify-content: space-between; gap: 16px; text-align: left; white-space: nowrap; }
+  :global(.result-action .btn small) { opacity: .82; }
+  :global(.result-action > a:not(.btn)) { color: var(--muted); font-size: 12px; text-align: center; }
+  :global(.picker-details) { margin: 10px 30px 24px; }
   :global(.checksum p) { margin: 10px 0; }
   :global(.checksum b) { display: block; color: var(--text); margin-bottom: 4px; }
-  :global(.not-available) { margin-top: auto; border-top: 1px solid var(--border); padding-top: 18px; color: var(--muted-2); font: 13px var(--mono); }
+  :global(.not-available) { padding: 24px; border: 1px solid var(--border); border-radius: 12px; color: var(--muted-2); font: 13px var(--mono); }
   :global(.release-details) { border-top: 1px solid var(--border); }
   :global(.channel-details) { padding: 10px 0; border-bottom: 1px solid var(--border); color: var(--muted); font-size: 12px; }
   :global(.channel-details summary) { cursor: pointer; list-style-position: inside; }
@@ -373,13 +527,19 @@ const DOCS = 'https://docs.freesense.org';
   @media (max-width: 960px) {
     .hero-grid { grid-template-columns: 1fr; gap: 42px; }
     .release-terminal { max-width: 560px; transform: none; }
-    .channels { grid-template-columns: 1fr; }
+    :global(.picker-controls), :global(.picker-result) { grid-template-columns: 1fr; }
     .pipeline-grid { grid-template-columns: 1fr; }
     .architecture-grid { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 700px) {
     .download-hero { padding-top: 76px; }
     .section-heading { align-items: start; flex-direction: column; gap: 14px; }
+    :global(.picker-head) { align-items: stretch; flex-direction: column; padding: 22px; }
+    :global(.platform-lock) { min-width: 0; }
+    :global(.picker-field) { padding: 18px 20px; }
+    :global(.picker-notice), :global(.picker-result) { margin-inline: 18px; }
+    :global(.picker-result) { padding: 20px; }
+    :global(.picker-details) { margin-inline: 18px; }
     .architecture-grid { grid-template-columns: 1fr; }
     .install-steps li { grid-template-columns: 48px 1fr; }
   }

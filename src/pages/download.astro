@@ -288,6 +288,9 @@ const DOCS = 'https://docs.freesense.org';
     const result = document.getElementById('picker-result');
     const details = document.getElementById('picker-details');
     const requested = new URLSearchParams(window.location.search);
+    const requestedChannel = requested.get('channel');
+    const requestedType = requested.get('image');
+    const requestedFormat = requested.get('format');
 
     const replaceOptions = (select, options, preferred) => {
       select.replaceChildren(...options.map(({ value, label }) => {
@@ -302,6 +305,14 @@ const DOCS = 'https://docs.freesense.org';
       select.disabled = options.length === 1;
     };
 
+    const matchingChannel = available.find((key) => artifactsForRelease(channels[key]).some((artifact) => (
+      artifactType(artifact) === requestedType
+        && (!requestedFormat || artifact.format === requestedFormat)
+    )));
+    const initialChannel = available.includes(requestedChannel)
+      ? requestedChannel
+      : matchingChannel || available[0];
+
     replaceOptions(releaseSelect, available.map((key) => {
       const release = channels[key];
       const generation = key === 'devel' && Number.isInteger(release.generation)
@@ -310,7 +321,7 @@ const DOCS = 'https://docs.freesense.org';
         value: key,
         label: `${channelMeta[key].label} ${release.version || ''}${generation}`,
       };
-    }), requested.get('channel') || available[0]);
+    }), initialChannel);
 
     const selectedRelease = () => channels[releaseSelect.value];
     const selectedArtifacts = () => artifactsForRelease(selectedRelease());
@@ -333,6 +344,9 @@ const DOCS = 'https://docs.freesense.org';
         ? `Generation ${release.generation}` : 'Stable release';
       const published = releaseDate(release.published_at || release.date);
       const file = artifact.file || String(artifact.url).split('/').pop();
+      const guide = imageSelect.value === 'installer'
+        ? { path: '/getting-started/installation/', label: 'Installation guidance' }
+        : { path: '/getting-started/cloud-images/', label: 'Cloud deployment guidance' };
       notice.innerHTML = noticeBlock(key);
       result.innerHTML = `<div class="result-copy">
         <span class="picker-kicker">Selected download</span>
@@ -344,7 +358,7 @@ const DOCS = 'https://docs.freesense.org';
       </div>
       <div class="result-action">
         <a class="btn btn-primary" href="${escapeHtml(artifact.url)}">${escapeHtml(format.action)}<small>${escapeHtml(size(artifact.size))}</small></a>
-        <a href="${DOCS}/getting-started/installation/">Installation guidance <span aria-hidden="true">&rarr;</span></a>
+        <a href="${DOCS}${guide.path}">${guide.label} <span aria-hidden="true">&rarr;</span></a>
       </div>`;
       details.innerHTML = `<div class="release-details">${changesBlock(release)}${provenanceBlock(release)}${checksumBlock(artifacts)}</div>`;
       const url = new URL(window.location.href);
@@ -377,7 +391,7 @@ const DOCS = 'https://docs.freesense.org';
     releaseSelect.addEventListener('change', () => refreshTypes(imageSelect.value));
     imageSelect.addEventListener('change', () => refreshFormats(formatSelect.value));
     formatSelect.addEventListener('change', render);
-    refreshTypes(requested.get('image') || 'installer', requested.get('format') || 'iso');
+    refreshTypes(requestedType || 'installer', requestedFormat || 'iso');
   }
 
   async function loadChannels() {

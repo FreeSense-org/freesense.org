@@ -220,7 +220,7 @@ const DOCS = 'https://docs.freesense.org';
       ['ZFS cloud — boot environments', artifacts.filter((artifact) => artifact.filesystem === 'zfs')],
     ].filter(([, items]) => items.length > 0);
     const downloads = groups.map(([label, items]) => `
-      <section class="artifact-group"><h4>${escapeHtml(label)}</h4>${artifactButtons(items)}</section>
+      <div class="artifact-group"><h4>${escapeHtml(label)}</h4>${artifactButtons(items)}</div>
     `).join('');
     const checksum = `<details class="channel-details checksum"><summary>SHA-256 checksums</summary>
       ${artifacts.map((artifact) => `<p><b>${escapeHtml(artifactLabel(artifact))}</b><code>${escapeHtml(artifact.sha256)}</code></p>`).join('')}
@@ -288,7 +288,7 @@ const DOCS = 'https://docs.freesense.org';
   .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 48px; margin-bottom: 38px; }
   .section-heading h2, .architecture-section h2 { margin: 10px 0 0; font-size: clamp(30px, 4vw, 46px); }
   .section-heading > p { max-width: 470px; color: var(--muted); margin: 0; }
-  .channels { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 20px; }
+  .channels { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); align-items: start; gap: 20px; }
   .loading { grid-column: 1/-1; display: flex; justify-content: center; align-items: center; gap: 12px; min-height: 270px; color: var(--muted); }
   .loading span { width: 10px; height: 10px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 8px var(--coral-soft); animation: pulse 1.4s infinite; }
   @keyframes pulse { 50% { opacity: .45; transform: scale(.8); } }
@@ -316,7 +316,7 @@ const DOCS = 'https://docs.freesense.org';
   :global(.release-meta b) { color: var(--muted-2); font-weight: 500; }
   :global(.channel-card .btn) { justify-content: center; margin: 14px 0 10px; text-align: center; }
   :global(.artifact-downloads) { display: grid; gap: 8px; margin: 10px 0; }
-  :global(.artifact-group) { display: grid; gap: 8px; }
+  :global(.artifact-group) { display: grid; gap: 8px; padding: 0; }
   :global(.artifact-group h4) { margin: 8px 0 0; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
   :global(.artifact-downloads .btn) { display: flex; justify-content: space-between; margin: 0; }
   :global(.artifact-downloads small) { opacity: .72; }

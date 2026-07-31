@@ -4,14 +4,16 @@ import { test } from 'node:test';
 
 const downloadPage = new URL('../src/pages/download.astro', import.meta.url);
 
-test('artifact groups do not inherit page-section spacing', async () => {
+test('guided picker replaces parallel artifact cards', async () => {
   const source = await readFile(downloadPage, 'utf8');
 
-  assert.doesNotMatch(source, /<section class="artifact-group"/);
-  assert.match(source, /<div class="artifact-group"/);
-  assert.match(
-    source,
-    /:global\(\.artifact-group\)\s*\{[^}]*padding:\s*0;/,
-  );
-  assert.match(source, /\.channels\s*\{[^}]*align-items:\s*start;/);
+  assert.match(source, /id="download-picker"/);
+  assert.match(source, /id="release-select"/);
+  assert.match(source, /id="image-select"/);
+  assert.match(source, /id="format-select"/);
+  assert.match(source, /imageSelect\.addEventListener\('change', \(\) => refreshFormats/);
+  assert.match(source, /<strong>amd64<\/strong>/);
+  assert.doesNotMatch(source, /class="channels"/);
+  assert.doesNotMatch(source, /class="artifact-group"/);
+  assert.doesNotMatch(source, /function channelCard/);
 });

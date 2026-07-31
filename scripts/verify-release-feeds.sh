@@ -24,7 +24,18 @@ for channel in stable devel; do
       jq -e --arg channel "${channel}" \
         '(.schema_version == "freesense.download/v1" or
           (.schema_version == "freesense.download/v2" and
-           ([.artifacts[].format] | sort) == ["iso","qcow2","raw"])) and
+           ([.artifacts[] | [.kind, .filesystem, .format]] | sort) as $artifacts |
+           ([
+             ["cloud", "ufs", "qcow2"],
+             ["cloud", "ufs", "raw"],
+             ["installer", null, "iso"]
+           ] | sort) as $ufs_artifacts |
+           ([
+             ["cloud", "zfs", "qcow2"],
+             ["cloud", "zfs", "raw"]
+           ] | sort) as $zfs_artifacts |
+           ($artifacts == $ufs_artifacts or
+            $artifacts == ($ufs_artifacts + $zfs_artifacts | sort)))) and
          .channel == $channel' \
         "${work}/${channel}.canonical.json" >/dev/null || {
           echo "${channel} canonical document has an invalid schema or channel" >&2

@@ -45,6 +45,31 @@ const bundleRelease = {
   bundle_fingerprint: '1'.repeat(64),
   system: '2'.repeat(64),
   published_at: '2026-07-26T12:00:00Z',
+  release_notes: {
+    schema_version: 'freesense.release-notes/v2',
+    baseline_release_id: '1.0.4',
+    freesense: [
+      { type: 'fix', title: 'Restore package menus after firmware updates', scope: 'FreeSense' },
+    ],
+    platform: {
+      freebsd: {
+        changed: true,
+        ports_changed: true,
+        from_commit: '1'.repeat(40),
+        to_commit: '2'.repeat(40),
+        from_ports_commit: '3'.repeat(40),
+        to_ports_commit: '4'.repeat(40),
+      },
+      packages: {
+        available: true,
+        updated: [{ name: 'openssl', from: '3.5.1', to: '3.5.2', origin: 'security/openssl' }],
+        added: [],
+        removed: [],
+        counts: { updated: 1, added: 0, removed: 0 },
+        truncated: false,
+      },
+    },
+  },
   provenance: release.provenance,
   artifacts: [
     ['installer', 'iso', 'none', null, 'FreeSense-1.0.5-amd64.iso', '3', 1024],
@@ -84,6 +109,15 @@ test('serves an atomic v2 installer and cloud bundle', async () => {
   const response = await createReleaseHandler('stable')(context());
   assert.equal(response.status, 200);
   assert.equal((await response.json()).artifacts.length, 5);
+});
+
+test('rejects malformed structured release notes', async () => {
+  const malformed = structuredClone(bundleRelease);
+  malformed.release_notes.platform.packages.updated[0].name = '<script>';
+  globalThis.fetch = async () => Response.json(malformed);
+  const response = await createReleaseHandler('stable')(context());
+  assert.equal(response.status, 502);
+  assert.equal(response.headers.get('x-freesense-release-source'), 'invalid');
 });
 
 test('keeps interim UFS-only v2 documents readable', async () => {

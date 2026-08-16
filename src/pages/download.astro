@@ -7,7 +7,7 @@ const DOCS = 'https://docs.freesense.org';
 
 <Base
   title="Download FreeSense"
-  description="Download manifest-driven FreeSense installer images for amd64 and verify their provenance and SHA-256 checksums."
+  description="Download manifest-driven FreeSense installer and disk images by architecture and verify their provenance and SHA-256 checksums."
 >
   <section class="download-hero">
     <div class="wrap hero-grid">
@@ -16,7 +16,7 @@ const DOCS = 'https://docs.freesense.org';
         <h1>Your firewall starts<br /><span>with a verifiable build.</span></h1>
         <p class="lede">
           Choose the supported Stable line or an experimental Development build, verify one
-          checksum, and install or import on standard amd64 hardware. Every published image is tied to exact
+          checksum, and install or import on amd64 or standards-compliant ARM64 UEFI hardware. Every published image is tied to exact
           source, ports, OS-definition, and FreeBSD revisions.
         </p>
         <div class="hero-actions">
@@ -24,7 +24,7 @@ const DOCS = 'https://docs.freesense.org';
           <a class="btn btn-ghost" href={`${DOCS}/getting-started/installation/`}>Installation guide</a>
         </div>
         <div class="platform-row" aria-label="Supported platform">
-          <span>amd64</span><span>UEFI + BIOS</span><span>Signed repositories</span><span>Apache-2.0</span>
+          <span>amd64 supported</span><span>ARM64 experimental</span><span>Signed repositories</span><span>Apache-2.0</span>
         </div>
       </div>
 
@@ -99,11 +99,12 @@ const DOCS = 'https://docs.freesense.org';
         <p>Use a dedicated appliance or VM with at least two interfaces, or one VLAN-capable interface.</p>
       </div>
       <ol class="install-steps">
-        <li><span>01</span><div><h3>Verify the download</h3><p>Compare the ISO with the published SHA-256 checksum.</p><code>sha256sum FreeSense-*.iso</code></div></li>
-        <li><span>02</span><div><h3>Write the installer</h3><p>Flash the ISO directly to a 4 GB or larger USB device with Rufus, Etcher, or dd.</p><code>dd if=FreeSense-*.iso of=/dev/DEVICE bs=4M conv=fsync</code></div></li>
+        <li><span>01</span><div><h3>Verify the download</h3><p>Compare the selected ISO or compressed IMG with its published SHA-256 checksum.</p><code>sha256sum FreeSense-*</code></div></li>
+        <li><span>02</span><div><h3>Write the installer</h3><p>Flash amd64 ISO media directly. Decompress the ARM64 installer IMG first, then write it to a 4 GB or larger device.</p><code>xz -dk FreeSense-*-arm64-installer.img.xz</code></div></li>
         <li><span>03</span><div><h3>Boot and configure</h3><p>Assign WAN and LAN, open the WebUI, then replace the initial administrator password.</p><a href={`${DOCS}/getting-started/first-boot/`}>First-boot guide</a></div></li>
       </ol>
       <div class="requirements"><b>Recommended starting point</b><span>64-bit CPU</span><span>4 GB RAM</span><span>16 GB storage</span><span>2 network interfaces</span></div>
+      <p class="cloud-warning"><strong>ARM64 scope:</strong> The experimental image targets generic standards-compliant ARM64 UEFI systems with virtio devices. It does not include Raspberry Pi, U-Boot, DTB, or other SBC-specific firmware.</p>
       <p class="cloud-warning"><strong>Cloud networking:</strong> Use two NICs so management remains on LAN. A one-NIC image permits key-only WAN SSH only when metadata supplies a valid key; restrict it with a cloud security group. The WebUI is never opened on WAN automatically.</p>
     </div>
   </section>
@@ -196,14 +197,15 @@ const DOCS = 'https://docs.freesense.org';
   };
   const artifactFormats = {
     iso: { label: 'ISO image', action: 'Download ISO' },
+    img: { label: 'Installer IMG', action: 'Download installer IMG' },
     qcow2: { label: 'QCOW2 (recommended)', action: 'Download QCOW2' },
     raw: { label: 'Raw GPT', action: 'Download raw GPT' },
   };
   const typeOrder = ['installer', 'ufs', 'zfs'];
-  const formatOrder = ['iso', 'qcow2', 'raw'];
+  const formatOrder = ['iso', 'img', 'qcow2', 'raw'];
 
   function artifactsForRelease(release) {
-    if (release?.schema_version === 'freesense.download/v2' && Array.isArray(release.artifacts)) {
+    if (['freesense.download/v2', 'freesense.download/v3'].includes(release?.schema_version) && Array.isArray(release.artifacts)) {
       return release.artifacts.filter((artifact) => artifact?.url && artifact?.format);
     }
     if (!release?.url) return [];
@@ -225,7 +227,8 @@ const DOCS = 'https://docs.freesense.org';
   function artifactLabel(artifact) {
     const type = artifactTypes[artifactType(artifact)]?.title || 'Download image';
     const format = artifactFormats[artifact?.format]?.label || artifact?.format;
-    return artifact?.format === 'iso' ? type : `${type} — ${format}`;
+    if (artifactType(artifact) === 'installer') return format;
+    return `${type} — ${format}`;
   }
 
   function checksumBlock(artifacts) {
@@ -247,18 +250,25 @@ const DOCS = 'https://docs.freesense.org';
           <h3>One clear path to the right image.</h3>
           <p>Choose a release, deployment type, and file format. The matching verified artifact appears below.</p>
         </div>
-        <div class="platform-lock"><span>Platform</span><strong>amd64</strong><small>x86-64 &middot; UEFI + BIOS</small></div>
+        <div class="platform-lock"><span>Platform</span><strong id="platform-name">amd64</strong><small id="platform-detail">x86-64 &middot; UEFI + BIOS</small></div>
       </div>
       <div class="picker-controls" aria-label="Download options">
-        <label class="picker-field"><span><b>1</b> Release</span>
+        <label class="picker-field"><span><b>1</b> Architecture</span>
+          <select id="architecture-select" aria-label="Architecture">
+            <option value="amd64">amd64 (x86-64)</option>
+            <option value="arm64">arm64 (experimental)</option>
+          </select>
+          <small>ARM64 requires standards-compliant UEFI.</small>
+        </label>
+        <label class="picker-field"><span><b>2</b> Release</span>
           <select id="release-select" aria-label="Release"></select>
           <small>Stable is recommended.</small>
         </label>
-        <label class="picker-field"><span><b>2</b> Image type</span>
+        <label class="picker-field"><span><b>3</b> Image type</span>
           <select id="image-select" aria-label="Image type"></select>
           <small>Installer or cloud filesystem.</small>
         </label>
-        <label class="picker-field"><span><b>3</b> Format</span>
+        <label class="picker-field"><span><b>4</b> Format</span>
           <select id="format-select" aria-label="Image format"></select>
           <small>Use QCOW2 unless raw is required.</small>
         </label>
@@ -269,7 +279,7 @@ const DOCS = 'https://docs.freesense.org';
     </div>`;
   }
 
-  function mountPicker(target, channels) {
+  function mountPicker(target, channels, architecture) {
     const available = ['stable', 'devel'].filter((key) => {
       const release = channels[key];
       return artifactsForRelease(release).length > 0
@@ -282,6 +292,7 @@ const DOCS = 'https://docs.freesense.org';
 
     target.innerHTML = pickerMarkup();
     const releaseSelect = document.getElementById('release-select');
+    const architectureSelect = document.getElementById('architecture-select');
     const imageSelect = document.getElementById('image-select');
     const formatSelect = document.getElementById('format-select');
     const notice = document.getElementById('picker-notice');
@@ -291,6 +302,11 @@ const DOCS = 'https://docs.freesense.org';
     const requestedChannel = requested.get('channel');
     const requestedType = requested.get('image');
     const requestedFormat = requested.get('format');
+    architectureSelect.value = architecture;
+    document.getElementById('platform-name').textContent = architecture;
+    document.getElementById('platform-detail').textContent = architecture === 'arm64'
+      ? 'AArch64 · generic UEFI · experimental'
+      : 'x86-64 · UEFI + BIOS';
 
     const replaceOptions = (select, options, preferred) => {
       select.replaceChildren(...options.map(({ value, label }) => {
@@ -339,6 +355,7 @@ const DOCS = 'https://docs.freesense.org';
 
       const type = artifactTypes[imageSelect.value];
       const format = artifactFormats[artifact.format];
+      const typeTitle = imageSelect.value === 'installer' ? format.label : type.title;
       const version = release.version ? `FreeSense ${release.version}` : 'Current build';
       const generation = key === 'devel' && Number.isInteger(release.generation)
         ? `Generation ${release.generation}` : 'Stable release';
@@ -350,9 +367,9 @@ const DOCS = 'https://docs.freesense.org';
       notice.innerHTML = noticeBlock(key);
       result.innerHTML = `<div class="result-copy">
         <span class="picker-kicker">Selected download</span>
-        <div class="result-title"><h3>${escapeHtml(type.title)}</h3><span>${escapeHtml(size(artifact.size))}</span></div>
+        <div class="result-title"><h3>${escapeHtml(typeTitle)}</h3><span>${escapeHtml(size(artifact.size))}</span></div>
         <p>${escapeHtml(type.description)}</p>
-        <div class="result-tags"><span>${escapeHtml(version)}</span><span>${escapeHtml(generation)}</span><span>amd64</span>${published ? `<span>${escapeHtml(published)}</span>` : ''}</div>
+        <div class="result-tags"><span>${escapeHtml(version)}</span><span>${escapeHtml(generation)}</span><span>${escapeHtml(architecture)}</span>${published ? `<span>${escapeHtml(published)}</span>` : ''}</div>
         <dl class="artifact-facts"><div><dt>File</dt><dd>${escapeHtml(file)}</dd></div>
           <div><dt>SHA-256</dt><dd>${escapeHtml(artifact.sha256 || 'not recorded')}</dd></div></dl>
       </div>
@@ -365,6 +382,7 @@ const DOCS = 'https://docs.freesense.org';
       url.searchParams.set('channel', releaseSelect.value);
       url.searchParams.set('image', imageSelect.value);
       url.searchParams.set('format', formatSelect.value);
+      url.searchParams.set('architecture', architecture);
       window.history.replaceState(null, '', url);
     };
 
@@ -389,20 +407,21 @@ const DOCS = 'https://docs.freesense.org';
     };
 
     releaseSelect.addEventListener('change', () => refreshTypes(imageSelect.value));
+    architectureSelect.addEventListener('change', () => loadChannels(architectureSelect.value));
     imageSelect.addEventListener('change', () => refreshFormats(formatSelect.value));
     formatSelect.addEventListener('change', render);
     refreshTypes(requestedType || 'installer', requestedFormat || 'iso');
   }
 
-  async function loadChannels() {
+  async function loadChannels(architecture = 'amd64') {
     const target = document.getElementById('download-picker');
     const channels = Object.fromEntries(await Promise.all(['stable', 'devel'].map(async (key) => {
       try {
-        const response = await fetch(`${MANIFEST}/${key}.json`, { cache: 'no-store' });
+        const response = await fetch(`${MANIFEST}/${key}.json?architecture=${encodeURIComponent(architecture)}`, { cache: 'no-store' });
         if (response.status === 404) return [key, null];
         if (!response.ok) throw new Error('release document unavailable');
         const release = await response.json();
-        if (!['freesense.download/v1', 'freesense.download/v2'].includes(release.schema_version)
+        if (!['freesense.download/v1', 'freesense.download/v2', 'freesense.download/v3'].includes(release.schema_version)
             || release.channel !== key) {
           throw new Error('release document invalid');
         }
@@ -411,9 +430,10 @@ const DOCS = 'https://docs.freesense.org';
         return [key, null];
       }
     })));
-    mountPicker(target, channels);
+    mountPicker(target, channels, architecture);
   }
-  loadChannels();
+  const requestedArchitecture = new URLSearchParams(window.location.search).get('architecture');
+  loadChannels(requestedArchitecture === 'arm64' ? 'arm64' : 'amd64');
 </script>
 
 <style>

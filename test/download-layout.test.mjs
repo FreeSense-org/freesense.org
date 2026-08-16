@@ -15,7 +15,8 @@ test('guided picker replaces parallel artifact cards', async () => {
   assert.match(source, /const matchingChannel = available\.find/);
   assert.match(source, /artifactType\(artifact\) === requestedType/);
   assert.match(source, /Cloud deployment guidance/);
-  assert.match(source, /<strong>amd64<\/strong>/);
+  assert.match(source, /id="architecture-select"/);
+  assert.match(source, /ARM64 experimental/);
   assert.doesNotMatch(source, /class="channels"/);
   assert.doesNotMatch(source, /class="artifact-group"/);
   assert.doesNotMatch(source, /function channelCard/);

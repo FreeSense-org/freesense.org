@@ -43,7 +43,7 @@ at `pkg.freesense.org/v1/releases/stable.json` and `devel.json`, so releases app
 website rebuild. The OS release pipeline owns those files and publishes each channel only after
 the ISO and cloud-image completion markers and KVM boot smokes pass. It uploads the verified
 installer ISO plus UFS/ZFS QCOW2 and raw GPT images to immutable objects on `downloads.freesense.org` before
-updating the small `freesense.download/v2` channel document. Historical v1 ISO-only documents
+updating the small `freesense.download/v3` (and v2) channel document. Historical v1 ISO-only documents
 remain accepted. This
 repository contains no release metadata; the hourly workflow only verifies that the website
 responses match the canonical documents.

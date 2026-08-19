@@ -22,21 +22,22 @@ for channel in stable devel; do
   case "${canonical_status}:${public_status}" in
     200:200)
       jq -e --arg channel "${channel}" \
-        '(.schema_version == "freesense.download/v1" or
-          (.schema_version == "freesense.download/v2" and
-           ([.artifacts[] | [.kind, .filesystem, .format]] | sort) as $artifacts |
-           ([
-             ["cloud", "ufs", "qcow2"],
-             ["cloud", "ufs", "raw"],
-             ["installer", null, "iso"]
-           ] | sort) as $ufs_artifacts |
-           ([
-             ["cloud", "zfs", "qcow2"],
-             ["cloud", "zfs", "raw"]
-           ] | sort) as $zfs_artifacts |
-           ($artifacts == $ufs_artifacts or
-            $artifacts == ($ufs_artifacts + $zfs_artifacts | sort)))) and
-         .channel == $channel' \
+        '((.schema_version == "freesense.download/v1") or
+          ((.schema_version == "freesense.download/v2" or
+            .schema_version == "freesense.download/v3") and
+           ((([.artifacts[] | [.kind, .filesystem, .format]] | sort) as $artifacts |
+             ([
+               ["cloud", "ufs", "qcow2"],
+               ["cloud", "ufs", "raw"],
+               ["installer", null, "iso"]
+             ] | sort) as $ufs_artifacts |
+             ([
+               ["cloud", "zfs", "qcow2"],
+               ["cloud", "zfs", "raw"]
+             ] | sort) as $zfs_artifacts |
+             ($artifacts == $ufs_artifacts or
+              $artifacts == ($ufs_artifacts + $zfs_artifacts | sort)))))) and
+         (.channel == $channel)' \
         "${work}/${channel}.canonical.json" >/dev/null || {
           echo "${channel} canonical document has an invalid schema or channel" >&2
           exit 1

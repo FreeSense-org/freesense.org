@@ -8,6 +8,7 @@ test('release feed verifier recognizes UFS and ZFS bundle artifacts', async () =
   const source = await readFile(verifier, 'utf8');
 
   assert.doesNotMatch(source, /\[\.artifacts\[\]\.format\]/);
+  assert.match(source, /freesense\.download\/v3/);
   for (const tuple of [
     '["cloud", "ufs", "qcow2"]',
     '["cloud", "ufs", "raw"]',

@@ -111,6 +111,41 @@ test('serves an atomic v2 installer and cloud bundle', async () => {
   assert.equal((await response.json()).artifacts.length, 5);
 });
 
+test('serves the experimental ARM64 installer-only release', async () => {
+  const arm64 = {
+    ...structuredClone(bundleRelease),
+    schema_version: 'freesense.download/v3',
+    channel: 'devel',
+    version: '1.1.0',
+    release_id: '1.1.0-g5',
+    support_tier: 'development',
+    architecture: 'arm64',
+    package_arch: 'aarch64',
+    platform: 'generic-arm64-uefi',
+    firmware: ['uefi'],
+    capabilities: {
+      bios: false, uefi: true, iso: false, installer_img: true, cloud_init: false,
+    },
+  };
+  const file = 'FreeSense-1.1.0-g5-arm64-installer.img.xz';
+  arm64.artifacts = [{
+    kind: 'installer', format: 'img', compression: 'xz', filesystem: null, file,
+    size: 1024, sha256: '3'.repeat(64), build_fingerprint: '6'.repeat(64),
+    marker_url: `https://pkg.freesense.org/v1/artifacts/iso/${'6'.repeat(64)}/complete.json`,
+    url: `https://downloads.freesense.org/v1/releases/devel/1.1.0-g5/${file}`,
+  }];
+  globalThis.fetch = async (url) => {
+    assert.equal(url, 'https://pkg.freesense.org/v1/releases/devel.arm64.json');
+    return Response.json(arm64);
+  };
+  const handler = createReleaseHandler('devel');
+  const response = await handler({
+    request: new Request('https://freesense.org/releases/devel.json?architecture=arm64'),
+  });
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).artifacts.length, 1);
+});
+
 test('rejects malformed structured release notes', async () => {
   const malformed = structuredClone(bundleRelease);
   malformed.release_notes.platform.packages.updated[0].name = '<script>';

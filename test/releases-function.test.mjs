@@ -146,6 +146,40 @@ test('serves the experimental ARM64 installer-only release', async () => {
   assert.equal((await response.json()).artifacts.length, 1);
 });
 
+test('serves an ordered v4 ARM64 installer and appliance bundle', async () => {
+  const arm64 = {
+    ...structuredClone(bundleRelease),
+    schema_version: 'freesense.download/v4', channel: 'devel', version: '1.1.0',
+    release_id: '1.1.0-g5', support_tier: 'development',
+    architecture: 'arm64', package_arch: 'aarch64',
+  };
+  const artifact = (kind, platform, file, fingerprint, status = 'unverified') => ({
+    kind, platform, target_models: kind === 'appliance' ? [platform] : [],
+    filesystem: kind === 'appliance' ? 'ufs' : null, format: 'img', compression: 'xz',
+    partition_scheme: kind === 'appliance' ? 'mbr' : 'gpt', firmware: ['uefi'],
+    capabilities: { cloud_init: false }, boot_inputs: {},
+    artifact_fingerprint: fingerprint.repeat(64), build_fingerprint: fingerprint.repeat(64),
+    sha256: fingerprint.repeat(64), size: 1024, file,
+    marker_url: `https://pkg.freesense.org/v1/artifacts/${kind === 'appliance' ? 'appliance' : 'iso'}/${fingerprint.repeat(64)}/complete.json`,
+    url: `https://downloads.freesense.org/v1/releases/devel/1.1.0-g5/${file}`,
+    hardware_verification: status,
+  });
+  arm64.artifacts = [
+    artifact('installer', 'generic-arm64-uefi', 'FreeSense-1.1.0-g5-arm64-installer.img.xz', '6', 'verified'),
+    { ...artifact('appliance', 'arm64-rpi4b', 'FreeSense-1.1.0-g5-arm64-rpi4b.img.xz', '7'),
+      boot_inputs: { provider: 'FreeBSD' } },
+    { ...artifact('appliance', 'arm64-rpi5-d0', 'FreeSense-1.1.0-g5-arm64-rpi5-d0.img.xz', '8'),
+      boot_inputs: { archive_sha256: '9'.repeat(64) } },
+  ];
+  globalThis.fetch = async () => Response.json(arm64);
+  const response = await createReleaseHandler('devel')({
+    request: new Request('https://freesense.org/releases/devel.json?architecture=arm64'),
+  });
+  assert.equal(response.status, 200);
+  assert.deepEqual((await response.json()).artifacts.map((item) => item.platform),
+    ['generic-arm64-uefi', 'arm64-rpi4b', 'arm64-rpi5-d0']);
+});
+
 test('rejects malformed structured release notes', async () => {
   const malformed = structuredClone(bundleRelease);
   malformed.release_notes.platform.packages.updated[0].name = '<script>';

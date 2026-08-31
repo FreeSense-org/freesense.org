@@ -104,7 +104,8 @@ const DOCS = 'https://docs.freesense.org';
         <li><span>03</span><div><h3>Boot and configure</h3><p>Assign WAN and LAN, open the WebUI, then replace the initial administrator password.</p><a href={`${DOCS}/getting-started/first-boot/`}>First-boot guide</a></div></li>
       </ol>
       <div class="requirements"><b>Recommended starting point</b><span>64-bit CPU</span><span>4 GB RAM</span><span>16 GB storage</span><span>2 network interfaces</span></div>
-      <p class="cloud-warning"><strong>ARM64 scope:</strong> The experimental image targets generic standards-compliant ARM64 UEFI systems with virtio devices. It does not include Raspberry Pi, U-Boot, DTB, or other SBC-specific firmware.</p>
+      <p class="cloud-warning"><strong>ARM64 scope:</strong> Choose the generic UEFI installer, the Pi 4B-only U-Boot appliance, or the Pi 5 D0-only third-party UEFI appliance. Pi 400, CM4, CM5, Pi 500, C1 boards, and Pi 5 onboard networking are out of scope.</p>
+      <p class="cloud-warning"><strong>Raspberry Pi preview:</strong> Appliance images remain experimental and unsupported. Pi 5 requires EEPROM firmware dated 2025-06-09 or newer and supported USB Ethernet adapters; check each artifact's hardware-verification label.</p>
       <p class="cloud-warning"><strong>Cloud networking:</strong> Use two NICs so management remains on LAN. A one-NIC image permits key-only WAN SSH only when metadata supplies a valid key; restrict it with a cloud security group. The WebUI is never opened on WAN automatically.</p>
     </div>
   </section>
@@ -194,18 +195,28 @@ const DOCS = 'https://docs.freesense.org';
       title: 'ZFS cloud image',
       description: 'A larger cloud image with ZFS datasets and boot-environment support.',
     },
+    rpi4: {
+      label: 'Raspberry Pi 4B',
+      title: 'Raspberry Pi 4B appliance',
+      description: 'Flash-and-run UFS image for Raspberry Pi 4 Model B only. Hardware verification is shown per artifact.',
+    },
+    rpi5: {
+      label: 'Raspberry Pi 5 D0',
+      title: 'Raspberry Pi 5 D0 appliance',
+      description: 'Experimental D0-only image using third-party UEFI. Requires EEPROM firmware dated 2025-06-09 or newer and USB Ethernet.',
+    },
   };
   const artifactFormats = {
     iso: { label: 'ISO image', action: 'Download ISO' },
-    img: { label: 'Installer IMG', action: 'Download installer IMG' },
+    img: { label: 'Flashable IMG', action: 'Download IMG' },
     qcow2: { label: 'QCOW2 (recommended)', action: 'Download QCOW2' },
     raw: { label: 'Raw GPT', action: 'Download raw GPT' },
   };
-  const typeOrder = ['installer', 'ufs', 'zfs'];
+  const typeOrder = ['installer', 'rpi4', 'rpi5', 'ufs', 'zfs'];
   const formatOrder = ['iso', 'img', 'qcow2', 'raw'];
 
   function artifactsForRelease(release) {
-    if (['freesense.download/v2', 'freesense.download/v3'].includes(release?.schema_version) && Array.isArray(release.artifacts)) {
+    if (['freesense.download/v2', 'freesense.download/v3', 'freesense.download/v4'].includes(release?.schema_version) && Array.isArray(release.artifacts)) {
       return release.artifacts.filter((artifact) => artifact?.url && artifact?.format);
     }
     if (!release?.url) return [];
@@ -221,6 +232,8 @@ const DOCS = 'https://docs.freesense.org';
 
   function artifactType(artifact) {
     if (artifact?.kind === 'installer' || artifact?.format === 'iso') return 'installer';
+    if (artifact?.kind === 'appliance' && artifact?.platform === 'arm64-rpi4b') return 'rpi4';
+    if (artifact?.kind === 'appliance' && artifact?.platform === 'arm64-rpi5-d0') return 'rpi5';
     return Object.hasOwn(artifactTypes, artifact?.filesystem) ? artifact.filesystem : '';
   }
 
@@ -305,7 +318,7 @@ const DOCS = 'https://docs.freesense.org';
     architectureSelect.value = architecture;
     document.getElementById('platform-name').textContent = architecture;
     document.getElementById('platform-detail').textContent = architecture === 'arm64'
-      ? 'AArch64 · generic UEFI · experimental'
+      ? 'AArch64 · generic UEFI + Pi appliances · experimental'
       : 'x86-64 · UEFI + BIOS';
 
     const replaceOptions = (select, options, preferred) => {
@@ -363,13 +376,15 @@ const DOCS = 'https://docs.freesense.org';
       const file = artifact.file || String(artifact.url).split('/').pop();
       const guide = imageSelect.value === 'installer'
         ? { path: '/getting-started/installation/', label: 'Installation guidance' }
-        : { path: '/getting-started/cloud-images/', label: 'Cloud deployment guidance' };
+        : imageSelect.value === 'rpi4' || imageSelect.value === 'rpi5'
+          ? { path: '/getting-started/raspberry-pi/', label: 'Raspberry Pi flashing guide' }
+          : { path: '/getting-started/cloud-images/', label: 'Cloud deployment guidance' };
       notice.innerHTML = noticeBlock(key);
       result.innerHTML = `<div class="result-copy">
         <span class="picker-kicker">Selected download</span>
         <div class="result-title"><h3>${escapeHtml(typeTitle)}</h3><span>${escapeHtml(size(artifact.size))}</span></div>
         <p>${escapeHtml(type.description)}</p>
-        <div class="result-tags"><span>${escapeHtml(version)}</span><span>${escapeHtml(generation)}</span><span>${escapeHtml(architecture)}</span>${published ? `<span>${escapeHtml(published)}</span>` : ''}</div>
+        <div class="result-tags"><span>${escapeHtml(version)}</span><span>${escapeHtml(generation)}</span><span>${escapeHtml(architecture)}</span>${artifact.hardware_verification ? `<span>hardware ${escapeHtml(artifact.hardware_verification)}</span>` : ''}${published ? `<span>${escapeHtml(published)}</span>` : ''}</div>
         <dl class="artifact-facts"><div><dt>File</dt><dd>${escapeHtml(file)}</dd></div>
           <div><dt>SHA-256</dt><dd>${escapeHtml(artifact.sha256 || 'not recorded')}</dd></div></dl>
       </div>
@@ -421,7 +436,7 @@ const DOCS = 'https://docs.freesense.org';
         if (response.status === 404) return [key, null];
         if (!response.ok) throw new Error('release document unavailable');
         const release = await response.json();
-        if (!['freesense.download/v1', 'freesense.download/v2', 'freesense.download/v3'].includes(release.schema_version)
+        if (!['freesense.download/v1', 'freesense.download/v2', 'freesense.download/v3', 'freesense.download/v4'].includes(release.schema_version)
             || release.channel !== key) {
           throw new Error('release document invalid');
         }

@@ -36,7 +36,11 @@ for channel in stable devel; do
                ["cloud", "zfs", "raw"]
              ] | sort) as $zfs_artifacts |
              ($artifacts == $ufs_artifacts or
-              $artifacts == ($ufs_artifacts + $zfs_artifacts | sort)))))) and
+              $artifacts == ($ufs_artifacts + $zfs_artifacts | sort))))) or
+          (.schema_version == "freesense.download/v4" and
+           (.artifacts | length) > 0 and .artifacts[0].kind == "installer" and
+           ([.artifacts[] | select(.kind == "appliance") |
+             (.platform == "arm64-rpi4b" or .platform == "arm64-rpi5-d0")] | all))) and
          (.channel == $channel)' \
         "${work}/${channel}.canonical.json" >/dev/null || {
           echo "${channel} canonical document has an invalid schema or channel" >&2

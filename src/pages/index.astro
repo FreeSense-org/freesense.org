@@ -1,5 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
+import Slider from '../components/Slider.astro';
+import type { Slide } from '../components/Slider.astro';
+import { news, formatDate } from '../data/news';
 
 const GITHUB = 'https://github.com/FreeSense-org';
 const DOCS = 'https://docs.freesense.org';
@@ -9,6 +12,39 @@ const capabilities = [
   { icon: 'shield', title: 'Defense in depth', body: 'Suricata 8 IDS/IPS, CrowdSec response, pfBlockerNG, DNS filtering, and firewall telemetry in one control plane.' },
   { icon: 'blocks', title: 'A curated platform', body: 'A focused package catalog with capabilities, support status, resource impact, and native WebUI integration before you install.' },
 ];
+
+const slides: Slide[] = [
+  {
+    id: 'netspider', theme: 'spider', eyebrow: 'New app · NetSpider',
+    title: 'Meet NetSpider. See exactly where it breaks.',
+    body: 'The first desktop app in the FreeSense family maps every device on your network, measures latency at Layer 2 and 3, and pinpoints the failing hop. Free and open source for Windows.',
+    href: '/apps/netspider', cta: 'Explore NetSpider',
+    secondary: { href: '/news/introducing-netspider', label: 'Read the announcement' },
+    image: '/apps/netspider/app-path-doctor.webp', imageAlt: 'NetSpider Path Doctor locating a failed ISP modem',
+  },
+  {
+    id: 'stable', eyebrow: 'FreeSense Stable',
+    title: 'The supported line, signed and ready.',
+    body: 'Install the current Stable release on hardware or a VM. Patch releases bring necessary security fixes, delivered through signed package repositories.',
+    href: '/download', cta: 'Download FreeSense', secondary: { href: DOCS, label: 'Read the docs' }, visual: 'stable',
+  },
+  {
+    id: 'cloud', eyebrow: 'Official cloud images',
+    title: 'Boot the firewall. Skip the installer.',
+    body: 'Preinstalled QCOW2 and raw GPT disks for Proxmox, OpenStack, QEMU/KVM and bhyve, with BIOS and UEFI boot and metadata-driven first boot.',
+    href: '/download/?image=ufs&format=qcow2#release-channels', cta: 'Choose a cloud image',
+    secondary: { href: '/news/official-cloud-images', label: 'Learn more' }, visual: 'cloud',
+  },
+  {
+    id: 'arm', eyebrow: 'Preview',
+    title: 'FreeSense on ARM64 and Raspberry Pi.',
+    body: 'Try the generic ARM64 UEFI installer or the Raspberry Pi 4B and Pi 5 D0 appliance images. Experimental and unsupported, made for labs.',
+    href: '/download', cta: 'See ARM64 downloads',
+    secondary: { href: '/news/raspberry-pi-arm64-preview', label: 'Read the details' }, visual: 'arm',
+  },
+];
+
+const latestNews = news.slice(0, 3);
 
 const vpns = [
   { name: 'WireGuard', tag: 'Fast & simple', color: '#ff6b4a', text: 'Lean site-to-site and remote access tunnels with first-class interface and firewall integration.' },
@@ -95,6 +131,8 @@ const vpns = [
       <span>BUILT <strong>entirely in public</strong></span>
     </div>
   </section>
+
+  <Slider slides={slides} />
 
   <section class="cloud-section">
     <div class="wrap cloud-grid">
@@ -242,6 +280,24 @@ const vpns = [
     </div>
   </section>
 
+  <section class="news-section">
+    <div class="wrap">
+      <div class="section-heading split-heading">
+        <div><span class="eyebrow">Latest news</span><h2>Fresh from the project.</h2></div>
+        <a href="/news" class="btn btn-ghost">All news <span>→</span></a>
+      </div>
+      <div class="news-grid">
+        {latestNews.map((post) => (
+          <a href={`/news/${post.slug}`} class="news-card">
+            <div class="news-meta"><span>{post.tag}</span><time datetime={post.date}>{formatDate(post.date)}</time></div>
+            <h3>{post.title}</h3>
+            <p>{post.summary}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <section class="final-cta">
     <div class="wrap cta-box">
       <div><span class="eyebrow">Ready when you are</span><h2>Take control of your edge.</h2><p>Install FreeSense on your own hardware, a virtual machine, or a cloud disk. No license keys. No accounts. No artificial limits.</p></div>
@@ -292,10 +348,11 @@ const vpns = [
   @keyframes sweep { to { transform:rotate(360deg); } }
 
   .open-section { padding:110px 0; }.pipeline { display:flex;align-items:center;justify-content:center;gap:17px;margin:50px 0 38px; }.pipeline div { width:220px;min-height:150px;padding:20px;border:1px solid var(--border);border-radius:13px;background:#171f2b; }.pipeline div>span { color:var(--coral-hi);font:11px var(--mono); }.pipeline strong,.pipeline small { display:block; }.pipeline strong { margin:22px 0 4px;font-size:18px; }.pipeline small { color:var(--muted-2);font-size:11px; }.pipeline>i { color:#4a586c;font-style:normal; }.open-actions { display:flex;align-items:center;justify-content:center;gap:24px;font-size:14px; }
+  .news-section { padding:20px 0 90px; }.news-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:16px; }.news-card { display:flex;flex-direction:column;border:1px solid var(--border);border-radius:16px;background:#171f2b;padding:24px;color:var(--text);transition:transform .2s,border-color .2s; }.news-card:hover { color:var(--text);transform:translateY(-4px);border-color:#48556a; }.news-meta { display:flex;gap:10px;align-items:center;font-size:12px;color:var(--muted-2); }.news-meta span { color:var(--coral-hi);font-weight:600;text-transform:uppercase;letter-spacing:.06em; }.news-card h3 { font-size:19px;margin:14px 0 10px; }.news-card p { color:var(--muted);font-size:14.5px;margin:0; }
   .final-cta { padding:20px 0 100px; }.cta-box { min-height:290px;border:1px solid rgba(255,107,74,.25);border-radius:22px;padding:55px;background:radial-gradient(circle at 85% 20%,rgba(234,79,45,.21),transparent 37%),linear-gradient(135deg,#1d2532,#151b25);display:flex;align-items:center;justify-content:space-between;gap:40px;overflow:hidden; }.cta-box h2 { font-size:clamp(34px,4vw,50px);margin:9px 0 12px; }.cta-box p { color:var(--muted);max-width:620px;margin:0; }.cta-actions { display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end; }
 
   @media (max-width: 1000px) {
-    .hero-grid,.cloud-grid,.be-grid,.security-grid { grid-template-columns:minmax(0,1fr); }.hero-copy { text-align:center; }.hero-copy>* { margin-left:auto;margin-right:auto; }.hero-cta,.hero-meta { justify-content:center; }.product-shot { max-width:760px;margin:20px auto 0;transform:none;overflow:hidden; }.vpn-grid { grid-template-columns:repeat(3,1fr); }.cloud-grid,.be-grid,.security-grid { gap:50px; }.cloud-copy,.be-copy,.security-copy { max-width:700px; }.cloud-console { width:100%;max-width:760px; }.pipeline { display:grid;grid-template-columns:1fr 1fr; }.pipeline>i { display:none; }.pipeline div { width:auto; }.cta-box { align-items:flex-start;flex-direction:column; }.cta-actions { justify-content:flex-start; }
+    .hero-grid,.cloud-grid,.be-grid,.security-grid { grid-template-columns:minmax(0,1fr); }.hero-copy { text-align:center; }.hero-copy>* { margin-left:auto;margin-right:auto; }.hero-cta,.hero-meta { justify-content:center; }.product-shot { max-width:760px;margin:20px auto 0;transform:none;overflow:hidden; }.vpn-grid { grid-template-columns:repeat(3,1fr); }.news-grid { grid-template-columns:1fr; }.cloud-grid,.be-grid,.security-grid { gap:50px; }.cloud-copy,.be-copy,.security-copy { max-width:700px; }.cloud-console { width:100%;max-width:760px; }.pipeline { display:grid;grid-template-columns:1fr 1fr; }.pipeline>i { display:none; }.pipeline div { width:auto; }.cta-box { align-items:flex-start;flex-direction:column; }.cta-actions { justify-content:flex-start; }
   }
   @media (max-width: 720px) {
     .hero { padding:60px 0;min-height:auto; }.hero-grid { gap:42px;width:100%;overflow:hidden; }.hero-copy,.product-shot { width:100%;min-width:0; }.hero-copy h1 { font-size:clamp(42px,13vw,56px);overflow-wrap:anywhere; }.release-pill { font-size:11px;max-width:100%; }.hero-cta { width:100%; }.hero-cta .btn { flex:1 1 210px;justify-content:center; }.shot-chrome .chrome-nav { display:none; }.shot-chrome { justify-content:space-between; }.dash-grid { grid-template-columns:1fr; }.services-panel { display:none; }.metric-row { grid-template-columns:1fr 1fr; }.metric:last-child { display:none; }.trust-inner { overflow-x:auto;justify-content:flex-start;padding-block:18px; }.trust-inner span { min-width:130px; }.trust-inner span:nth-of-type(2) { min-width:225px; }.split-heading { flex-direction:column;align-items:flex-start;margin-bottom:30px; }.cap-grid,.vpn-grid { grid-template-columns:1fr; }.cap-card { min-height:250px; }.cloud-section,.be-section,.capabilities,.vpn-section,.security-section,.open-section { padding:75px 0; }.cloud-options { grid-template-columns:1fr; }.cloud-specs { grid-template-columns:1fr; }.cloud-specs div { border-right:0;border-bottom:1px solid #2e394b; }.cloud-specs div:last-child { border-bottom:0; }.cloud-actions { align-items:flex-start;flex-direction:column; }.cloud-actions .btn { width:100%;justify-content:center; }.security-visual { min-height:380px; }.threat-card { right:0; }.security-list { grid-template-columns:1fr; }.pipeline { grid-template-columns:1fr; }.open-actions { flex-direction:column; }.cta-box { padding:34px 25px; }.cta-actions { flex-direction:column;width:100%; }.cta-actions .btn { justify-content:center; }.be-current { margin:12px; }.timeline { padding-inline:17px; }.timeline-line { left:25px; }.snapshot { grid-template-columns:19px 1fr; }.snapshot>span,.snapshot>button { display:none; }

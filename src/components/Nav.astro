@@ -1,6 +1,9 @@
 ---
+import { apps } from '../data/apps';
+
 const GITHUB = 'https://github.com/FreeSense-org';
 const DOCS = 'https://docs.freesense.org';
+const path = Astro.url.pathname;
 ---
 
 <header class="nav">
@@ -16,7 +19,27 @@ const DOCS = 'https://docs.freesense.org';
 
     <nav class="nav-links">
       <a href="/#features">Features</a>
+      <div class="apps-menu">
+        <button type="button" class="apps-trigger" class:list={[{ active: path.startsWith('/apps') }]} aria-haspopup="true">
+          Apps
+          <svg viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" /></svg>
+        </button>
+        <div class="apps-panel">
+          <span class="apps-label">The FreeSense family</span>
+          {apps.map((app) => (
+            <a href={`/apps/${app.slug}`} class="apps-item">
+              <img src={app.logo} alt="" width="40" height="40" loading="lazy" />
+              <span>
+                <strong>{app.name}{app.isNew && <em>New</em>}</strong>
+                <small>{app.tagline}</small>
+              </span>
+            </a>
+          ))}
+          <a href="/apps" class="apps-all">All apps <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
       <a href="/download">Download</a>
+      <a href="/news" class:list={[{ active: path.startsWith('/news') }]}>News</a>
       <a href="/about">About</a>
       <a href={DOCS}>Docs</a>
       <a href={GITHUB} class="gh" rel="noopener">GitHub</a>
@@ -43,12 +66,39 @@ const DOCS = 'https://docs.freesense.org';
   .brand { display: flex; align-items: center; }
   .brand img { display: block; }
   .nav-links { display: flex; align-items: center; gap: 26px; }
-  .nav-links a { color: var(--muted); font-size: 15.5px; font-weight: 500; }
-  .nav-links a:hover { color: var(--text); }
+  .nav-links > a, .apps-trigger { color: var(--muted); font-size: 15.5px; font-weight: 500; }
+  .nav-links > a:hover, .apps-trigger:hover, .nav-links .active { color: var(--text); }
   .nav-cta { color: #fff !important; }
   .nav-toggle, .nav-burger { display: none; }
 
-  @media (max-width: 760px) {
+  .apps-menu { position: relative; }
+  .apps-trigger {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: none; border: 0; padding: 0; font-family: inherit; cursor: pointer;
+  }
+  .apps-trigger svg { width: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform .18s; }
+  .apps-panel {
+    position: absolute; top: calc(100% + 14px); left: 50%;
+    width: 320px; padding: 12px;
+    background: var(--ink-3); border: 1px solid var(--border-2); border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
+    opacity: 0; visibility: hidden; transform: translate(-50%, -6px);
+    transition: opacity .16s, transform .16s, visibility .16s;
+  }
+  .apps-panel::before { content: ''; position: absolute; inset: -16px 0 auto; height: 16px; }
+  .apps-menu:hover .apps-panel, .apps-menu:focus-within .apps-panel { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+  .apps-menu:hover .apps-trigger svg, .apps-menu:focus-within .apps-trigger svg { transform: rotate(180deg); }
+  .apps-label { display: block; padding: 4px 8px 8px; color: var(--muted-2); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+  .apps-item { display: flex; gap: 12px; align-items: center; padding: 10px; border-radius: 10px; color: var(--text); }
+  .apps-item:hover { background: var(--ink-4); color: var(--text); }
+  .apps-item img { border-radius: 10px; flex: none; }
+  .apps-item strong, .apps-item small { display: block; }
+  .apps-item strong { font-size: 15px; }
+  .apps-item em { font-style: normal; font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: linear-gradient(135deg, #22c7f0, #c23ad6); border-radius: 999px; padding: 2px 7px; margin-left: 8px; vertical-align: 2px; }
+  .apps-item small { color: var(--muted); font-size: 13px; line-height: 1.4; }
+  .apps-all { display: block; margin-top: 6px; padding: 10px 10px 4px; border-top: 1px solid var(--border); font-size: 14px; font-weight: 600; }
+
+  @media (max-width: 860px) {
     .nav-burger {
       display: flex; flex-direction: column; gap: 5px;
       cursor: pointer; padding: 8px;
@@ -62,8 +112,15 @@ const DOCS = 'https://docs.freesense.org';
       background: var(--ink-2); border-bottom: 1px solid var(--border);
       max-height: 0; overflow: hidden; transition: max-height 0.25s ease;
     }
-    .nav-links a { padding: 15px 24px; border-top: 1px solid var(--border); }
+    .nav-links > a { padding: 15px 24px; border-top: 1px solid var(--border); }
+    .apps-trigger { display: none; }
+    .apps-panel {
+      position: static; width: auto; padding: 8px 14px; border: 0; border-top: 1px solid var(--border); border-radius: 0;
+      background: none; box-shadow: none; opacity: 1; visibility: visible; transform: none;
+    }
+    .apps-panel::before { display: none; }
+    .apps-all { border-top: 0; margin: 0; padding: 4px 10px 8px; }
     .nav-cta { margin: 14px 24px; justify-content: center; }
-    .nav-toggle:checked ~ .nav-links { max-height: 360px; }
+    .nav-toggle:checked ~ .nav-links { max-height: 680px; }
   }
 </style>

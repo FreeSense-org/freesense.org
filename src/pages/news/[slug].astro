@@ -1,0 +1,67 @@
+---
+import Base from '../../layouts/Base.astro';
+import { news, formatDate } from '../../data/news';
+import type { NewsPost } from '../../data/news';
+
+export function getStaticPaths() {
+  return news.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: NewsPost };
+const others = news.filter((p) => p.slug !== post.slug).slice(0, 2);
+---
+
+<Base title={`${post.title} — FreeSense News`} description={post.summary}>
+  <article class="post">
+    <div class="wrap narrow">
+      <a href="/news" class="back">← All news</a>
+      <div class="meta"><span class="tag">{post.tag}</span><time datetime={post.date}>{formatDate(post.date)}</time></div>
+      <h1>{post.title}</h1>
+      <p class="lede">{post.summary}</p>
+    </div>
+    {post.image && (
+      <div class="wrap wide"><img class="cover" src={post.image} alt={post.imageAlt ?? ''} /></div>
+    )}
+    <div class="wrap narrow">
+      <div class="body" set:html={post.body} />
+      {post.link && <a href={post.link.href} class="btn btn-primary cta">{post.link.label} →</a>}
+    </div>
+  </article>
+
+  {others.length > 0 && (
+    <section class="more">
+      <div class="wrap narrow">
+        <h2>More news</h2>
+        {others.map((p) => (
+          <a href={`/news/${p.slug}`} class="more-item">
+            <time datetime={p.date}>{formatDate(p.date)}</time>
+            <strong>{p.title}</strong>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .post { padding: 70px 0 30px; }
+  .narrow { max-width: 780px; }
+  .wide { max-width: 1080px; }
+  .back { font-size: 14px; color: var(--muted); }
+  .back:hover { color: var(--text); }
+  .meta { display: flex; gap: 12px; align-items: center; font-size: 13px; color: var(--muted-2); margin-top: 26px; }
+  .tag { color: var(--coral-hi); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; font-size: 11.5px; border: 1px solid rgba(255,107,74,.3); background: var(--coral-soft); border-radius: 999px; padding: 2px 9px; }
+  h1 { font-size: clamp(32px, 4.6vw, 52px); letter-spacing: -.04em; margin: 16px 0 14px; }
+  .lede { color: var(--muted); font-size: 19px; margin: 0 0 34px; }
+  .cover { display: block; width: 100%; border-radius: 16px; border: 1px solid #344257; box-shadow: 0 30px 80px rgba(0,0,0,.45); margin-bottom: 40px; }
+  .body :global(p) { color: #c3ccd8; font-size: 17px; line-height: 1.75; }
+  .body :global(h2) { font-size: 25px; margin: 38px 0 10px; }
+  .body :global(strong) { color: var(--text); }
+  .cta { margin-top: 18px; }
+  .more { padding: 30px 0 60px; }
+  .more h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted-2); margin: 0 0 12px; }
+  .more-item { display: flex; gap: 18px; align-items: baseline; padding: 16px 0; border-top: 1px solid var(--border); color: var(--text); }
+  .more-item:hover { color: var(--coral-hi); }
+  .more-item time { flex: none; width: 140px; color: var(--muted-2); font-size: 13px; }
+  @media (max-width: 600px) { .more-item { flex-direction: column; gap: 4px; } }
+</style>

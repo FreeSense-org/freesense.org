@@ -1,0 +1,211 @@
+---
+// Homepage "what's new" carousel. Auto-advances, pauses on hover/focus,
+// supports swipe and arrow keys, and never autoplays under reduced motion.
+export interface Slide {
+  id: string;
+  eyebrow: string;
+  title: string;
+  body: string;
+  href: string;
+  cta: string;
+  secondary?: { href: string; label: string };
+  image?: string;
+  imageAlt?: string;
+  visual?: 'stable' | 'cloud' | 'arm';
+  theme?: 'coral' | 'spider';
+}
+interface Props { slides: Slide[]; interval?: number }
+const { slides, interval = 7000 } = Astro.props;
+---
+
+<section class="slider-section" aria-label="What's new">
+  <div class="wrap">
+    <div class="slider" data-interval={interval} aria-roledescription="carousel">
+      <div class="slider-viewport">
+        <div class="slider-track">
+          {slides.map((s, i) => (
+            <article class:list={['slide', `theme-${s.theme ?? 'coral'}`]} role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${slides.length}`} aria-hidden={i === 0 ? 'false' : 'true'} data-slide={s.id}>
+              <div class="slide-copy">
+                <span class="slide-eyebrow">{s.eyebrow}</span>
+                <h2>{s.title}</h2>
+                <p>{s.body}</p>
+                <div class="slide-actions">
+                  <a href={s.href} class="btn slide-btn" tabindex={i === 0 ? 0 : -1}>{s.cta} <span aria-hidden="true">→</span></a>
+                  {s.secondary && <a href={s.secondary.href} class="slide-link" tabindex={i === 0 ? 0 : -1}>{s.secondary.label}</a>}
+                </div>
+              </div>
+              <div class="slide-visual">
+                {s.image && <img src={s.image} alt={s.imageAlt ?? ''} loading={i === 0 ? 'eager' : 'lazy'} />}
+                {s.visual === 'stable' && (
+                  <div class="v-stable">
+                    <span class="v-label">STABLE CHANNEL</span>
+                    <strong data-live="stable-version">1.0</strong>
+                    <div class="v-chips"><span>✓ Signed</span><span>✓ Supported</span><span>✓ amd64</span></div>
+                  </div>
+                )}
+                {s.visual === 'cloud' && (
+                  <div class="v-cloud">
+                    {['Proxmox', 'OpenStack', 'QEMU / KVM', 'bhyve'].map((p) => <span>{p}</span>)}
+                    <div class="v-disks"><b>UFS</b><b>ZFS</b><small>QCOW2 · RAW GPT · BIOS · UEFI</small></div>
+                  </div>
+                )}
+                {s.visual === 'arm' && (
+                  <div class="v-arm">
+                    <div class="v-board"><i></i><i></i><i></i><span>ARM64</span></div>
+                    <div class="v-chips"><span>Generic UEFI</span><span>Pi 4B</span><span>Pi 5 D0</span></div>
+                    <small>Experimental · labs and testing</small>
+                  </div>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+      <div class="slider-controls">
+        <button type="button" class="slider-arrow" data-dir="-1" aria-label="Previous slide">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>
+        </button>
+        <div class="slider-dots">
+          {slides.map((s, i) => (
+            <button type="button" class="dot" data-index={i} aria-label={`Show slide ${i + 1}: ${s.title}`} aria-current={i === 0 ? 'true' : 'false'}><span></span></button>
+          ))}
+        </div>
+        <button type="button" class="slider-arrow" data-dir="1" aria-label="Next slide">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  for (const slider of document.querySelectorAll<HTMLElement>('.slider')) {
+    const track = slider.querySelector<HTMLElement>('.slider-track')!;
+    const slides = [...slider.querySelectorAll<HTMLElement>('.slide')];
+    const dots = [...slider.querySelectorAll<HTMLButtonElement>('.dot')];
+    const interval = Number(slider.dataset.interval) || 7000;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let index = 0;
+    let timer: number | undefined;
+    let paused = false;
+
+    const go = (next: number) => {
+      index = (next + slides.length) % slides.length;
+      track.style.transform = `translateX(-${index * 100}%)`;
+      slides.forEach((slide, i) => {
+        slide.setAttribute('aria-hidden', String(i !== index));
+        slide.querySelectorAll('a').forEach((a) => (a.tabIndex = i === index ? 0 : -1));
+      });
+      dots.forEach((dot, i) => dot.setAttribute('aria-current', String(i === index)));
+      restart();
+    };
+    const restart = () => {
+      window.clearTimeout(timer);
+      slider.style.setProperty('--slide-ms', `${interval}ms`);
+      slider.classList.remove('running');
+      void slider.offsetWidth; // restart the dot progress animation
+      if (reduced || paused || document.hidden) return;
+      slider.classList.add('running');
+      timer = window.setTimeout(() => go(index + 1), interval);
+    };
+    const pause = (value: boolean) => { paused = value; restart(); };
+
+    slider.querySelectorAll<HTMLButtonElement>('.slider-arrow').forEach((b) => b.addEventListener('click', () => go(index + Number(b.dataset.dir))));
+    dots.forEach((dot) => dot.addEventListener('click', () => go(Number(dot.dataset.index))));
+    slider.addEventListener('mouseenter', () => pause(true));
+    slider.addEventListener('mouseleave', () => pause(slider.contains(document.activeElement)));
+    slider.addEventListener('focusin', () => pause(true));
+    slider.addEventListener('focusout', (e) => { if (!slider.contains(e.relatedTarget as Node)) pause(false); });
+    slider.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') go(index + 1);
+      if (e.key === 'ArrowLeft') go(index - 1);
+    });
+    document.addEventListener('visibilitychange', restart);
+
+    let startX = 0;
+    let startY = 0;
+    track.addEventListener('pointerdown', (e) => { startX = e.clientX; startY = e.clientY; });
+    track.addEventListener('pointerup', (e) => {
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(e.clientY - startY)) go(index + (dx < 0 ? 1 : -1));
+    });
+
+    restart();
+  }
+
+  // Live version labels: FreeSense Stable from the release feed, NetSpider from GitHub Releases.
+  fetch('/releases/stable.json').then((r) => (r.ok ? r.json() : null)).then((release) => {
+    const el = document.querySelector('[data-live="stable-version"]');
+    if (el && typeof release?.version === 'string' && /^[0-9.]+$/.test(release.version)) el.textContent = release.version;
+  }).catch(() => {});
+  fetch('/apps/netspider/releases.json').then((r) => (r.ok ? r.json() : null)).then((feed) => {
+    const eyebrow = document.querySelector('[data-slide="netspider"] .slide-eyebrow');
+    if (eyebrow && typeof feed?.latest === 'string' && /^v?[0-9A-Za-z.-]+$/.test(feed.latest)) {
+      eyebrow.textContent = `New app · NetSpider ${feed.latest}`;
+    }
+  }).catch(() => {});
+</script>
+
+<style>
+  .slider-section { padding: 70px 0 30px; }
+  .slider { position: relative; }
+  .slider-viewport { overflow: hidden; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 30px 80px rgba(0,0,0,.35); }
+  .slider-track { display: flex; transition: transform .6s cubic-bezier(.65,0,.25,1); touch-action: pan-y; }
+  .slide { flex: 0 0 100%; min-width: 0; display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: 40px; min-height: 430px; padding: 44px 48px; }
+  .theme-coral { background: radial-gradient(circle at 85% 15%, rgba(234,79,45,.22), transparent 42%), linear-gradient(135deg, #1c2431, #141a24); }
+  .theme-spider { background: radial-gradient(circle at 80% 20%, rgba(194,58,214,.25), transparent 42%), radial-gradient(circle at 15% 85%, rgba(34,199,240,.18), transparent 45%), linear-gradient(135deg, #141c2a, #10151f); }
+  .slide-eyebrow { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 4px 11px; border-radius: 999px; color: var(--coral-hi); background: var(--coral-soft); border: 1px solid rgba(255,107,74,.3); }
+  .theme-spider .slide-eyebrow { color: #7fe1f8; background: rgba(34,199,240,.1); border-color: rgba(34,199,240,.35); }
+  .slide h2 { font-size: clamp(30px, 3.6vw, 46px); letter-spacing: -.045em; margin: 18px 0 14px; }
+  .slide-copy p { color: var(--muted); font-size: 17px; margin: 0; max-width: 520px; }
+  .slide-actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 28px; }
+  .slide-btn { background: linear-gradient(135deg, var(--coral-hi), var(--coral)); color: #fff; box-shadow: 0 12px 30px rgba(234,79,45,.22); }
+  .slide-btn:hover { color: #fff; transform: translateY(-2px); }
+  .theme-spider .slide-btn { background: linear-gradient(120deg, #1ab6e0, #a92fc4); box-shadow: 0 12px 30px rgba(34,199,240,.2); }
+  .slide-link { font-weight: 600; font-size: 15px; color: var(--muted); }
+  .slide-link:hover { color: var(--text); }
+  .slide-visual { min-width: 0; display: grid; place-items: center; }
+  .slide-visual img { width: 100%; height: auto; border-radius: 14px; border: 1px solid rgba(120,140,170,.25); box-shadow: 0 24px 60px rgba(0,0,0,.5), 0 0 60px rgba(34,199,240,.12); }
+
+  .v-stable, .v-cloud, .v-arm { width: 100%; max-width: 460px; border: 1px solid #354157; border-radius: 18px; background: rgba(17,23,32,.75); padding: 30px; text-align: center; }
+  .v-label { color: var(--good); font: 11px var(--mono); letter-spacing: .12em; }
+  .v-stable strong { display: block; font-size: clamp(80px, 10vw, 128px); line-height: 1; letter-spacing: -.06em; margin: 14px 0 20px; background: linear-gradient(180deg, #fff, #ff8c70); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .v-chips { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .v-chips span { font-size: 13px; color: #cbd3de; border: 1px solid #3b485c; border-radius: 999px; padding: 4px 12px; background: #1a2230; }
+  .v-cloud { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .v-cloud > span { padding: 16px; border: 1px solid #354157; border-radius: 12px; background: #171f2b; font-weight: 600; }
+  .v-disks { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 6px; }
+  .v-disks b { font: 700 18px var(--mono); padding: 10px 18px; border-radius: 10px; border: 1px solid rgba(62,207,142,.4); color: var(--good); background: rgba(62,207,142,.08); }
+  .v-disks small { width: 100%; color: var(--muted-2); font: 11px var(--mono); }
+  .v-board { position: relative; height: 150px; margin: 0 auto 20px; max-width: 260px; border-radius: 14px; background: linear-gradient(135deg, #1f6f4e, #134a35); border: 1px solid #2f8a63; display: grid; place-items: center; }
+  .v-board span { font: 700 22px var(--mono); color: #e7fff3; padding: 14px 18px; border-radius: 8px; background: #0f1a15; border: 1px solid #3aa577; }
+  .v-board i { position: absolute; width: 22px; height: 14px; border-radius: 3px; background: #c9d2dc; right: -8px; }
+  .v-board i:nth-child(1) { top: 26px; } .v-board i:nth-child(2) { top: 66px; } .v-board i:nth-child(3) { top: 106px; }
+  .v-arm small { display: block; color: #f6c85f; font-size: 12px; margin-top: 14px; }
+
+  .slider-controls { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 18px; }
+  .slider-arrow { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-2); background: #171f2b; color: var(--text); display: grid; place-items: center; cursor: pointer; transition: border-color .15s; }
+  .slider-arrow:hover { border-color: var(--coral); }
+  .slider-arrow svg { width: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .slider-dots { display: flex; gap: 8px; }
+  .dot { width: 34px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dot span { position: relative; display: block; width: 100%; height: 4px; border-radius: 4px; background: #354157; overflow: hidden; }
+  .dot[aria-current="true"] span::after { content: ''; position: absolute; inset: 0; background: var(--coral-hi); transform-origin: left; }
+  .slider.running .dot[aria-current="true"] span::after { animation: progress var(--slide-ms, 7000ms) linear forwards; }
+  @keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  @media (prefers-reduced-motion: reduce) { .slider-track { transition: none; } }
+  @media (max-width: 900px) {
+    .slide { grid-template-columns: 1fr; gap: 28px; padding: 32px 26px; align-content: start; }
+    .slide-visual { order: -1; }
+    .v-stable, .v-cloud, .v-arm { padding: 20px; }
+    .v-stable strong { font-size: 72px; margin: 8px 0 12px; }
+    .v-board { height: 100px; }
+  }
+  @media (max-width: 520px) {
+    .slider-section { padding: 46px 0 10px; }
+    .slide { padding: 24px 20px; }
+    .v-cloud { display: none; }
+    .slide-visual:has(.v-cloud) { display: none; }
+  }
+</style>

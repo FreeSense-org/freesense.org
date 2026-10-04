@@ -1,0 +1,67 @@
+---
+import Base from '../../layouts/Base.astro';
+import { apps } from '../../data/apps';
+---
+
+<Base
+  title="Apps — the FreeSense family"
+  description="Free, open-source apps from the FreeSense project that work alongside your firewall."
+>
+  <section class="apps-hero">
+    <div class="wrap">
+      <span class="eyebrow">The FreeSense family</span>
+      <h1>More than a firewall.</h1>
+      <p class="lede">FreeSense protects the edge of your network. These open-source companion apps help you understand everything behind it.</p>
+    </div>
+  </section>
+
+  <section class="apps-list">
+    <div class="wrap">
+      {apps.map((app) => (
+        <a href={`/apps/${app.slug}`} class="app-card">
+          <div class="app-copy">
+            <div class="app-title">
+              <img src={app.logo} alt="" width="64" height="64" />
+              <div>
+                <h2>{app.name}{app.isNew && <em>New</em>}</h2>
+                <small>{app.platform}</small>
+              </div>
+            </div>
+            <p class="app-tagline">{app.tagline}</p>
+            <p>{app.summary}</p>
+            <span class="app-more">Explore {app.name} <span aria-hidden="true">→</span></span>
+          </div>
+          <div class="app-shot"><img src={app.hero} alt={`${app.name} screenshot`} loading="lazy" /></div>
+        </a>
+      ))}
+      <div class="apps-soon">
+        <strong>More on the way</strong>
+        <span>Have an idea for a FreeSense companion app? <a href="https://github.com/FreeSense-org" rel="noopener">Join us on GitHub</a>.</span>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .apps-hero { padding: 80px 0 20px; }
+  .apps-hero h1 { font-size: clamp(40px, 6vw, 68px); letter-spacing: -.05em; margin: 12px 0 0; }
+  .lede { color: var(--muted); font-size: 19px; max-width: 640px; margin: 18px 0 0; }
+  .apps-list { padding: 40px 0 80px; }
+  .app-card { display: grid; grid-template-columns: .9fr 1.1fr; gap: 40px; align-items: center; padding: 34px; border: 1px solid var(--border); border-radius: 22px; background: radial-gradient(circle at 90% 10%, rgba(194,58,214,.13), transparent 40%), radial-gradient(circle at 10% 90%, rgba(34,199,240,.1), transparent 40%), linear-gradient(135deg, #1a2230, #141a24); color: var(--text); transition: border-color .2s, transform .2s; }
+  .app-card:hover { color: var(--text); border-color: rgba(34,199,240,.45); transform: translateY(-3px); }
+  .app-title { display: flex; gap: 16px; align-items: center; }
+  .app-title img { border-radius: 14px; }
+  .app-title h2 { font-size: 34px; margin: 0; letter-spacing: -.03em; }
+  .app-title em { font-style: normal; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: linear-gradient(135deg, #22c7f0, #c23ad6); border-radius: 999px; padding: 3px 9px; margin-left: 10px; vertical-align: 8px; }
+  .app-title small { color: var(--muted-2); font-size: 13px; }
+  .app-tagline { font-size: 21px; font-weight: 600; margin: 22px 0 8px; }
+  .app-copy > p:not(.app-tagline) { color: var(--muted); margin: 0; }
+  .app-more { display: inline-block; margin-top: 22px; color: #4fd3f5; font-weight: 600; }
+  .app-shot { border-radius: 14px; overflow: hidden; border: 1px solid #344257; box-shadow: 0 30px 70px rgba(0,0,0,.45); }
+  .app-shot img { display: block; width: 100%; height: auto; }
+  .apps-soon { margin-top: 18px; padding: 22px 26px; border: 1px dashed var(--border-2); border-radius: 16px; display: flex; gap: 14px; flex-wrap: wrap; color: var(--muted); font-size: 15px; }
+  .apps-soon strong { color: var(--text); }
+  @media (max-width: 900px) {
+    .app-card { grid-template-columns: 1fr; padding: 24px; gap: 26px; }
+  }
+</style>

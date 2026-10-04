@@ -104,3 +104,16 @@ section { padding: 72px 0; position: relative; z-index: 1; }
   body { font-size: 16px; }
   section { padding: 52px 0; }
 }
+
+/* Release change-type chips (homepage live data) */
+.chg { flex: none; display: inline-block; min-width: 64px; text-align: center; font: 600 10px var(--mono); letter-spacing: .04em; text-transform: uppercase; padding: 3px 7px; border-radius: 6px; color: #cbd3de; background: #243042; border: 1px solid #34425a; }
+.chg-security { color: #ff8c70; background: rgba(234,79,45,.12); border-color: rgba(234,79,45,.35); }
+.chg-fix { color: #f6c85f; background: rgba(246,200,95,.1); border-color: rgba(246,200,95,.3); }
+.chg-feature { color: var(--good); background: rgba(62,207,142,.1); border-color: rgba(62,207,142,.3); }
+.chg-ui { color: #7cc8ff; background: rgba(80,183,255,.1); border-color: rgba(80,183,255,.3); }
+.chg-package { color: #c4b5fd; background: rgba(167,139,250,.1); border-color: rgba(167,139,250,.3); }
+
+/* Skeleton shimmer while live data loads */
+.skel { display: block; height: 12px; border-radius: 6px; background: linear-gradient(90deg, #1d2634 25%, #263244 50%, #1d2634 75%); background-size: 200% 100%; animation: skel 1.4s ease infinite; }
+@keyframes skel { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .skel { animation: none; } }

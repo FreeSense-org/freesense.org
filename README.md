@@ -48,9 +48,12 @@ remain accepted. This
 repository contains no release metadata; the hourly workflow only verifies that the website
 responses match the canonical documents.
 
-Stable is the supported, immutable 1.0.x line. Necessary maintenance or security updates are
-published as explicit patch releases such as 1.0.1. Development is the rolling 1.1 line: it is
-experimental, intended for test and lab use, and has no support commitment. Stable and Development
+Stable is the supported, immutable 1.1.x line, which replaced 1.0.x with the 1.1.0 release.
+Necessary maintenance or security updates are published as explicit patch releases such as 1.1.1.
+Development is the rolling 1.2 line: it is experimental, intended for test and lab use, and has no
+support commitment. Upgrading from 1.0 to 1.1 is one-way; an installed 1.1 system is never offered
+a downgrade to 1.0. Raspberry Pi appliance images are published on the Development line only, so
+the download page never offers them under Stable. Stable and Development
 are independent; publishing either document never overwrites the other.
 
 ## Deploy (Cloudflare Pages)

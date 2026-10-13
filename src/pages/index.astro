@@ -17,8 +17,14 @@ const slides: Slide[] = [
     href: '/download', cta: 'Download FreeSense', secondary: { href: DOCS, label: 'Explore the docs' }, visual: 'dashboard',
   },
   {
-    id: 'devel', label: 'Live development', theme: 'green', eyebrow: 'Development 1.1 · built in public',
-    title: 'Watch 1.1', accent: 'take shape.',
+    id: 'release-1-1', label: 'FreeSense 1.1', theme: 'coral', eyebrow: 'FreeSense 1.1 · now Stable',
+    title: '1.1 is here.', accent: 'Stable, signed, supported.',
+    body: 'A REST API, custom package repositories, a rebuilt Package Manager, a reworked WebUI with grouped menus and menu search, VXLAN, and encrypted remote backups. FreeSense 1.1 replaces 1.0 as the supported line.',
+    href: '/news/freesense-1-1-stable', cta: "See what's new", secondary: { href: DOCS + '/releases/1.1.0/', label: 'Release notes' }, visual: 'stable',
+  },
+  {
+    id: 'devel', label: 'Live development', theme: 'green', eyebrow: 'Development 1.2 · built in public',
+    title: 'Watch 1.2', accent: 'take shape.',
     body: 'The rolling Development line is rebuilt from source automatically. These are the newest changes, straight from the build pipeline. Experimental and unsupported, so keep it for the lab.',
     href: '#live', cta: 'See the live pipeline', secondary: { href: '/download', label: 'Try a dev build' }, visual: 'devel',
   },
@@ -45,7 +51,7 @@ const slides: Slide[] = [
   {
     id: 'arm', label: 'ARM64', theme: 'green', eyebrow: 'Preview',
     title: 'FreeSense on ARM64', accent: 'and Raspberry Pi.',
-    body: 'Try the generic ARM64 UEFI installer or the Raspberry Pi 4B and Pi 5 D0 appliance images. Experimental and unsupported, made for labs.',
+    body: 'Try the generic ARM64 UEFI installer or the Raspberry Pi 4B and Pi 5 D0 appliance images from the Development line. Experimental and unsupported, made for labs.',
     href: '/download', cta: 'See ARM64 downloads', secondary: { href: '/news/raspberry-pi-arm64-preview', label: 'Read the details' }, visual: 'arm',
   },
 ];
@@ -56,6 +62,17 @@ const vpns = [
   { name: 'IPsec', color: '#a78bfa' },
   { name: 'Tailscale', color: '#42d392' },
   { name: 'ZeroTier', color: '#f6c85f' },
+];
+
+const highlights = [
+  { tag: 'Automation', title: 'REST API', href: '/api/overview/', body: 'Drive the firewall from scripts and tools, with per-user privileges and a built-in API Explorer.' },
+  { tag: 'Packages', title: 'Custom repositories', href: '/packages/custom-repositories/', body: 'Add your own package repositories. FreeSense keeps them below the official ones and away from system upgrades.' },
+  { tag: 'Packages', title: 'Rebuilt Package Manager', href: '/packages/installing-packages/', body: 'Filters, a source column, and a review step before anything is installed or removed.' },
+  { tag: 'WebUI', title: 'Faster to find, faster to use', href: '/releases/whats-new-1.1/', body: 'Grouped top menus, Ctrl+K menu search, and rebuilt pages across the interface and packages.' },
+  { tag: 'Networking', title: 'VXLAN interfaces', href: '/configure/interfaces-vlans-bridges/#vxlan', body: 'Stretch layer 2 across routed networks with native VXLAN, alongside VLANs, bridges and tunnels.' },
+  { tag: 'Backups', title: 'Encrypted remote backups', href: '/base-os/system-administration/', body: 'Send encrypted configuration backups to S3-compatible storage, WebDAV or SFTP.' },
+  { tag: 'Packages', title: 'Threat Shield & DNS Protection', href: '/packages/threat-shield/', body: 'A new package for DNS-level protection and blocklists, replacing pfBlockerNG.' },
+  { tag: 'Security', title: 'Security fixes', href: '/releases/1.1.0/#security', body: 'Fixes for the upstream security advisories SA-26_05 to SA-26_20, plus code-scanning hardening across the WebUI.' },
 ];
 
 const latestNews = news.slice(0, 3);
@@ -69,8 +86,8 @@ const latestNews = news.slice(0, 3);
 
   <section class="pulse" aria-label="Live project status">
     <div class="wrap pulse-inner">
-      <a href="/download" class="pulse-item"><span class="pulse-dot good"></span><small>Stable</small><b data-live="stable-version">1.0</b><em data-live="stable-ago"></em></a>
-      <a href="#live" class="pulse-item"><span class="pulse-dot dev"></span><small>Development</small><b data-live="devel-version">1.1 dev</b><em data-live="devel-ago"></em></a>
+      <a href="/download" class="pulse-item"><span class="pulse-dot good"></span><small>Stable</small><b data-live="stable-version">1.1</b><em data-live="stable-ago"></em></a>
+      <a href="#live" class="pulse-item"><span class="pulse-dot dev"></span><small>Development</small><b data-live="devel-version">1.2 dev</b><em data-live="devel-ago"></em></a>
       <a href="/download" class="pulse-item"><span class="pulse-dot dev"></span><small>ARM64 dev build</small><b>aarch64</b><em data-live="arm-ago"></em></a>
       <a href="/apps/netspider" class="pulse-item"><span class="pulse-dot ns"></span><small>NetSpider</small><b data-live="netspider-version">v{netspider.version}</b><em>Windows</em></a>
       <a href="https://github.com/freebsd/freebsd-src" class="pulse-item" rel="noopener"><span class="pulse-dot"></span><small>FreeBSD 16 pin</small><b><code data-live="freebsd-pin">pinned</code></b><em>ZFS recommended · UFS supported</em></a>
@@ -88,18 +105,18 @@ const latestNews = news.slice(0, 3);
         <article class="channel stable" id="live-stable">
           <header>
             <span class="ch-badge">Stable · Supported</span>
-            <div class="ch-title"><strong class="ch-version">1.0</strong><span>released <time class="ch-when">recently</time></span></div>
+            <div class="ch-title"><strong class="ch-version">1.1</strong><span>released <time class="ch-when">recently</time></span></div>
           </header>
           <ul class="ch-changes"><li><span class="skel" style="width:88%"></span></li><li><span class="skel" style="width:72%"></span></li><li><span class="skel" style="width:80%"></span></li></ul>
           <div class="ch-stats"></div>
           <div class="ch-images"></div>
-          <footer><a href="/download" class="btn btn-primary">Download Stable</a><a href="/download#release-channels">Full release notes →</a></footer>
+          <footer><a href="/download" class="btn btn-primary">Download Stable</a><a href={DOCS + '/releases/stable/'}>Release notes →</a></footer>
         </article>
 
         <article class="channel devel" id="live-devel">
           <header>
             <span class="ch-badge">Development · Experimental</span>
-            <div class="ch-title"><strong class="ch-version">1.1 dev</strong><span>built <time class="ch-when">recently</time></span></div>
+            <div class="ch-title"><strong class="ch-version">1.2 dev</strong><span>built <time class="ch-when">recently</time></span></div>
           </header>
           <ul class="ch-changes"><li><span class="skel" style="width:84%"></span></li><li><span class="skel" style="width:90%"></span></li><li><span class="skel" style="width:66%"></span></li></ul>
           <div class="ch-stats"></div>
@@ -130,6 +147,29 @@ const latestNews = news.slice(0, 3);
     </div>
   </section>
 
+  <section id="whats-new" class="whatsnew">
+    <div class="wrap">
+      <div class="heading split">
+        <div><span class="eyebrow">New in FreeSense 1.1</span><h2>A big step forward.</h2></div>
+        <p>FreeSense 1.1 replaces 1.0 as the supported Stable line. Upgrade from the console or the WebUI; moving from 1.0 to 1.1 is one-way.</p>
+      </div>
+      <div class="wn-grid">
+        {highlights.map((h) => (
+          <a href={DOCS + h.href} class="wn-card">
+            <span class="wn-tag">{h.tag}</span>
+            <h3>{h.title}</h3>
+            <p>{h.body}</p>
+          </a>
+        ))}
+      </div>
+      <div class="wn-actions">
+        <a href={DOCS + '/releases/whats-new-1.1/'} class="btn btn-primary">Tour what's new</a>
+        <a href={DOCS + '/guides/upgrading-from-1.0/'} class="btn btn-ghost">Upgrade from 1.0</a>
+        <a href={DOCS + '/releases/1.1.0/'} class="wn-link">Full release notes →</a>
+      </div>
+    </div>
+  </section>
+
   <section id="features" class="platform">
     <div class="wrap">
       <div class="heading centered"><span class="eyebrow">The platform</span><h2>One system. Your entire edge.</h2><p>From a quiet home lab to a multi-gigabit branch, FreeSense puts routing, security, VPN and observability in one coherent interface.</p></div>
@@ -145,7 +185,7 @@ const latestNews = news.slice(0, 3);
         <article class="tile t-security">
           <div class="radar" aria-hidden="true"><div class="radar-sweep"></div><span class="node n1"></span><span class="node n2"></span><span class="node n3"></span><div class="radar-core"></div></div>
           <h3>See the threat. Stop it at the edge.</h3>
-          <div class="sec-list"><span><b>Suricata 8</b>IDS / IPS</span><span><b>CrowdSec</b>Threat intel</span><span><b>pfBlockerNG</b>IP + DNS lists</span><span><b>ACME</b>Certificates</span></div>
+          <div class="sec-list"><span><b>Suricata 8</b>IDS / IPS</span><span><b>CrowdSec</b>Threat intel</span><span><b>Threat Shield</b>DNS protection</span><span><b>ACME</b>Certificates</span></div>
         </article>
 
         <article class="tile t-vpn">
@@ -241,6 +281,19 @@ const latestNews = news.slice(0, 3);
   .eyebrow { display: inline-flex; align-items: center; gap: 8px; }
   .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 0 rgba(62,207,142,.5); animation: ping 2s infinite; }
   @keyframes ping { 70% { box-shadow: 0 0 0 9px rgba(62,207,142,0); } 100% { box-shadow: 0 0 0 0 rgba(62,207,142,0); } }
+
+  /* What's new in 1.1 */
+  .whatsnew { padding-top: 90px; }
+  .wn-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .wn-card { display: flex; flex-direction: column; gap: 10px; border: 1px solid var(--border); border-radius: 18px; padding: 24px; background: linear-gradient(150deg, #1a2230, #151c26); color: var(--text); min-width: 0; transition: border-color .2s, transform .2s; }
+  .wn-card:hover { border-color: var(--coral-hi); transform: translateY(-3px); color: var(--text); }
+  .wn-card h3 { font-size: 19px; margin: 0; letter-spacing: -.02em; }
+  .wn-card p { color: var(--muted); font-size: 14.5px; margin: 0; }
+  .wn-tag { color: var(--coral-hi); font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+  .wn-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; margin-top: 28px; }
+  .wn-link { font-weight: 600; font-size: 14.5px; }
+  @media (max-width: 1100px) { .wn-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .wn-grid { grid-template-columns: 1fr; } .whatsnew { padding-top: 60px; } }
 
   /* Live status bar */
   .pulse { padding: 0; background: rgba(17,23,32,.92); border-bottom: 1px solid var(--border); }

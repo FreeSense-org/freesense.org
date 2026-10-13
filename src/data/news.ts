@@ -59,8 +59,8 @@ export const news: NewsPost[] = [
       stay on the Development line. <a href="https://docs.freesense.org/releases/1.1.1/">1.1.1 release notes</a></p>
       <h2>Known issues</h2>
       <ul>
-        <li>The dashboard shows the current time as the build time. This is cosmetic, and a fix is planned for a
-        patch release.</li>
+        <li>On 1.1.0 the dashboard shows the current time as the build time. This is cosmetic and fixed in
+        1.1.1.</li>
         <li>In one upgrade test, the Secure Web Gateway service was stopped after the reboot. It started normally by
         hand. If you use it, check that it is running after you upgrade.</li>
       </ul>

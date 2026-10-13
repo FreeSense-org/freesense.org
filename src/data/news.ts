@@ -38,9 +38,10 @@ export const news: NewsPost[] = [
         base system and packages.</li>
         <li><strong>VXLAN interfaces</strong>, plus new link speed and duplex settings for network interfaces.</li>
         <li><strong>Encrypted remote configuration backups</strong> to S3-compatible storage, WebDAV, or SFTP.</li>
-        <li><strong>Threat Shield &amp; DNS Protection</strong>, a new optional package. pfBlockerNG has been
-        removed from the catalog.</li>
-        <li><strong>Security fixes</strong> for the upstream advisories SA-26_05 to SA-26_20, and further hardening
+        <li><strong>Threat Shield &amp; DNS Protection</strong>, a new optional package for DNS filtering and GeoIP
+        country blocking. pfBlockerNG has been removed from the catalog; the upgrade guide explains what replaces
+        each part of it.</li>
+        <li><strong>Security fixes</strong> for the upstream advisories SA-26_05 to SA-26_21, and further hardening
         found by code scanning.</li>
       </ul>
       <p>The full list is in the <a href="https://docs.freesense.org/releases/1.1.0/">1.1.0 release notes</a>, and

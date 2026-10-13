@@ -40,3 +40,11 @@ test('Stable notice follows the release line and never offers Raspberry Pi image
   assert.match(source, /release\.channel === 'stable' && artifact\.kind === 'appliance'/);
   assert.match(source, /\/1\.2\/getting-started\/raspberry-pi\//);
 });
+
+test('an empty Stable change list links to the release notes, not a maintenance rebuild', async () => {
+  const source = await readFile(new URL('../src/scripts/live.ts', import.meta.url), 'utf8');
+
+  assert.match(source, /function emptyChanges\(channel/);
+  assert.match(source, /\$\{DOCS\}\/releases\/stable\//);
+  assert.match(source, /: emptyChanges\(channel\)\)/);
+});

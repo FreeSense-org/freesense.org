@@ -46,5 +46,13 @@ test('an empty Stable change list links to the release notes, not a maintenance 
 
   assert.match(source, /function emptyChanges\(channel/);
   assert.match(source, /\$\{DOCS\}\/releases\/stable\//);
-  assert.match(source, /: emptyChanges\(channel\)\)/);
+  assert.match(source, /: emptyChanges\(channel, release\.version\)\)/);
+  assert.match(source, /const STABLE_HIGHLIGHTS: Record<string, Change\[\]>/);
+});
+
+test('a Stable release without a baseline shows no zero-change statistics', async () => {
+  const source = await readFile(new URL('../src/scripts/live.ts', import.meta.url), 'utf8');
+
+  assert.match(source, /const noBaseline = channel === 'stable' && !changes\.length/);
+  assert.match(source, /innerHTML = noBaseline \? '' :/);
 });

@@ -53,9 +53,10 @@ export const news: NewsPost[] = [
       <a href="https://docs.freesense.org/guides/upgrading-from-1.0/">upgrade guide</a> covers the details,
       including how ZFS boot environments behave during the upgrade.</p>
       <h2>Platforms</h2>
-      <p>Stable 1.1.0 is published for amd64, as an installer ISO and as UFS and ZFS cloud images. Generic ARM64
-      (UEFI) will join the 1.1 Stable line in a patch release. The Raspberry Pi appliance images stay on the
-      Development line.</p>
+      <p>Stable 1.1.0 was published for amd64, as an installer ISO and as UFS and ZFS cloud images.
+      <strong>Stable 1.1.1</strong> follows from the same sources and adds generic ARM64 (UEFI): an installer image
+      plus ARM64 System and Optional Packages. There are no ARM64 cloud images, and the Raspberry Pi appliance images
+      stay on the Development line. <a href="https://docs.freesense.org/releases/1.1.1/">1.1.1 release notes</a></p>
       <h2>Known issues</h2>
       <ul>
         <li>The dashboard shows the current time as the build time. This is cosmetic, and a fix is planned for a

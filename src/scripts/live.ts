@@ -4,6 +4,7 @@ import { escapeHtml } from './app-releases';
 
 const REFRESH_MS = 5 * 60 * 1000;
 const GH = 'https://github.com/FreeSense-org';
+const DOCS = 'https://docs.freesense.org';
 const TYPE_LABELS: Record<string, string> = {
   security: 'Security', fix: 'Fix', feature: 'Feature', ui: 'WebUI', package: 'Packages',
   documentation: 'Docs', build: 'Build', other: 'Change',
@@ -98,6 +99,15 @@ function imagesOf(release: Release, arm?: Release | null): string[] {
   return [...out];
 }
 
+// A Stable release document can carry no change list (the first release of a
+// line has no baseline to compare against); its notes are in the documentation.
+// An empty Development build really is a rebuild without source changes.
+function emptyChanges(channel: 'stable' | 'devel'): string {
+  return channel === 'stable'
+    ? `<li class="empty">See the <a href="${DOCS}/releases/stable/">release notes</a> for what changed in this release.</li>`
+    : '<li class="empty">Maintenance rebuild with no FreeSense source changes.</li>';
+}
+
 function renderChannel(el: HTMLElement, release: Release, channel: 'stable' | 'devel', arm?: Release | null) {
   const changes = changesOf(release);
   const counts = release.release_notes?.platform.packages.counts;
@@ -113,7 +123,7 @@ function renderChannel(el: HTMLElement, release: Release, channel: 'stable' | 'd
   el.querySelector('.ch-changes')!.innerHTML = (changes.length
     ? changes.slice(0, 6).map(changeItem).join('')
       + (changes.length > 6 ? `<li class="more">+ ${changes.length - 6} more changes</li>` : '')
-    : '<li class="empty">Maintenance rebuild with no FreeSense source changes.</li>')
+    : emptyChanges(channel))
     + updates.map((u) => `<li class="pkg"><span class="chg chg-package">Package</span><span>${escapeHtml(u.name)} <code>${
       escapeHtml(u.from)}</code> → <code>${escapeHtml(u.to)}</code></span></li>`).join('');
   el.querySelector('.ch-stats')!.innerHTML = [

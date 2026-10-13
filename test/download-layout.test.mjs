@@ -30,3 +30,13 @@ test('homepage advertises cloud images and both supported filesystems', async ()
   assert.match(source, /image=ufs&amp;format=qcow2/);
   assert.match(source, /NoCloud, ConfigDrive, and OpenStack/);
 });
+
+test('Stable notice follows the release line and never offers Raspberry Pi images', async () => {
+  const source = await readFile(downloadPage, 'utf8');
+
+  assert.doesNotMatch(source, /1\.0\.x line/);
+  assert.match(source, /function releaseLine\(version\)/);
+  assert.match(source, /noticeBlock\(key, release\)/);
+  assert.match(source, /release\.channel === 'stable' && artifact\.kind === 'appliance'/);
+  assert.match(source, /\/1\.2\/getting-started\/raspberry-pi\//);
+});

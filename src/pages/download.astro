@@ -15,9 +15,10 @@ const DOCS = 'https://docs.freesense.org';
         <span class="eyebrow">Download center</span>
         <h1>Your firewall starts<br /><span>with a verifiable build.</span></h1>
         <p class="lede">
-          Choose the supported Stable line or an experimental Development build, verify one
-          checksum, and install or import on amd64 or standards-compliant ARM64 UEFI hardware. Every published image is tied to exact
-          source, ports, OS-definition, and FreeBSD revisions.
+          Choose the supported Stable line or an experimental Development build, verify one checksum,
+          and install or import on amd64 or standards-compliant ARM64 UEFI hardware. Raspberry Pi
+          appliance images are Development previews. Every published image is tied to exact source, ports, OS-definition,
+          and FreeBSD revisions.
         </p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#release-channels">View available images</a>
@@ -50,7 +51,7 @@ const DOCS = 'https://docs.freesense.org';
           <span class="eyebrow">Guided download</span>
           <h2>Choose the image that fits.</h2>
         </div>
-        <p>Start with Stable for production. Cloud users can then choose UFS or ZFS and the disk format their platform expects.</p>
+        <p>Start with Stable for production. Cloud users can then choose UFS or ZFS and the disk format their platform expects. Already on 1.0? <a href={`${DOCS}/guides/upgrading-from-1.0/`}>Upgrade in place</a> instead of reinstalling.</p>
       </div>
       <div id="download-picker" class="download-picker-shell" aria-live="polite">
         <div class="loading"><span></span>Reading the release manifest...</div>
@@ -105,7 +106,7 @@ const DOCS = 'https://docs.freesense.org';
       </ol>
       <div class="requirements"><b>Recommended starting point</b><span>64-bit CPU</span><span>4 GB RAM</span><span>16 GB storage</span><span>2 network interfaces</span></div>
       <p class="cloud-warning"><strong>ARM64 scope:</strong> Choose the generic UEFI installer, the Pi 4B-only U-Boot appliance, or the Pi 5 D0-only third-party UEFI appliance. Pi 400, CM4, CM5, Pi 500, C1 boards, and Pi 5 onboard networking are out of scope.</p>
-      <p class="cloud-warning"><strong>Raspberry Pi preview:</strong> Appliance images remain experimental and unsupported. Pi 5 requires EEPROM firmware dated 2025-06-09 or newer and supported USB Ethernet adapters; check each artifact's hardware-verification label.</p>
+      <p class="cloud-warning"><strong>Raspberry Pi preview:</strong> Appliance images are published on the Development line only and remain experimental and unsupported. Pi 5 requires EEPROM firmware dated 2025-06-09 or newer and supported USB Ethernet adapters; check each artifact's hardware-verification label.</p>
       <p class="cloud-warning"><strong>Cloud networking:</strong> Use two NICs so management remains on LAN. A one-NIC image permits key-only WAN SSH only when metadata supplies a valid key; restrict it with a cloud security group. The WebUI is never opened on WAN automatically.</p>
     </div>
   </section>
@@ -161,7 +162,14 @@ const DOCS = 'https://docs.freesense.org';
   function changesBlock(release) {
     const changes = Array.isArray(release.changes) ? release.changes.slice(0, 20) : [];
     if (!changes.length) {
-      return `<details class="channel-details changes empty">
+      // Stable release documents may carry no change list (for example the
+      // first release of a new line); the documentation has the notes.
+      return release.channel === 'stable' || release.support_tier === 'supported'
+        ? `<details class="channel-details changes empty">
+        <summary><span>What changed</span><small>Release notes</small></summary>
+        <p>Read the <a href="${DOCS}/releases/stable/">Stable release notes</a> in the documentation.</p>
+      </details>`
+        : `<details class="channel-details changes empty">
         <summary><span>What changed</span><small>Not published</small></summary>
         <p>Release notes are not available for this build yet.</p>
       </details>`;
@@ -215,9 +223,12 @@ const DOCS = 'https://docs.freesense.org';
   const typeOrder = ['installer', 'rpi4', 'rpi5', 'ufs', 'zfs'];
   const formatOrder = ['iso', 'img', 'qcow2', 'raw'];
 
+  // Raspberry Pi appliance images are Development-only; never offer one as a
+  // Stable download, even if a Stable arm64 document carries it.
   function artifactsForRelease(release) {
     if (['freesense.download/v2', 'freesense.download/v3', 'freesense.download/v4'].includes(release?.schema_version) && Array.isArray(release.artifacts)) {
-      return release.artifacts.filter((artifact) => artifact?.url && artifact?.format);
+      return release.artifacts.filter((artifact) => artifact?.url && artifact?.format
+        && !(release.channel === 'stable' && artifact.kind === 'appliance'));
     }
     if (!release?.url) return [];
     return [{
@@ -250,10 +261,19 @@ const DOCS = 'https://docs.freesense.org';
     </details>`;
   }
 
-  function noticeBlock(key) {
-    return key === 'devel'
-      ? '<div class="channel-notice experimental"><strong>Experimental &mdash; no support</strong><span>For labs and testing, never production.</span></div>'
-      : '<div class="channel-notice supported"><strong>Recommended for production</strong><span>Immutable and supported throughout the 1.0.x line.</span></div>';
+  // "1.1.0" -> "1.1.x": the Stable line comes from the release document.
+  function releaseLine(version) {
+    const match = /^(\d+\.\d+)\./.exec(String(version || ''));
+    return match ? `${match[1]}.x` : null;
+  }
+
+  function noticeBlock(key, release) {
+    if (key === 'devel') {
+      return '<div class="channel-notice experimental"><strong>Experimental &mdash; no support</strong><span>For labs and testing, never production.</span></div>';
+    }
+    const line = releaseLine(release?.version);
+    const scope = line ? `throughout the ${escapeHtml(line)} line` : 'throughout its release line';
+    return `<div class="channel-notice supported"><strong>Recommended for production</strong><span>Immutable and supported ${scope}.</span></div>`;
   }
 
   function pickerMarkup() {
@@ -377,9 +397,9 @@ const DOCS = 'https://docs.freesense.org';
       const guide = imageSelect.value === 'installer'
         ? { path: '/getting-started/installation/', label: 'Installation guidance' }
         : imageSelect.value === 'rpi4' || imageSelect.value === 'rpi5'
-          ? { path: '/getting-started/raspberry-pi/', label: 'Raspberry Pi flashing guide' }
+          ? { path: '/1.2/getting-started/raspberry-pi/', label: 'Raspberry Pi flashing guide' }
           : { path: '/getting-started/cloud-images/', label: 'Cloud deployment guidance' };
-      notice.innerHTML = noticeBlock(key);
+      notice.innerHTML = noticeBlock(key, release);
       result.innerHTML = `<div class="result-copy">
         <span class="picker-kicker">Selected download</span>
         <div class="result-title"><h3>${escapeHtml(typeTitle)}</h3><span>${escapeHtml(size(artifact.size))}</span></div>

@@ -14,6 +14,59 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
   {
+    slug: 'freesense-1-1-stable',
+    date: '2026-10-13',
+    tag: 'Release',
+    title: 'FreeSense 1.1 is the new Stable release',
+    summary:
+      'FreeSense 1.1.0 replaces 1.0 as the supported line, with a REST API, custom package repositories, a rebuilt Package Manager, a reworked WebUI, VXLAN, and encrypted remote backups.',
+    link: { href: 'https://docs.freesense.org/releases/1.1.0/', label: 'Read the release notes' },
+    body: `
+      <p><strong>FreeSense 1.1.0</strong> is now the Stable release, and it replaces 1.0.x as the supported line.
+      The 1.0.x downloads stay published, but ordinary fixes now land in 1.1. Development moves on to the rolling
+      <strong>1.2</strong> line.</p>
+      <h2>What's new</h2>
+      <ul>
+        <li><strong>REST API.</strong> Version 1 of the FreeSense REST API, with per-user privileges and a built-in
+        API Explorer. <a href="https://docs.freesense.org/api/overview/">API documentation</a></li>
+        <li><strong>Custom package repositories.</strong> Add your own repositories under System &rarr; Package Manager.
+        They always rank below the official FreeSense repositories, and the system upgrader never uses them.
+        <a href="https://docs.freesense.org/packages/custom-repositories/">Guide</a></li>
+        <li><strong>A rebuilt Package Manager</strong> with filters, a source column, and a review step before
+        anything is installed or removed.</li>
+        <li><strong>A reworked WebUI.</strong> Grouped top menus, Ctrl+K menu search, and rebuilt pages across the
+        base system and packages.</li>
+        <li><strong>VXLAN interfaces</strong>, plus new link speed and duplex settings for network interfaces.</li>
+        <li><strong>Encrypted remote configuration backups</strong> to S3-compatible storage, WebDAV, or SFTP.</li>
+        <li><strong>Threat Shield &amp; DNS Protection</strong>, a new optional package. pfBlockerNG has been
+        removed from the catalog.</li>
+        <li><strong>Security fixes</strong> for the upstream advisories SA-26_05 to SA-26_20, and further hardening
+        found by code scanning.</li>
+      </ul>
+      <p>The full list is in the <a href="https://docs.freesense.org/releases/1.1.0/">1.1.0 release notes</a>, and
+      <a href="https://docs.freesense.org/releases/whats-new-1.1/">What's new in 1.1</a> walks through each feature.</p>
+      <h2>Upgrading from 1.0</h2>
+      <p>Existing 1.0 systems upgrade in place from the console or the WebUI. The upgrade is one-way: once a system
+      runs 1.1, the updater never offers 1.0 again. Back up your configuration first, and check whether you use a
+      package that changed, such as pfBlockerNG. The
+      <a href="https://docs.freesense.org/guides/upgrading-from-1.0/">upgrade guide</a> covers the details,
+      including how ZFS boot environments behave during the upgrade.</p>
+      <h2>Platforms</h2>
+      <p>Stable 1.1.0 is published for amd64, as an installer ISO and as UFS and ZFS cloud images. Generic ARM64
+      (UEFI) will join the 1.1 Stable line in a patch release. The Raspberry Pi appliance images stay on the
+      Development line.</p>
+      <h2>Known issues</h2>
+      <ul>
+        <li>The dashboard shows the current time as the build time. This is cosmetic, and a fix is planned for a
+        patch release.</li>
+        <li>In one upgrade test, the Secure Web Gateway service was stopped after the reboot. It started normally by
+        hand. If you use it, check that it is running after you upgrade.</li>
+      </ul>
+      <p><a href="/download">Download FreeSense 1.1</a> or read the
+      <a href="https://docs.freesense.org/">updated documentation</a>.</p>
+    `,
+  },
+  {
     slug: 'introducing-netspider',
     date: '2026-10-04',
     tag: 'New app',

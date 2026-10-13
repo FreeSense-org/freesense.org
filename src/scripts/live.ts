@@ -99,13 +99,27 @@ function imagesOf(release: Release, arm?: Release | null): string[] {
   return [...out];
 }
 
-// A Stable release document can carry no change list (the first release of a
-// line has no baseline to compare against); its notes are in the documentation.
+// Headline changes of each Stable line, shown when its release document carries
+// no change list (the first release of a line has no baseline to compare against).
+const STABLE_HIGHLIGHTS: Record<string, Change[]> = {
+  '1.1': [
+    { type: 'feature', title: 'REST API with per-user keys and an API Explorer' },
+    { type: 'package', title: 'Custom package repositories and a rebuilt Package Manager' },
+    { type: 'ui', title: 'Grouped menus and Ctrl+K menu search across the WebUI' },
+    { type: 'feature', title: 'VXLAN interfaces and encrypted remote configuration backups' },
+    { type: 'package', title: 'Threat Shield & DNS Protection for DNS filtering' },
+    { type: 'security', title: 'Fixes for advisories SA-26_05 to SA-26_21' },
+  ],
+};
+
 // An empty Development build really is a rebuild without source changes.
-function emptyChanges(channel: 'stable' | 'devel'): string {
-  return channel === 'stable'
-    ? `<li class="empty">See the <a href="${DOCS}/releases/stable/">release notes</a> for what changed in this release.</li>`
-    : '<li class="empty">Maintenance rebuild with no FreeSense source changes.</li>';
+function emptyChanges(channel: 'stable' | 'devel', version: string): string {
+  if (channel !== 'stable') return '<li class="empty">Maintenance rebuild with no FreeSense source changes.</li>';
+  const highlights = STABLE_HIGHLIGHTS[version.split('.').slice(0, 2).join('.')] ?? [];
+  const notes = `<a href="${DOCS}/releases/stable/">release notes</a>`;
+  return highlights.length
+    ? highlights.map(changeItem).join('') + `<li class="empty notes"><span>Highlights of the line. Read the full ${notes}.</span></li>`
+    : `<li class="empty notes"><span>This release's changes are described in the ${notes}.</span></li>`;
 }
 
 function renderChannel(el: HTMLElement, release: Release, channel: 'stable' | 'devel', arm?: Release | null) {
@@ -123,10 +137,14 @@ function renderChannel(el: HTMLElement, release: Release, channel: 'stable' | 'd
   el.querySelector('.ch-changes')!.innerHTML = (changes.length
     ? changes.slice(0, 6).map(changeItem).join('')
       + (changes.length > 6 ? `<li class="more">+ ${changes.length - 6} more changes</li>` : '')
-    : emptyChanges(channel))
+    : emptyChanges(channel, release.version))
     + updates.map((u) => `<li class="pkg"><span class="chg chg-package">Package</span><span>${escapeHtml(u.name)} <code>${
       escapeHtml(u.from)}</code> → <code>${escapeHtml(u.to)}</code></span></li>`).join('');
-  el.querySelector('.ch-stats')!.innerHTML = [
+  // Without a change list and with no package movement, the release document had
+  // no baseline to compare against: zero counts would read as "nothing changed".
+  const noBaseline = channel === 'stable' && !changes.length
+    && (!counts || counts.updated + counts.added + counts.removed === 0);
+  el.querySelector('.ch-stats')!.innerHTML = noBaseline ? '' : [
     counts && `<div><b>${counts.updated}</b><span>packages updated</span></div>`,
     counts && `<div><b>${counts.added + counts.removed}</b><span>added / removed</span></div>`,
     platform && `<div><b>${platform.changed ? 'New' : 'Same'}</b><span>FreeBSD base${platform.ports_changed ? ', ports refreshed' : ''}</span></div>`,

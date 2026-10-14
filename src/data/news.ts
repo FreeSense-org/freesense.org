@@ -14,6 +14,39 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
   {
+    slug: 'freesense-1-1-5',
+    date: '2026-10-14',
+    tag: 'Release',
+    title: 'FreeSense 1.1.5: updates and package changes work again',
+    summary:
+      'A Stable hotfix for 1.1.1 to 1.1.4, where system updates and package installs stopped with "Another instance of FreeSense-upgrade is running". Those systems need one console command first.',
+    link: { href: 'https://docs.freesense.org/releases/1.1.5/', label: 'Read the release notes' },
+    body: `
+      <p><strong>FreeSense 1.1.5</strong> is a Stable hotfix. On 1.1.1 to 1.1.4 every system update and every
+      package install, update, reinstall and removal stopped with &ldquo;Another instance of FreeSense-upgrade is
+      running&rdquo;, because the updater lost the update channel you selected. 1.1.5 fixes the updater and brings
+      Threat Shield 1.1.0 from 1.1.4.</p>
+      <h2>Before you update from 1.1.1 to 1.1.4</h2>
+      <p>The broken updater on those systems cannot install the fix by itself. Open a shell once (console option 8,
+      or SSH), run the command from the
+      <a href="https://docs.freesense.org/releases/1.1.5/#before-you-update-from-111-to-114">1.1.5 release notes</a>,
+      then update from System &rarr; Update as usual. Systems on 1.1.0 update normally.</p>
+      <h2>What's new</h2>
+      <ul>
+        <li><strong>Updates work again</strong>, for the system and for Optional Packages.</li>
+        <li><strong>The update window opens at once.</strong> System updates and package changes show live
+        progress, what the updater is doing and the elapsed time, and say so clearly when another update is
+        running.</li>
+        <li><strong>Threat Shield</strong> saves reliably, and the threat map and health checks no longer show a
+        security-token warning page.</li>
+        <li>The login page shows the FreeSense version (you can hide it under System &rarr; General Setup), and
+        package versions read <code>1.1</code> instead of <code>1.1_8</code>.</li>
+      </ul>
+      <p><a href="/download">Download FreeSense 1.1.5</a> or read the
+      <a href="https://docs.freesense.org/releases/1.1.5/">full release notes</a>.</p>
+    `,
+  },
+  {
     slug: 'freesense-1-1-stable',
     date: '2026-10-13',
     tag: 'Release',

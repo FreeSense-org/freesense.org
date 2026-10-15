@@ -180,6 +180,38 @@ test('serves an ordered v4 ARM64 installer and appliance bundle', async () => {
     ['generic-arm64-uefi', 'arm64-rpi4b', 'arm64-rpi5-d0']);
 });
 
+test('serves a dated Development release ID and rejects a mismatched one', async () => {
+  const id = '1.2.0-dev.20261015.412';
+  const dated = {
+    ...structuredClone(bundleRelease),
+    schema_version: 'freesense.download/v4', channel: 'devel', version: '1.2.0',
+    generation: 412, release_id: id, support_tier: 'development',
+    architecture: 'amd64', package_arch: 'amd64',
+  };
+  const file = `FreeSense-${id}-amd64.iso`;
+  dated.artifacts = [{
+    kind: 'installer', platform: 'generic-amd64', target_models: [], filesystem: null,
+    format: 'iso', compression: 'none', partition_scheme: 'gpt', firmware: ['bios', 'uefi'],
+    capabilities: {}, boot_inputs: {}, artifact_fingerprint: '6'.repeat(64),
+    build_fingerprint: '6'.repeat(64), sha256: '6'.repeat(64), size: 1024, file,
+    marker_url: `https://pkg.freesense.org/v1/artifacts/iso/${'6'.repeat(64)}/complete.json`,
+    url: `https://downloads.freesense.org/v1/releases/devel/${id}/${file}`,
+    hardware_verification: 'verified',
+  }];
+  globalThis.fetch = async () => Response.json(dated);
+  let response = await createReleaseHandler('devel')({
+    request: new Request('https://freesense.org/releases/devel.json'),
+  });
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).release_id, id);
+
+  globalThis.fetch = async () => Response.json({ ...dated, generation: 413 });
+  response = await createReleaseHandler('devel')({
+    request: new Request('https://freesense.org/releases/devel.json'),
+  });
+  assert.notEqual(response.status, 200);
+});
+
 test('rejects malformed structured release notes', async () => {
   const malformed = structuredClone(bundleRelease);
   malformed.release_notes.platform.packages.updated[0].name = '<script>';

@@ -1,0 +1,73 @@
+name: Deploy beta to Cloudflare Pages
+
+# The next freesense.org (site-next/) is shown on beta.freesense.org before it replaces
+# the current site. Pushes to site/next and manual runs deploy it; production is untouched.
+on:
+  push:
+    branches: [site/next]
+    paths:
+      - "site-next/**"
+      - "lib/**"
+      - "src/data/**"
+      - "public/apps/**"
+      - ".github/workflows/deploy-beta.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: pages-deploy-beta
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    defaults:
+      run:
+        working-directory: site-next
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site-next/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test and build
+        run: npm test && npx astro check && npm run build
+
+      - name: Deploy to Cloudflare Pages
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          workingDirectory: site-next
+          command: pages deploy dist --project-name=freesense-beta --branch=main --commit-dirty=true
+
+      - name: Verify the beta deployment
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${DEPLOYMENT_URL}" =~ ^https://[a-z0-9-]+\.freesense-beta\.pages\.dev/?$ ]]
+          base="${DEPLOYMENT_URL%/}"
+          curl --fail --silent --show-error --max-time 30 "${base}/robots.txt" | grep -q '^Disallow: /$'
+          curl --fail --silent --show-error --max-time 30 --dump-header - --output /dev/null "${base}/" \
+            | grep -qi '^x-robots-tag: noindex'
+          for attempt in {1..12}; do
+            if bash ../scripts/verify-release-feeds.sh "${base}"; then
+              echo "The beta deployment serves the canonical release feed."
+              exit 0
+            fi
+            echo "Attempt ${attempt}: beta release routes have not converged."
+            [[ "$attempt" == 12 ]] || sleep 5
+          done
+          exit 1

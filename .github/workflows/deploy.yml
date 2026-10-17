@@ -5,6 +5,10 @@ name: Deploy to Cloudflare Pages
 on:
   push:
     branches: [main]
+    # site-next/ is the beta site (deploy-beta.yml); changes only there never redeploy production.
+    paths-ignore:
+      - "site-next/**"
+      - ".github/workflows/deploy-beta.yml"
   workflow_dispatch:
   schedule:
     - cron: "17 * * * *"

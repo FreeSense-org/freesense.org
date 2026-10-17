@@ -17,10 +17,10 @@ const slides: Slide[] = [
     href: '/download', cta: 'Download FreeSense', secondary: { href: DOCS, label: 'Explore the docs' }, visual: 'dashboard',
   },
   {
-    id: 'release-1-1', label: 'FreeSense 1.1', theme: 'coral', eyebrow: 'FreeSense 1.1 · now Stable',
+    id: 'release-1-1', label: 'FreeSense 1.1', theme: 'coral', eyebrow: 'FreeSense 1.1.9 · Stable',
     title: '1.1 is here.', accent: 'Stable, signed, supported.',
     body: 'A REST API, custom package repositories, a rebuilt Package Manager, a reworked WebUI with grouped menus and menu search, VXLAN, and encrypted remote backups. FreeSense 1.1 replaces 1.0 as the supported line.',
-    href: '/news/freesense-1-1-stable', cta: "See what's new", secondary: { href: DOCS + '/releases/1.1.0/', label: 'Release notes' }, visual: 'stable',
+    href: '/news/freesense-1-1-stable', cta: "See what's new", secondary: { href: DOCS + '/releases/1.1.9/', label: 'Release notes' }, visual: 'stable',
   },
   {
     id: 'devel', label: 'Live development', theme: 'green', eyebrow: 'Development 1.2 · built in public',
@@ -72,7 +72,7 @@ const highlights = [
   { tag: 'Networking', title: 'VXLAN interfaces', href: '/configure/interfaces-vlans-bridges/#vxlan', body: 'Stretch layer 2 across routed networks with native VXLAN, alongside VLANs, bridges and tunnels.' },
   { tag: 'Backups', title: 'Encrypted remote backups', href: '/base-os/system-administration/', body: 'Send encrypted configuration backups to S3-compatible storage, WebDAV or SFTP.' },
   { tag: 'Packages', title: 'Threat Shield & DNS Protection', href: '/packages/threat-shield/', body: 'A new package that filters DNS for your network with AdGuard Home. It takes over the DNS blocking that pfBlockerNG did.' },
-  { tag: 'Security', title: 'Security fixes', href: '/releases/1.1.0/#security', body: 'Fixes for the upstream security advisories SA-26_05 to SA-26_21, plus code-scanning hardening across the WebUI.' },
+  { tag: 'Security', title: 'Security fixes', href: '/releases/previous-1.1/#security-in-110', body: 'Fixes for the upstream security advisories SA-26_05 to SA-26_21, plus code-scanning hardening across the WebUI.' },
 ];
 
 const latestNews = news.slice(0, 3);
@@ -165,7 +165,7 @@ const latestNews = news.slice(0, 3);
       <div class="wn-actions">
         <a href={DOCS + '/releases/whats-new-1.1/'} class="btn btn-primary">Tour what's new</a>
         <a href={DOCS + '/guides/upgrading-from-1.0/'} class="btn btn-ghost">Upgrade from 1.0</a>
-        <a href={DOCS + '/releases/1.1.0/'} class="wn-link">Full release notes →</a>
+        <a href={DOCS + '/releases/1.1.9/'} class="wn-link">Release notes 1.1.9 →</a>
       </div>
     </div>
   </section>

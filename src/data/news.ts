@@ -14,13 +14,49 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
   {
+    slug: 'freesense-1-1-9',
+    date: '2026-10-17',
+    tag: 'Release',
+    title: 'FreeSense 1.1.9: RADIUS works again, plus hardening and PHP 8 fixes',
+    summary:
+      'A Stable patch release: RADIUS logins work again, older boot environments are locked in the WebUI, PHP 8 warnings are cleared across the WebUI and Optional Packages, and serial-console installs work.',
+    link: { href: 'https://docs.freesense.org/releases/1.1.9/', label: 'Read the release notes' },
+    body: `
+      <p><strong>FreeSense 1.1.9</strong> is the new Stable release. It follows 1.1.5 and collects the fixes made on
+      the 1.1 line since then. The numbers 1.1.6 to 1.1.8 were test builds that were withdrawn before release and
+      never published; everything in them is part of 1.1.9.</p>
+      <h2>What's new</h2>
+      <ul>
+        <li><strong>RADIUS logins work again.</strong> Logins through a RADIUS server failed on 1.1.0 to 1.1.5, for
+        the WebUI, VPN users and Captive Portal. The RADIUS client was rewritten for PHP 8.5 and supports PAP,
+        CHAP-MD5, MS-CHAPv1 and MS-CHAPv2.</li>
+        <li><strong>Safer boot environments.</strong> System &rarr; Boot Environments no longer activates a boot
+        environment that holds an older release such as 1.0.</li>
+        <li><strong>Cleaner under the hood.</strong> PHP 8 fixes on every WebUI page and in the Optional Packages.
+        A full crawl of the WebUI with every PHP warning turned on went from about 1,000 warnings to a few
+        harmless notices. The fixed packages get new versions, so the Package Manager offers them.</li>
+        <li><strong>Security hardening</strong> in the firewall rule editor and the LDAP container lookup, and an
+        unused JavaScript library with a known CVE is removed.</li>
+        <li><strong>Serial-console installs</strong> no longer stop at the ZFS step.</li>
+      </ul>
+      <h2>How to update</h2>
+      <p>Systems on 1.1.0 and 1.1.5 update from System &rarr; Update as usual; update the Optional Packages
+      afterwards. Systems on 1.1.1 to 1.1.4 need
+      <a href="https://docs.freesense.org/releases/1.1.9/#before-you-update-from-111-to-114">one console command</a>
+      first. Every release is upgrade-tested on a virtual machine before it is published.</p>
+      <p><a href="/download">Download FreeSense 1.1.9</a> or read the
+      <a href="https://docs.freesense.org/releases/1.1.9/">full release notes</a>. Older notes are on
+      <a href="https://docs.freesense.org/releases/previous-1.1/">Previous 1.1 releases</a>.</p>
+    `,
+  },
+  {
     slug: 'freesense-1-1-5',
     date: '2026-10-14',
     tag: 'Release',
     title: 'FreeSense 1.1.5: updates and package changes work again',
     summary:
       'A Stable hotfix for 1.1.1 to 1.1.4, where system updates and package installs stopped with "Another instance of FreeSense-upgrade is running". Those systems need one console command first.',
-    link: { href: 'https://docs.freesense.org/releases/1.1.5/', label: 'Read the release notes' },
+    link: { href: 'https://docs.freesense.org/releases/previous-1.1/#freesense-115', label: 'Read the release notes' },
     body: `
       <p><strong>FreeSense 1.1.5</strong> is a Stable hotfix. On 1.1.1 to 1.1.4 every system update and every
       package install, update, reinstall and removal stopped with &ldquo;Another instance of FreeSense-upgrade is
@@ -29,7 +65,7 @@ export const news: NewsPost[] = [
       <h2>Before you update from 1.1.1 to 1.1.4</h2>
       <p>The broken updater on those systems cannot install the fix by itself. Open a shell once (console option 8,
       or SSH), run the command from the
-      <a href="https://docs.freesense.org/releases/1.1.5/#before-you-update-from-111-to-114">1.1.5 release notes</a>,
+      <a href="https://docs.freesense.org/releases/1.1.9/#before-you-update-from-111-to-114">1.1.5 release notes</a>,
       then update from System &rarr; Update as usual. Systems on 1.1.0 update normally.</p>
       <h2>What's new</h2>
       <ul>
@@ -43,7 +79,7 @@ export const news: NewsPost[] = [
         package versions read <code>1.1</code> instead of <code>1.1_8</code>.</li>
       </ul>
       <p><a href="/download">Download FreeSense 1.1.5</a> or read the
-      <a href="https://docs.freesense.org/releases/1.1.5/">full release notes</a>.</p>
+      <a href="https://docs.freesense.org/releases/previous-1.1/#freesense-115">full release notes</a>.</p>
     `,
   },
   {
@@ -53,7 +89,7 @@ export const news: NewsPost[] = [
     title: 'FreeSense 1.1 is the new Stable release',
     summary:
       'FreeSense 1.1.0 replaces 1.0 as the supported line, with a REST API, custom package repositories, a rebuilt Package Manager, a reworked WebUI, VXLAN, and encrypted remote backups.',
-    link: { href: 'https://docs.freesense.org/releases/1.1.0/', label: 'Read the release notes' },
+    link: { href: 'https://docs.freesense.org/releases/previous-1.1/#freesense-110', label: 'Read the release notes' },
     body: `
       <p><strong>FreeSense 1.1.0</strong> is now the Stable release, and it replaces 1.0.x as the supported line.
       The 1.0.x downloads stay published, but ordinary fixes now land in 1.1. Development moves on to the rolling
@@ -77,7 +113,7 @@ export const news: NewsPost[] = [
         <li><strong>Security fixes</strong> for the upstream advisories SA-26_05 to SA-26_21, and further hardening
         found by code scanning.</li>
       </ul>
-      <p>The full list is in the <a href="https://docs.freesense.org/releases/1.1.0/">1.1.0 release notes</a>, and
+      <p>The full list is in the <a href="https://docs.freesense.org/releases/previous-1.1/#freesense-110">1.1.0 release notes</a>, and
       <a href="https://docs.freesense.org/releases/whats-new-1.1/">What's new in 1.1</a> walks through each feature.</p>
       <h2>Upgrading from 1.0</h2>
       <p>Existing 1.0 systems upgrade in place from the console or the WebUI. The upgrade is one-way: once a system
@@ -89,7 +125,7 @@ export const news: NewsPost[] = [
       <p>Stable 1.1.0 was published for amd64, as an installer ISO and as UFS and ZFS cloud images.
       <strong>Stable 1.1.1</strong> follows from the same sources and adds generic ARM64 (UEFI): an installer image
       plus ARM64 System and Optional Packages. There are no ARM64 cloud images, and the Raspberry Pi appliance images
-      stay on the Development line. <a href="https://docs.freesense.org/releases/1.1.1/">1.1.1 release notes</a></p>
+      stay on the Development line. <a href="https://docs.freesense.org/releases/previous-1.1/#freesense-111">1.1.1 release notes</a></p>
       <h2>Known issues</h2>
       <ul>
         <li>On 1.1.0 the dashboard shows the current time as the build time. This is cosmetic and fixed in

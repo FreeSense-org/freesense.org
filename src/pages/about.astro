@@ -13,47 +13,73 @@ const removed = [
 const kept = [
   'The full firewall, NAT, VPN & routing stack',
   'The package manager and plugin ecosystem',
-  'The battle-tested pf packet filter',
-  'A familiar, now-modernised web GUI',
+  'The proven pf packet filter',
+  'A familiar web GUI, steadily being rebuilt',
 ];
 ---
 
 <Base
   title="About FreeSense"
-  description="What FreeSense is, why it exists, and how it's built — a fully open firewall OS derived from pfSense CE and rebuilt from source on FreeBSD 16."
+  description="What FreeSense is, where it stands, and how it's built: a young, fully open firewall OS derived from pfSense CE and rebuilt from source on FreeBSD 16."
 >
   <section class="ab-hero">
     <div class="wrap">
       <span class="eyebrow">About</span>
-      <h1>An open firewall, rebuilt from the ground up.</h1>
+      <h1>A young open firewall, taking shape.</h1>
       <p class="lede">
-        FreeSense is a free, community-driven firewall and router operating system. It takes the
-        proven ideas of the open-source <strong>pfSense® CE</strong> project and rebuilds them as a
-        fully open, independently maintained distribution — modern, transparent, and free of vendor
-        lock-in.
+        FreeSense is a new, free firewall and router operating system. It starts from the proven
+        ideas of the open-source <strong>pfSense® CE</strong> project and rebuilds them as a fully
+        open, independently maintained distribution. It is a young project and it is still taking
+        shape, but it now has a Stable release path you can run.
       </p>
     </div>
   </section>
 
   <section class="ab-body">
     <div class="wrap ab-wrap">
+      <h2>Where we are</h2>
+      <p>
+        FreeSense started as a rebuild: take a proven firewall, remove the vendor ties, and build it
+        from source in public on a current FreeBSD. That groundwork is done. Since
+        <strong>1.1</strong> the project has a Stable release path: every patch release is built from
+        a sealed set of sources, upgrade-tested on a virtual machine, signed, and only then
+        published. <strong>FreeSense 1.1.9</strong>, the latest Stable release, is the foundation we
+        build on from here.
+      </p>
+      <div class="how">
+        <div class="how-card">
+          <span class="mono num">STABLE</span>
+          <h3>1.1 for real networks</h3>
+          <p>Signed, upgrade-tested patch releases. Fixes land here first; nothing new is added in a hurry.</p>
+        </div>
+        <div class="how-card">
+          <span class="mono num">TESTING</span>
+          <h3>The next patch, nightly</h3>
+          <p>Nightly builds of the next 1.1 patch, so fixes can be tried on a test system before they ship.</p>
+        </div>
+        <div class="how-card">
+          <span class="mono num">DEVELOPMENT</span>
+          <h3>1.2, built in public</h3>
+          <p>Where new features take shape. Rebuilt every night from source; experimental and meant for labs.</p>
+        </div>
+      </div>
       <h2>Why FreeSense exists</h2>
       <p>
-        Great firewall software should be something you can read, trust, and rebuild yourself — not a
-        black box tied to one vendor's cloud and roadmap. FreeSense exists to keep that promise:
+        Firewall software should be something you can read, trust and rebuild yourself, not a black
+        box tied to one vendor's cloud and roadmap. FreeSense exists to keep that promise:
         every part of the system, down to the build pipeline that produces the official images, is
         public and Apache-2.0 licensed. No accounts, no activation, no phone-home.
       </p>
       <p>
         We track <strong>FreeBSD 16-CURRENT</strong> closely, so the base you run has the newest
-        kernel, drivers and security fixes rather than a snapshot from years ago — while still
-        shipping as signed, tested images you can rely on.
+        kernel, drivers and security fixes rather than a snapshot from years ago, and we still ship
+        it as signed, tested images.
       </p>
 
       <h2>How it's built</h2>
       <p>
         FreeSense is built entirely from source, in the open, on a reproducible pipeline. There are
-        no hidden patches and no proprietary tooling — the whole thing runs from public repositories.
+        no hidden patches and no proprietary tooling: the whole thing runs from public repositories.
       </p>
       <div class="how">
         <div class="how-card">
@@ -68,8 +94,8 @@ const kept = [
           <span class="mono num">02</span>
           <h3>Automated builds</h3>
           <p>
-            The world, kernel, and curated package catalog are built on clean runners — with our
-            own FreeBSD hardware for larger releases — then signed with the project key.
+            The world, kernel, and curated package catalog are built on clean runners, with our
+            own FreeBSD hardware for larger releases, then signed with the project key.
           </p>
         </div>
         <div class="how-card">
@@ -91,8 +117,8 @@ const kept = [
 
       <h2>Independent &amp; de-vendored</h2>
       <p>
-        We kept everything that makes the firewall great and removed everything that tied it to a
-        single vendor's infrastructure.
+        We kept what makes the firewall work and removed what tied it to a single vendor's
+        infrastructure.
       </p>
       <div class="two-col">
         <div class="col">

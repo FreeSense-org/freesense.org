@@ -1,0 +1,105 @@
+---
+import Base from '../layouts/Base.astro';
+import { DOCS } from '../data/site';
+---
+
+<Base
+  title="Download FreeSense"
+  description="Download FreeSense installer, cloud and ARM64 images from the live release documents, and verify their SHA-256 checksums and build provenance."
+  current="download"
+>
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow reveal">Download center</span>
+      <h1 class="reveal d1">Your firewall starts with a verifiable build.</h1>
+      <p class="lead-muted reveal d2">
+        Choose the supported Stable line or an experimental Development build, verify one checksum, and install on amd64 or
+        ARM64 UEFI hardware, a virtual machine or a cloud disk. Every published image is tied to exact source, ports,
+        OS-definition and FreeBSD revisions. Already on 1.0? <a href={`${DOCS}/guides/upgrading-from-1.0/`}>Upgrade in place</a> instead of reinstalling.
+      </p>
+    </div>
+  </section>
+
+  <section id="release-channels" style="padding-top:0">
+    <div class="wrap">
+      <div id="download-picker" aria-live="polite">
+        <div class="download-picker"><div class="loading"><span></span>Reading the release documents&hellip;</div></div>
+        <noscript><p class="not-available mt-3">The download picker needs JavaScript. All images are listed in the <a href="/releases/stable.json">Stable</a> and <a href="/releases/devel.json">Development</a> release documents.</p></noscript>
+      </div>
+      <p class="manifest-note">
+        This picker stores no release versions. It reads the independently published
+        <a href="/releases/stable.json">Stable</a> and <a href="/releases/devel.json">Development</a> documents live from the
+        package service; image links point to immutable files on the download service.
+      </p>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap split" style="align-items:start">
+      <div>
+        <span class="eyebrow reveal">Installation</span>
+        <h2 class="reveal d1">From image to gateway.</h2>
+        <p class="lead-muted reveal d2">Use a dedicated appliance or VM with at least two interfaces, or one VLAN-capable interface.</p>
+        <div class="req reveal d3">
+          <span><b>64-bit CPU</b></span><span><b>4 GB</b> RAM</span><span><b>16 GB</b> storage</span><span><b>2</b> network interfaces</span>
+        </div>
+      </div>
+      <ol class="steps-list">
+        <li class="reveal d1"><div>
+          <h3>Verify the download</h3>
+          <p>Compare the file with the SHA-256 checksum shown above, from the same release document.</p>
+          <div class="cmd"><code>sha256sum <span data-verify-file>FreeSense-*</span></code><button class="copy-btn" type="button">Copy</button></div>
+        </div></li>
+        <li class="reveal d2"><div>
+          <h3>Write the installer</h3>
+          <p>Write the amd64 ISO to a USB stick or attach it to a VM. Decompress an ARM64 installer IMG first, then write it to a 4 GB or larger device.</p>
+          <div class="cmd"><code>xz -dk FreeSense-*-arm64-installer.img.xz</code><button class="copy-btn" type="button">Copy</button></div>
+        </div></li>
+        <li class="reveal d3"><div>
+          <h3>Boot and configure</h3>
+          <p>Assign WAN and LAN, open the WebUI, then replace the initial administrator password.</p>
+          <a class="text-link" href={`${DOCS}/getting-started/first-boot/`}>First-boot guide &rarr;</a>
+        </div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="notes" style="padding-top:0">
+    <div class="wrap">
+      <div class="notes-grid">
+        <article class="fs-card reveal d1">
+          <h3>ARM64 scope</h3>
+          <p>Choose the generic UEFI installer, the Pi 4B-only U-Boot appliance, or the Pi 5 D0-only third-party UEFI appliance. Pi 400, CM4, CM5, Pi 500, C1 boards and Pi 5 onboard networking are out of scope.</p>
+        </article>
+        <article class="fs-card reveal d2">
+          <h3>Raspberry Pi preview</h3>
+          <p>Appliance images are published on the Development line only and remain experimental and unsupported. Pi 5 needs EEPROM firmware dated 2025-06-09 or newer and supported USB Ethernet adapters. <a href={`${DOCS}/1.2/getting-started/raspberry-pi/`}>Flashing guide</a>.</p>
+        </article>
+        <article class="fs-card reveal d3">
+          <h3>Cloud networking</h3>
+          <p>Use two NICs so management stays on LAN. A one-NIC image permits key-only WAN SSH only when metadata supplies a valid key; restrict it with a security group. The WebUI is never opened on WAN automatically.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="flow">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="eyebrow reveal">Independent build flow</span><h2 class="section-title reveal d1 mb-0">Rebuild only what changed.</h2></div>
+        <p class="reveal d2">System updates and optional packages have separate fingerprints, repositories and publication decisions.</p>
+      </div>
+      <div class="chain" data-observe>
+        <span class="fill"></span>
+        <div class="step"><div class="n">1</div><h3>Check the System</h3><p>A daily planner builds and publishes the System only when its sealed inputs change.</p></div>
+        <div class="step"><div class="n">2</div><h3>Reuse packages</h3><p>Optional packages are reused while their sources and the FreeBSD pin are unchanged.</p></div>
+        <div class="step"><div class="n">3</div><h3>Verify images</h3><p>The ISO and every UFS/ZFS cloud image pass integrity and boot-smoke checks.</p></div>
+        <div class="step"><div class="n">4</div><h3>Publish</h3><p>Immutable files go public before the channel document advances.</p></div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import '../scripts/download.js';
+</script>

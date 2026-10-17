@@ -1,0 +1,30 @@
+---
+// The two products, shared by the header dropdown and the mobile menu.
+import { apps } from '../../../src/data/apps';
+import { DOCS } from '../data/site';
+
+const netspider = apps.find((a) => a.slug === 'netspider')!;
+---
+<div class="product-row">
+  <span class="product-ico fs" aria-hidden="true"><img src="/brand/icon-white.svg" alt="" width="30" height="27" /></span>
+  <div>
+    <a class="product-item p-0" href="/freesense/"><span><b>FreeSense</b><small>Open-source firewall and router on FreeBSD. Signed builds, no accounts, no telemetry.</small></span></a>
+    <div class="product-links">
+      <a href="/freesense/">Overview</a>
+      <a href="/freesense/#features">Features</a>
+      <a href="/download/">Download</a>
+      <a href={`${DOCS}/releases/stable/`}>Release notes</a>
+    </div>
+  </div>
+</div>
+<div class="product-row">
+  <span class="product-ico ns" aria-hidden="true"><img src={netspider.logo} alt="" width="44" height="44" /></span>
+  <div>
+    <a class="product-item p-0" href="/netspider/"><span><b>NetSpider {netspider.isNew && <span class="badge-new ms-1">NEW</span>}</b><small>Free Layer 2 / Layer 3 network diagnostics for Windows. Finds the failing hop.</small></span></a>
+    <div class="product-links">
+      <a href="/netspider/">Overview</a>
+      <a href="/netspider/#download">Download</a>
+      <a href="/netspider/#changelog">Releases</a>
+    </div>
+  </div>
+</div>

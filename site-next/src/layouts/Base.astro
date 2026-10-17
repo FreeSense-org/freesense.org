@@ -1,0 +1,62 @@
+---
+import '@fontsource-variable/schibsted-grotesk/wght.css';
+import '@fontsource/ibm-plex-sans/latin-400.css';
+import '@fontsource/ibm-plex-sans/latin-500.css';
+import '@fontsource/ibm-plex-sans/latin-600.css';
+import '@fontsource-variable/jetbrains-mono/wght.css';
+import '../styles/bootstrap.scss';
+import '../styles/tokens.css';
+import '../styles/site.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  current?: string;
+}
+const {
+  title = 'FreeSense — the open-source firewall',
+  description = 'FreeSense is a free, open-source firewall and router built from FreeBSD. Apache-2.0 licensed, with signed builds, no accounts and no telemetry.',
+  current,
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, 'https://freesense.org').href;
+---
+
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#060B1F" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <!-- Applies the stored theme before first paint, so there is no flash. -->
+    <script is:inline>
+      (function () {
+        var d = document.documentElement, p = 'dark';
+        d.classList.add('js');
+        try { p = localStorage.getItem('fs-theme') || 'dark'; } catch (e) {}
+        if (p === 'auto') p = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        d.setAttribute('data-bs-theme', p === 'light' ? 'light' : 'dark');
+      })();
+    </script>
+  </head>
+  <body>
+    <Nav current={current} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import '../scripts/app.js';
+    </script>
+  </body>
+</html>

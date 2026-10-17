@@ -11,16 +11,16 @@ const netspider = apps.find((a) => a.slug === 'netspider')!;
 
 const slides: Slide[] = [
   {
+    id: 'stable', label: 'Taking shape', theme: 'coral', eyebrow: 'A young project · now on a Stable path',
+    title: 'A new firewall,', accent: 'taking shape.',
+    body: 'FreeSense is a young open-source firewall built in public on FreeBSD. It now has a real Stable release path: signed, upgrade-tested patch releases. The latest, 1.1.9, is a solid foundation for everything that comes next.',
+    href: '/download', cta: 'Download 1.1.9', secondary: { href: '/news/freesense-1-1-9', label: "What's in 1.1.9" }, visual: 'stable',
+  },
+  {
     id: 'freesense', label: 'FreeSense', theme: 'coral', eyebrow: 'Open-source firewall · FreeBSD 16',
     title: 'Your network.', accent: 'Fully in your hands.',
     body: 'A fast, transparent firewall operating system for people who want serious control without a closed platform. No accounts, no telemetry, no artificial limits.',
     href: '/download', cta: 'Download FreeSense', secondary: { href: DOCS, label: 'Explore the docs' }, visual: 'dashboard',
-  },
-  {
-    id: 'stable', label: 'FreeSense 1.1.9', theme: 'coral', eyebrow: 'Stable patch release',
-    title: 'FreeSense 1.1.9.', accent: 'A solid round of fixes.',
-    body: 'RADIUS logins work again, older boot environments are locked, every WebUI page and the Optional Packages are cleaned up for PHP 8, security hardening lands, and serial-console installs work. Upgrade-tested before it shipped.',
-    href: '/news/freesense-1-1-9', cta: "See what's new", secondary: { href: '/download', label: 'Download 1.1.9' }, visual: 'stable',
   },
   {
     id: 'devel', label: 'Live development', theme: 'green', eyebrow: 'Development 1.2 · built in public',

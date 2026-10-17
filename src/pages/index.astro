@@ -17,10 +17,10 @@ const slides: Slide[] = [
     href: '/download', cta: 'Download FreeSense', secondary: { href: DOCS, label: 'Explore the docs' }, visual: 'dashboard',
   },
   {
-    id: 'release-1-1', label: 'FreeSense 1.1', theme: 'coral', eyebrow: 'FreeSense 1.1.9 · Stable',
-    title: '1.1 is here.', accent: 'Stable, signed, supported.',
-    body: 'A REST API, custom package repositories, a rebuilt Package Manager, a reworked WebUI with grouped menus and menu search, VXLAN, and encrypted remote backups. FreeSense 1.1 replaces 1.0 as the supported line.',
-    href: '/news/freesense-1-1-stable', cta: "See what's new", secondary: { href: DOCS + '/releases/1.1.9/', label: 'Release notes' }, visual: 'stable',
+    id: 'stable', label: 'Stable 1.1', theme: 'coral', eyebrow: 'Stable · signed and supported',
+    title: '1.1 is here.', accent: 'Ready for production.',
+    body: 'A REST API, custom package repositories, a rebuilt Package Manager, a reworked WebUI, VXLAN and encrypted remote backups. Patch releases arrive through signed repositories, upgrade-tested before they ship.',
+    href: '/download', cta: 'Download Stable', secondary: { href: '/news/freesense-1-1-stable', label: "See what's new" }, visual: 'stable',
   },
   {
     id: 'devel', label: 'Live development', theme: 'green', eyebrow: 'Development 1.2 · built in public',
@@ -34,12 +34,6 @@ const slides: Slide[] = [
     body: 'Our first desktop app maps every device on your network, measures latency at Layer 2 and 3, and pinpoints the failing hop. Free and open source for Windows.',
     href: '/apps/netspider', cta: 'Explore NetSpider', secondary: { href: '/news/introducing-netspider', label: 'Read the announcement' },
     image: '/apps/netspider/app-path-doctor.webp', imageAlt: 'NetSpider Path Doctor locating a failed ISP modem',
-  },
-  {
-    id: 'stable', label: 'Stable', theme: 'coral', eyebrow: 'FreeSense Stable',
-    title: 'The supported line.', accent: 'Signed and ready.',
-    body: 'Install the current Stable release on hardware or a VM. Patch releases bring necessary security fixes through signed package repositories.',
-    href: '/download', cta: 'Download Stable', secondary: { href: DOCS, label: 'Read the docs' }, visual: 'stable',
   },
   {
     id: 'cloud', label: 'Cloud images', theme: 'blue', eyebrow: 'Official cloud images',

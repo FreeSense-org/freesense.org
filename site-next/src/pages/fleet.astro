@@ -11,6 +11,20 @@ const features = [
   { tag: 'Backups', title: 'Backups', body: 'Configuration backups of every firewall, kept on the controller with retention rules.' },
 ];
 
+const controlPoints = [
+  { tag: 'No cloud', title: 'No Fleet cloud, no account', body: 'There is no FreeSense-hosted Fleet service, no sign-up and no subscription. The controller is an optional package on a FreeSense system you own.' },
+  { tag: 'Your data', title: 'It stays on your controller', body: 'The inventory, history, alerts, backups, policies and keys live on the controller under /fleet. Removing the package does not delete the fleet.' },
+  { tag: 'No phone home', title: 'Nothing sent to FreeSense', body: 'Fleet makes no connection to FreeSense servers. The invitation points at your controller, and each firewall pins its certificate.' },
+  { tag: 'Encrypted', title: 'Authenticated and encrypted', body: 'Firewalls reach the controller over the Fleet WireGuard tunnel, a tailnet or directly. Joining needs your invitation and a 6-digit approval code.' },
+];
+
+const whereToRun = [
+  { title: 'On your own network.', body: 'A firewall or VM at your headquarters or lab, reached over your WAN, LAN or VPN.' },
+  { title: 'On your own server.', body: 'A VM on a hypervisor you operate, in a rack or a closet.' },
+  { title: 'On a public host that you control.', body: 'Deploy the controller from a FreeSense cloud image on a server or cloud account that you own, give it a public address, and manage your fleet from there over a secure connection. It is still your server and your data.' },
+  { title: 'Inside a tailnet.', body: 'With Tailscale, firewalls join without any public port on the controller.' },
+];
+
 const steps = [
   { n: '1', title: 'Install the controller', body: 'On one firewall, install FreeSense Fleet from System → Package Manager and switch it on in the guide.' },
   { n: '2', title: 'Invite a firewall', body: 'Make an invitation on the controller and paste it into Add to fleet on the new firewall.' },
@@ -20,7 +34,7 @@ const steps = [
 
 <Base
   title="FreeSense Fleet: central management for FreeSense firewalls"
-  description="FreeSense Fleet manages many FreeSense firewalls from one controller: guided joining, a live dashboard and wall-screen view, updates in rings, policies, backups and HA pairs. Coming in FreeSense 1.2."
+  description="FreeSense Fleet manages many FreeSense firewalls from a controller you host yourself. Not a cloud service: no account, no subscription, nothing sent to FreeSense. Guided joining, a live dashboard and wall-screen view, updates in rings, policies, backups and HA pairs. Coming in FreeSense 1.2."
   current="fleet"
 >
   <section class="hero">
@@ -29,8 +43,9 @@ const steps = [
         <span class="eyebrow reveal">Product &middot; Coming soon in 1.2</span>
         <h1 class="reveal d1">FreeSense Fleet</h1>
         <p class="lead-muted reveal d2">
-          Every firewall, one control centre. Join firewalls with a pasted invitation, watch them live, then back up,
-          update and check them against policies together. Firewalls call home, so they can sit behind NAT.
+          Every firewall, one control centre, and <b>100% yours</b>. Fleet is self-hosted: not a cloud service, with no
+          account and nothing sent to FreeSense. Join firewalls with a pasted invitation, watch them live, then back up,
+          update and check them against policies together. Firewalls call the controller, so they can sit behind NAT.
         </p>
         <div class="hero-ctas reveal d3">
           <a class="btn-pill btn-grad" href={`${DOCS}/1.2/configure/fleet/`}>Read the documentation</a>
@@ -38,8 +53,8 @@ const steps = [
         </div>
         <div class="hero-meta reveal d3">
           <span><b>1.2</b>Development preview</span>
-          <span><b>Optional package</b>FreeSense-pkg-Fleet</span>
-          <span><b>Apache-2.0</b>No accounts, no telemetry</span>
+          <span><b>Self-hosted</b>No cloud, no account</span>
+          <span><b>Private</b>Nothing leaves your network</span>
         </div>
       </div>
       <a class="ns-shot reveal d2" href={`${DOCS}/1.2/configure/fleet-status/`} aria-label="FreeSense Fleet dashboard">
@@ -62,6 +77,34 @@ const steps = [
             <p>{f.body}</p>
           </article>
         ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="self-hosted">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="eyebrow reveal">Self-hosted by design</span><h2 class="section-title reveal d1 mb-0">Your fleet. Your controller.<br />Our cloud is not involved.</h2></div>
+        <p class="reveal d2">Most central managers live in a vendor's cloud. Fleet does not. The controller is a FreeSense system that you run, and everything stays on it.</p>
+      </div>
+      <div class="feat-grid">
+        {controlPoints.map((c, i) => (
+          <article class:list={['fs-card feat reveal', `d${i % 4}`]}>
+            <span class="t">{c.tag}</span>
+            <h3>{c.title}</h3>
+            <p>{c.body}</p>
+          </article>
+        ))}
+      </div>
+      <div class="split mt-5">
+        <div>
+          <h3 class="reveal d1" style="font-size:1.5rem">Run the controller wherever you want.</h3>
+          <p class="lead-muted reveal d2">It is an ordinary FreeSense system, so you choose where it lives. The firewalls open the connection to it, so only the controller has to be reachable.</p>
+          <p class="reveal d3"><small>Fleet works the same in every setup. Tailscale, ntfy and Telegram are used only if you choose them.</small></p>
+        </div>
+        <ul class="ticks reveal d2">
+          {whereToRun.map((w) => <li><span><b>{w.title}</b> {w.body}</span></li>)}
+        </ul>
       </div>
     </div>
   </section>

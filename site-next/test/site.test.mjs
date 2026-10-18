@@ -76,11 +76,15 @@ test('Pages Functions reuse the handlers of the current site', async () => {
 
 test('the compare page exists, is in the nav and footer, and every product cites a source', async () => {
   const page = await read('src/pages/compare.astro');
-  const data = await read('src/data/compare.ts');
+  // Only the products block needs a source each; the central-management table has its own list of sources.
+  const data = (await read('src/data/compare.ts')).split('export const centralCols')[0];
   assert.match(page, /id="sources"/);
   assert.match(page, /trademarks of/);
   assert.match(page, /planned for early 2027/);
   assert.match(await read('src/components/ProductItems.astro'), /href="\/compare\/"/);
+  assert.equal((await read('src/components/Nav.astro')).match(/href="\/compare\/"/g).length, 2);
+  assert.match(page, /id="central"/);
+  assert.match(await read('src/data/compare.ts'), /centralSources/);
   assert.match(await read('src/components/Footer.astro'), /href="\/compare\/"/);
   const ids = [...data.matchAll(/id: '([^']+)'/g)].map((m) => m[1]);
   assert.ok(ids.length >= 10);

@@ -14,6 +14,44 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
   {
+    slug: 'fleet-self-hosted',
+    date: '2026-10-19',
+    tag: 'Development',
+    title: 'FreeSense Fleet is self-hosted: no cloud, no account, all yours',
+    summary:
+      "Fleet is not a cloud service. The controller is a FreeSense system you run, your data stays on it, and nothing is sent to FreeSense.",
+    image: '/fleet/fleet-dashboard.png',
+    imageAlt: 'The FreeSense Fleet dashboard showing seven firewalls online',
+    link: { href: '/fleet/', label: 'See FreeSense Fleet' },
+    body: `
+      <p>Central management usually means a vendor's cloud: you create an account, your firewalls call a service you
+      do not run, and your fleet is only as private as that service. <strong>FreeSense Fleet works the other way
+      round.</strong> It is self-hosted by design, and it is not a cloud service.</p>
+      <h2>What that means</h2>
+      <ul>
+        <li><strong>No Fleet cloud and no account.</strong> There is no FreeSense-hosted service to sign up for, and no subscription.</li>
+        <li><strong>Your data stays on your controller.</strong> The inventory, history, alerts, backups, policies and keys live on the controller. Removing the package does not delete the fleet.</li>
+        <li><strong>Nothing is sent to FreeSense.</strong> Fleet makes no connection to FreeSense servers. The invitation points at your controller, and each firewall pins its certificate.</li>
+        <li><strong>Encrypted and authenticated.</strong> Firewalls reach the controller over the Fleet WireGuard tunnel, a tailnet, or directly. A firewall joins with your invitation and a 6-digit approval code that you compare on both screens.</li>
+        <li><strong>Third parties only if you choose them.</strong> Tailscale is one way to connect, and alerts can go to email, a webhook, Slack or Teams, Telegram, ntfy or Gotify. Fleet works without any of them.</li>
+      </ul>
+      <h2>Run the controller wherever you want</h2>
+      <p>The controller is an ordinary FreeSense system, so you decide where it lives: on your own network, on your own
+      server, or inside a tailnet. You can also deploy it from a FreeSense
+      <a href="/download/?image=ufs&amp;format=qcow2">cloud image</a> on a server or cloud account that you own, give it a
+      public address, and manage your fleet from that secure site. It is still your server and your data, and the
+      project runs nothing. Firewalls open the connection to the controller, so only the controller has to be reachable.</p>
+      <h2>How it compares</h2>
+      <p>The <a href="/compare/#central">Compare page</a> now sets Fleet next to the central managers of pfSense Plus,
+      OPNsense, Sophos and UniFi, using only what their own documentation says.</p>
+      <h2>Status</h2>
+      <p>Fleet is part of the Development line (FreeSense 1.2). It is experimental and not in Stable 1.1, so do not manage
+      production firewalls with it yet. Read the
+      <a href="https://docs.freesense.org/1.2/configure/fleet/">documentation</a> and the
+      <a href="https://docs.freesense.org/1.2/configure/fleet-status/">status page</a> for what was tested.</p>
+    `,
+  },
+  {
     slug: 'security-site',
     date: '2026-10-18',
     tag: 'Security',

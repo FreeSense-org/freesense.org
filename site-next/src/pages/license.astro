@@ -1,0 +1,44 @@
+---
+import Base from '../layouts/Base.astro';
+import { GITHUB } from '../data/site';
+---
+
+<Base title="License & Attribution — FreeSense" description="FreeSense is licensed under the Apache License, Version 2.0. Attribution to pfSense CE and FreeBSD.">
+  <section class="page-hero">
+    <div class="wrap narrow">
+      <span class="eyebrow reveal">Legal</span>
+      <h1 class="reveal d1">License &amp; Attribution</h1>
+      <p class="lead-muted reveal d2">
+        FreeSense is free and open-source software, distributed under the <strong>Apache License, Version 2.0</strong>. You are
+        free to use, modify and redistribute it, including for commercial purposes, provided you retain the copyright and
+        license notices.
+      </p>
+    </div>
+  </section>
+  <section class="prose-page" style="padding-top:0">
+    <div class="wrap narrow">
+      <div class="fs-card">
+        <h2 class="mt-0">Attribution</h2>
+        <p>
+          FreeSense is an independent, community-maintained derivative of <strong>pfSense&reg; CE</strong>, which is itself derived
+          from <strong>m0n0wall</strong> and built on the <strong>FreeBSD</strong> operating system. We are grateful to those projects
+          and their contributors.
+        </p>
+        <p class="small-note mb-0">FreeSense is not affiliated with or endorsed by the pfSense project. <em>pfSense</em> and <em>FreeBSD</em> are trademarks of their respective owners.</p>
+      </div>
+      <div class="hero-ctas mt-4">
+        <a class="btn-pill btn-ghost btn-sm-pill" href={`${GITHUB}/freesense/blob/main/LICENSE`} rel="noopener">Full LICENSE on GitHub</a>
+        <a class="btn-pill btn-ghost btn-sm-pill" href="https://www.apache.org/licenses/LICENSE-2.0" rel="noopener">Apache-2.0 official text</a>
+      </div>
+      <h2>Apache License 2.0, in short</h2>
+    </div>
+    <div class="wrap narrow">
+      <div class="trio">
+        <div class="fs-card"><h3 class="ok" style="font-size:1rem">Permissions</h3><ul class="mb-0 ps-3"><li>Commercial use</li><li>Modification</li><li>Distribution</li><li>Patent use</li><li>Private use</li></ul></div>
+        <div class="fs-card"><h3 style="font-size:1rem">Conditions</h3><ul class="mb-0 ps-3"><li>License &amp; copyright notice</li><li>State changes</li></ul></div>
+        <div class="fs-card"><h3 class="no" style="font-size:1rem">Limitations</h3><ul class="mb-0 ps-3"><li>No trademark rights</li><li>No liability</li><li>No warranty</li></ul></div>
+      </div>
+      <p class="small-note">This summary is provided for convenience and is not legal advice or a substitute for the full license text.</p>
+    </div>
+  </section>
+</Base>

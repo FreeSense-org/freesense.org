@@ -1,6 +1,6 @@
 name: Deploy to Cloudflare Pages
 
-# Pushes and manual runs deploy the Astro site and its live release-feed Function.
+# Pushes and manual runs deploy the website (site-next/) and its live release-feed Functions.
 # The hourly schedule only verifies that the canonical and website feeds agree.
 on:
   push:
@@ -28,11 +28,20 @@ jobs:
           node-version: 22
           cache: npm
 
+      # The root dependencies are needed for the Functions' tests and for the tsconfig the shared data resolves with.
       - name: Install dependencies
         run: npm ci
 
-      - name: Build site
-        run: npm test && npm run build
+      - name: Install the website's dependencies
+        run: npm ci
+        working-directory: site-next
+
+      - name: Test the release-feed code
+        run: npm test
+
+      - name: Test, check and build the website
+        run: npm test && npx astro check && npm run build
+        working-directory: site-next
 
       - name: Deploy to Cloudflare Pages
         id: deploy
@@ -41,7 +50,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          command: pages deploy dist --project-name=freesense --branch=main --commit-dirty=true
+          command: pages deploy site-next/dist --project-name=freesense --branch=main --commit-dirty=true
 
       - name: Verify the exact Pages deployment
         env:
@@ -50,7 +59,7 @@ jobs:
         run: |
           set -euo pipefail
           [[ "${DEPLOYMENT_URL}" =~ ^https://[a-z0-9-]+\.freesense\.pages\.dev/?$ ]]
-          css_path="$(grep -oE 'href="/_astro/[^"]+\.css"' dist/download/index.html \
+          css_path="$(grep -oE 'href="/_astro/[^"]+\.css"' site-next/dist/download/index.html \
             | cut -d'"' -f2 \
             | tail -n1)"
           test -n "$css_path"

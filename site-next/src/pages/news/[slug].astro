@@ -1,0 +1,48 @@
+---
+import Base from '../../layouts/Base.astro';
+import { news, formatDate } from '../../../../src/data/news';
+import type { NewsPost } from '../../../../src/data/news';
+
+export function getStaticPaths() {
+  return news.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: NewsPost };
+const others = news.filter((p) => p.slug !== post.slug).slice(0, 3);
+---
+
+<Base title={`${post.title} — FreeSense News`} description={post.summary} current="news">
+  <article>
+    <section class="page-hero article-head">
+      <div class="wrap narrow">
+        <a href="/news/" class="back">&larr; All news</a>
+        <div class="meta mt-2"><span class="cat">{post.tag}</span><time datetime={post.date}>{formatDate(post.date)}</time></div>
+        <h1>{post.title}</h1>
+        <p class="lead-muted mb-0">{post.summary}</p>
+      </div>
+    </section>
+    {post.image && (
+      <div class="wrap mb-5" style="max-width:1000px"><img class="cover" src={post.image} alt={post.imageAlt ?? ''} /></div>
+    )}
+    <div class="wrap narrow">
+      <div class="prose" set:html={post.body} />
+      {post.link && <a href={post.link.href} class="btn-pill btn-grad mt-4">{post.link.label} &rarr;</a>}
+    </div>
+  </article>
+
+  {others.length > 0 && (
+    <section>
+      <div class="wrap narrow">
+        <h2 class="mb-3" style="font-size:1.4rem">More news</h2>
+        <div class="more-news">
+          {others.map((p) => (
+            <a href={`/news/${p.slug}/`}>
+              <time datetime={p.date}>{formatDate(p.date)}</time>
+              <strong>{p.title}</strong>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Base>

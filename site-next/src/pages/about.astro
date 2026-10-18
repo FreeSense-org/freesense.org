@@ -1,0 +1,100 @@
+---
+import Base from '../layouts/Base.astro';
+import { GITHUB } from '../data/site';
+
+const removed = [
+  'Vendor registration & activation prompts',
+  'Dashboard & config phone-home telemetry',
+  'Automatic cloud config-backup upload',
+  'Proprietary repo client & update settings',
+  'Paid-support and store upsells in the GUI',
+];
+const kept = [
+  'The full firewall, NAT, VPN & routing stack',
+  'The package manager and plugin ecosystem',
+  'The proven pf packet filter',
+  'A familiar web GUI, steadily being rebuilt',
+];
+---
+
+<Base
+  title="About FreeSense"
+  description="What FreeSense is, where it stands, and how it's built: a young, fully open firewall OS derived from pfSense CE and rebuilt from source on FreeBSD 16."
+  current="about"
+>
+  <section class="page-hero">
+    <div class="wrap narrow">
+      <span class="eyebrow reveal">About</span>
+      <h1 class="reveal d1">A young open firewall, taking shape.</h1>
+      <p class="lead-muted reveal d2">
+        FreeSense is a new, free firewall and router operating system. It starts from the proven ideas of the open-source
+        <strong>pfSense&reg; CE</strong> project and rebuilds them as a fully open, independently maintained distribution.
+        It is a young project and still taking shape, but it now has a Stable release path you can run.
+      </p>
+    </div>
+  </section>
+
+  <section class="prose-page" style="padding-top:0">
+    <div class="wrap narrow">
+      <h2>Where we are</h2>
+      <p>
+        FreeSense started as a rebuild: take a proven firewall, remove the vendor ties, and build it from source in public on a
+        current FreeBSD. That groundwork is done. Since <strong>1.1</strong> the project has a Stable release path: every patch
+        release is built from a sealed set of sources, upgrade-tested on a virtual machine, signed, and only then published.
+      </p>
+    </div>
+    <div class="wrap">
+      <div class="trio">
+        <article class="fs-card"><span class="num">STABLE</span><h3>1.1 for real networks</h3><p>Signed, upgrade-tested patch releases. Fixes land here first; nothing new is added in a hurry.</p></article>
+        <article class="fs-card"><span class="num">TESTING</span><h3>The next patch, nightly</h3><p>Nightly builds of the next 1.1 patch, so fixes can be tried on a test system before they ship.</p></article>
+        <article class="fs-card"><span class="num">DEVELOPMENT</span><h3>1.2, built in public</h3><p>Where new features take shape. Rebuilt every night from source; experimental and meant for labs.</p></article>
+      </div>
+    </div>
+    <div class="wrap narrow">
+      <h2>Why FreeSense exists</h2>
+      <p>
+        Firewall software should be something you can read, trust and rebuild yourself, not a black box tied to one vendor's
+        cloud and roadmap. Every part of the system, down to the build pipeline that produces the official images, is public
+        and Apache-2.0 licensed. No accounts, no activation, no phone-home.
+      </p>
+      <p>
+        We track <strong>FreeBSD 16-CURRENT</strong> closely, so the base you run has the newest kernel, drivers and security
+        fixes rather than a snapshot from years ago, and we still ship it as signed, tested images.
+      </p>
+      <h2 id="how">How it's built</h2>
+      <p>FreeSense is built entirely from source, in the open, on a reproducible pipeline. There are no hidden patches and no proprietary tooling.</p>
+    </div>
+    <div class="wrap">
+      <div class="trio">
+        <article class="fs-card"><span class="num">01</span><h3>Frozen upstream</h3><p>Each release seals exact source, ports, OS-definition and FreeBSD revisions with a frozen set of upstream package sources, so the build cannot drift between stages.</p></article>
+        <article class="fs-card"><span class="num">02</span><h3>Automated builds</h3><p>The world, kernel and curated package catalog are built on clean runners, with our own FreeBSD hardware for larger releases, then signed with the project key.</p></article>
+        <article class="fs-card"><span class="num">03</span><h3>Signed delivery</h3><p>Installed systems make anonymous HTTPS reads to <code>pkg.freesense.org</code> for the signed update manifest, repository metadata and packages. They send no device ID, telemetry, configuration or usage report.</p></article>
+      </div>
+    </div>
+    <div class="wrap narrow">
+      <p class="small-note">
+        <a href={`${GITHUB}/freesense`} rel="noopener">freesense</a> &middot;
+        <a href={`${GITHUB}/freesense-system-ports`} rel="noopener">freesense-system-ports</a> &middot;
+        <a href={`${GITHUB}/freesense-packages`} rel="noopener">freesense-packages</a> &middot;
+        <a href={`${GITHUB}/freesense-os-base`} rel="noopener">freesense-os-base</a>
+      </p>
+      <h2>Independent &amp; de-vendored</h2>
+      <p>We kept what makes the firewall work and removed what tied it to a single vendor's infrastructure.</p>
+      <div class="two-col">
+        <div class="fs-card"><h3 class="ok" style="font-size:1.05rem">Kept &amp; improved</h3><ul>{kept.map((k) => <li>{k}</li>)}</ul></div>
+        <div class="fs-card"><h3 class="no" style="font-size:1.05rem">Removed</h3><ul>{removed.map((r) => <li>{r}</li>)}</ul></div>
+      </div>
+      <h2>Attribution</h2>
+      <p>
+        FreeSense is an independent, community-maintained derivative of <strong>pfSense&reg; CE</strong>, which is itself derived
+        from <strong>m0n0wall</strong> and built on the <strong>FreeBSD</strong> operating system. We are grateful to those projects
+        and their contributors, and we retain their copyright and license notices as required by the Apache-2.0 license.
+      </p>
+      <p class="small-note">FreeSense is not affiliated with or endorsed by the pfSense project. &ldquo;pfSense&rdquo; and &ldquo;FreeBSD&rdquo; are trademarks of their respective owners.</p>
+      <div class="hero-ctas mt-4">
+        <a href="/download/" class="btn-pill btn-grad">Download FreeSense</a>
+        <a href="/license/" class="btn-pill btn-ghost">License &amp; attribution</a>
+      </div>
+    </div>
+  </section>
+</Base>

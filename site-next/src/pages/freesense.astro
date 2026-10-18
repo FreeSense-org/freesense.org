@@ -1,0 +1,140 @@
+---
+import Base from '../layouts/Base.astro';
+import IsoScene from '../components/IsoScene.astro';
+import { DOCS, GITHUB } from '../data/site';
+
+const highlights = [
+  { tag: 'Automation', title: 'REST API', href: '/api/overview/', body: 'Drive the firewall from scripts and tools, with per-user privileges and a built-in API Explorer.' },
+  { tag: 'Packages', title: 'Custom repositories', href: '/packages/custom-repositories/', body: 'Add your own package repositories. FreeSense keeps them below the official ones and away from system upgrades.' },
+  { tag: 'Packages', title: 'Rebuilt Package Manager', href: '/packages/installing-packages/', body: 'Filters, a source column, and a review step before anything is installed or removed.' },
+  { tag: 'WebUI', title: 'Faster to find, faster to use', href: '/releases/whats-new-1.1/', body: 'Grouped top menus, Ctrl+K menu search, and rebuilt pages across the interface and packages.' },
+  { tag: 'Networking', title: 'VXLAN interfaces', href: '/configure/interfaces-vlans-bridges/#vxlan', body: 'Stretch layer 2 across routed networks with native VXLAN, alongside VLANs, bridges and tunnels.' },
+  { tag: 'Backups', title: 'Encrypted remote backups', href: '/base-os/system-administration/', body: 'Send encrypted configuration backups to S3-compatible storage, WebDAV or SFTP.' },
+  { tag: 'Packages', title: 'Threat Shield & DNS Protection', href: '/packages/threat-shield/', body: 'A package that filters DNS for your network with AdGuard Home. It takes over the DNS blocking that pfBlockerNG did.' },
+  { tag: 'Security', title: 'Security fixes', href: '/releases/previous-1.1/#security-in-110', body: 'Fixes for the upstream security advisories SA-26_05 to SA-26_21, plus code-scanning hardening across the WebUI.' },
+];
+
+const platform = [
+  { title: 'Routing without limits', body: 'Multi-WAN, policy routing, VLANs, VXLAN, traffic shaping, CARP high availability and the pf packet filter on a modern FreeBSD network stack.' },
+  { title: 'See the threat. Stop it at the edge.', body: 'Suricata 8 IDS/IPS, CrowdSec threat intelligence, Threat Shield DNS protection and ACME certificates, all in the WebUI.' },
+  { title: 'Every kind of VPN', body: 'WireGuard, OpenVPN, IPsec, Tailscale and ZeroTier: traditional standards and modern mesh on the same interfaces, rules and routing.' },
+  { title: 'Upgrade boldly. Roll back calmly.', body: 'ZFS boot environments snapshot the whole OS before an upgrade. Pick a known-good one from the WebUI or the boot menu.', href: '/operations/zfs-boot-environments/' },
+  { title: 'A curated package catalog', body: 'Capabilities, support status and resource impact are shown before you install, with native WebUI integration.', href: '/packages/installing-packages/' },
+  { title: 'Yours. Not ours.', body: 'Apache-2.0, every line. No accounts or activation, no telemetry or phone-home, and signed updates.' },
+];
+---
+
+<Base
+  title="FreeSense — features of the open-source firewall"
+  description="Routing, security, VPN, boot environments, cloud images and a curated package catalog: what FreeSense does and what is new in 1.1."
+  current="freesense"
+>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow reveal">Product &middot; FreeSense</span>
+        <h1 class="reveal d1">One system. Your entire edge.</h1>
+        <p class="lead-muted reveal d2">
+          From a quiet home lab to a multi-gigabit branch, FreeSense puts routing, security, VPN and observability in one
+          coherent interface, on a FreeBSD base pinned to exact revisions.
+        </p>
+        <div class="hero-ctas reveal d3">
+          <a class="btn-pill btn-grad" href="/download/">Download</a>
+          <a class="btn-pill btn-ghost" href={`${DOCS}/releases/whats-new-1.1/`}>What's new in 1.1</a>
+        </div>
+        <div class="hero-meta reveal d3">
+          <span><b>amd64</b>Supported</span>
+          <span><b>ARM64</b>Experimental</span>
+          <span><b>ZFS &middot; UFS</b>ZFS recommended · UFS supported</span>
+        </div>
+      </div>
+      <div class="hero-art reveal d2"><IsoScene label="Isometric illustration of a FreeSense appliance" /></div>
+    </div>
+  </section>
+
+  <section id="features" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="eyebrow reveal">New in FreeSense 1.1</span><h2 class="section-title reveal d1 mb-0">A big step forward.</h2></div>
+        <p class="reveal d2">FreeSense 1.1 replaces 1.0 as the supported Stable line. Upgrade from the console or the WebUI; moving from 1.0 to 1.1 is one-way.</p>
+      </div>
+      <div class="feat-grid">
+        {highlights.map((h, i) => (
+          <a class:list={['fs-card feat reveal', `d${i % 4}`]} href={DOCS + h.href}>
+            <span class="t">{h.tag}</span>
+            <h3>{h.title}</h3>
+            <p>{h.body}</p>
+          </a>
+        ))}
+      </div>
+      <div class="hero-ctas mt-4">
+        <a class="btn-pill btn-grad btn-sm-pill" href={`${DOCS}/releases/whats-new-1.1/`}>Tour what's new</a>
+        <a class="btn-pill btn-ghost btn-sm-pill" href={`${DOCS}/guides/upgrading-from-1.0/`}>Upgrade from 1.0</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="platform">
+    <div class="wrap">
+      <div class="center">
+        <span class="eyebrow reveal">The platform</span>
+        <h2 class="section-title reveal d1">Everything at the edge, in one place.</h2>
+      </div>
+      <div class="why-grid">
+        {platform.map((p, i) => (
+          <article class:list={['fs-card tilt reveal', `d${(i % 3) + 1}`]}>
+            <span class="shine"></span>
+            <h3 style="font-size:1.12rem">{p.title}</h3>
+            <p>{p.body}</p>
+            {p.href && <a class="text-link d-inline-block mt-3" href={DOCS + p.href}>Read more &rarr;</a>}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="cloud">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow reveal">Official cloud images</span>
+        <h2 class="reveal d1">Boot the firewall. Skip the installer.</h2>
+        <p class="lead-muted reveal d2">Preinstalled UFS and ZFS disks for Proxmox, OpenStack, QEMU/KVM and bhyve, with BIOS and UEFI boot and metadata-driven first boot.</p>
+        <ul class="ticks reveal d3">
+          <li><span><b>QCOW2 and raw GPT</b> disk formats.</span></li>
+          <li><span><b>NoCloud, ConfigDrive, and OpenStack</b> metadata.</span></li>
+          <li><span><b>QEMU guest agent</b> included.</span></li>
+        </ul>
+        <div class="hero-ctas mt-4 reveal d3">
+          <a class="btn-pill btn-grad btn-sm-pill" href="/download/?image=ufs&amp;format=qcow2">Choose a cloud image</a>
+          <a class="btn-pill btn-ghost btn-sm-pill" href={`${DOCS}/getting-started/cloud-images/`}>Deployment guide</a>
+        </div>
+      </div>
+      <div class="fs-card reveal d2">
+        <div class="panel-head"><h3>Where FreeSense runs</h3></div>
+        <ul class="ticks mt-0">
+          <li><span><b>amd64</b> hardware and VMs: installer ISO, UEFI and BIOS. Supported.</span></li>
+          <li><span><b>Cloud disks</b>: UFS (recommended) or ZFS, QCOW2 or raw.</span></li>
+          <li><span><b>ARM64 UEFI</b>: generic installer. Experimental.</span></li>
+          <li><span><b>Raspberry Pi 4B and Pi 5 D0</b>: appliance images on the Development line only.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="cta-box reveal">
+        <div>
+          <span class="eyebrow">Built in public</span>
+          <h2>Read every line. Rebuild every image.</h2>
+          <p class="lead-muted mb-0">Source, ports, packages and the build pipeline itself are public on GitHub under Apache-2.0.</p>
+        </div>
+        <div class="cta-links">
+          <a href="/download/">Download FreeSense <small>Stable &amp; Development</small></a>
+          <a href={`${GITHUB}/freesense`} rel="noopener">freesense <small>Source</small></a>
+          <a href={`${GITHUB}/freesense-os-base`} rel="noopener">freesense-os-base <small>Build pipeline</small></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

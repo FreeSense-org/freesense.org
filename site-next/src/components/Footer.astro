@@ -1,0 +1,46 @@
+---
+import { DOCS, GITHUB, SECURITY } from '../data/site';
+---
+<footer class="fs-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <img class="logo-dark" src="/brand/lockup-white.svg" alt="FreeSense" width="145" height="34" />
+        <img class="logo-light" src="/brand/lockup-light.svg" alt="FreeSense" width="145" height="34" />
+        <p class="lead-muted mt-3 mb-0" style="font-size:.92rem;max-width:34ch">The open-source firewall, rebuilt in the open on FreeBSD. Signed builds, no accounts, no telemetry.</p>
+      </div>
+      <div><h4>Products</h4><ul>
+        <li><a href="/freesense/">FreeSense</a></li>
+        <li><a href="/fleet/">FreeSense Fleet</a></li>
+        <li><a href="/download/">Download</a></li>
+        <li><a href="/netspider/">NetSpider</a></li>
+      </ul></div>
+      <div><h4>Project</h4><ul>
+        <li><a href="/compare/">Compare</a></li>
+        <li><a href="/news/">News</a></li>
+        <li><a href={SECURITY} rel="noopener">Security</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href={DOCS}>Documentation</a></li>
+        <li><a href={`${GITHUB}/freesense/issues`} rel="noopener">Issues</a></li>
+      </ul></div>
+      <div><h4>Repositories</h4><ul>
+        <li><a href={`${GITHUB}/freesense`} rel="noopener">freesense</a></li>
+        <li><a href={`${GITHUB}/freesense-system-ports`} rel="noopener">freesense-system-ports</a></li>
+        <li><a href={`${GITHUB}/freesense-packages`} rel="noopener">freesense-packages</a></li>
+        <li><a href={`${GITHUB}/freesense-os-base`} rel="noopener">freesense-os-base</a></li>
+        <li><a href={`${GITHUB}/NetSpider`} rel="noopener">NetSpider</a></li>
+      </ul></div>
+      <div><h4>Legal</h4><ul>
+        <li><a href="/license/">License (Apache-2.0)</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+      </ul></div>
+    </div>
+    <div class="legal">
+      <span>&copy; 2025&ndash;2026 The FreeSense Project. Licensed under Apache-2.0.</span>
+      <span>FreeSense is an independent, open-source derivative of pfSense&reg; CE, built on FreeBSD. &ldquo;pfSense&rdquo; and &ldquo;FreeBSD&rdquo; are trademarks of their respective owners.</span>
+    </div>
+  </div>
+</footer>
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="copyToast" class="toast align-items-center" role="status" aria-live="polite" aria-atomic="true"><div class="toast-body">Copied to clipboard</div></div>
+</div>

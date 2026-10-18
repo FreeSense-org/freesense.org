@@ -1,0 +1,184 @@
+---
+import Base from '../layouts/Base.astro';
+import { apps } from '../../../src/data/apps';
+
+const app = apps.find((a) => a.slug === 'netspider')!;
+const IMG = '/apps/netspider';
+
+const features = [
+  { icon: 'web', title: 'Every device, identified', body: 'ARP and IPv6 neighbor sweeps, LLDP, CDP, mDNS, SSDP, SNMP, SMB, TLS and vendor protocols feed an evidence-based classifier with about 170 brand rules.' },
+  { icon: 'pulse', title: 'Latency at Layer 2 and 3', body: 'Real MAC-level round trips from high-precision capture timestamps next to ICMP and TCP, including device-to-device timing.' },
+  { icon: 'path', title: 'Path Doctor', body: 'Probes every hop from your PC to the internet and turns failures into incidents with a root-cause sentence and a confidence score.' },
+  { icon: 'storm', title: 'Storm Center', body: 'Broadcast, multicast and unknown-unicast levels against a learned baseline, with the top sources mapped to their switch port.' },
+  { icon: 'wifi', title: 'Wi-Fi ↔ LAN', body: 'Separates the radio hop from the backhaul, and measures true one-way latency across switch and AP on dual-adapter PCs.' },
+  { icon: 'export', title: 'Reports and alerts', body: 'Export JSON, CSV, Nmap XML, HTML reports and pcapng. Send alerts to Discord, Slack, webhooks or syslog.' },
+];
+
+const tour = [
+  { id: 'web', label: 'Spider Web', img: 'spider-web', title: 'Your whole network as a living web', body: 'Every device, every link and its measured latency, animated in real time. Slow links glow amber, failures turn red, and suspected faults are marked on the path.' },
+  { id: 'path', label: 'Path Doctor', img: 'app-path-doctor', title: 'Every hop, probed continuously', body: 'The hop chain from this PC to the internet with latency, added latency, loss, jitter and ARP-vs-ICMP per hop. The red link marks exactly where it breaks.' },
+  { id: 'incidents', label: 'Incidents', img: 'app-incidents', title: 'Root cause, in plain language', body: 'Correlates the first failing hop, devices that dropped together and switch-port evidence into a single incident with a confidence score.' },
+  { id: 'storm', label: 'Storm Center', img: 'app-storm-center', title: 'Catch storms and loops early', body: 'Live broadcast and multicast levels against a learned baseline, top talkers mapped to their switch and port, a loop finder and pcapng recording.' },
+  { id: 'devices', label: 'Devices', img: 'app-devices', title: 'An inventory that explains itself', body: 'Vendor, model, operating system and services, with the evidence behind every identification and launchers for SSH, RDP and web UIs.' },
+  { id: 'wifi', label: 'Wi-Fi', img: 'app-wifi', title: 'Radio problem or backhaul problem?', body: 'RSSI, link rate, roams and disconnect reasons for this PC, nearby networks and channels, and per-AP health seen from the wired side.' },
+  { id: 'health', label: 'Health', img: 'app-health', title: 'A health score with reasons', body: 'DNS, MTU black holes, bufferbloat, cleartext management, expired certificates, SMBv1 and rogue DHCP or router advertisements.' },
+  { id: 'segments', label: 'Segments', img: 'app-segments', title: 'Subnets and VLANs, discovered', body: 'Other networks found through the route table, DHCP option 121, traceroute, SNMP and tagged DHCP probes.' },
+];
+
+const gallery = [
+  { img: 'app-web', caption: 'Spider web with device inspector' },
+  { img: 'tree', caption: 'Hierarchy tree' },
+  { img: 'port-matrix', caption: 'Switch port matrix' },
+  { img: 'welcome-step1', caption: 'First-run welcome' },
+  { img: 'settings-updates', caption: 'Release and pre-release channels' },
+  { img: 'update-available', caption: 'Built-in updater' },
+  { img: 'about', caption: 'About NetSpider' },
+];
+---
+
+<Base
+  title="NetSpider — network diagnostics for Windows · FreeSense"
+  description="NetSpider is a free, open-source Layer 2 / Layer 3 network diagnostic tool for Windows from the FreeSense project: device discovery, MAC-level latency, Path Doctor and Storm Center."
+  current="netspider"
+>
+  <div class="ns-accent">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="ns-family reveal"><img src={app.logo} alt="" width="28" height="28" /> A FreeSense app</span>
+          <h1 class="reveal d1">NetSpider</h1>
+          <p class="subtitle reveal d2">{app.tagline}</p>
+          <p class="lead-muted reveal d2">{app.summary}</p>
+          <div class="hero-ctas reveal d3">
+            <a href="#download" class="btn-pill btn-grad" id="hero-download">Download for Windows</a>
+            <a href={app.repo} class="btn-pill btn-ghost" rel="noopener">View on GitHub</a>
+          </div>
+          <p class="ns-meta reveal d3">
+            <span class="v"><span class="dot app"></span><span id="latest-version">v{app.version}</span></span>
+            <span id="latest-date"></span>
+            <span>Apache-2.0</span>
+            <span>{app.platform}</span>
+          </p>
+        </div>
+        <figure class="ns-shot reveal d2 m-0">
+          <img src={`${IMG}/spider-web.webp`} alt="NetSpider spider-web view mapping a 43-device network with per-device latency" width="1600" height="900" fetchpriority="high" />
+        </figure>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="wrap">
+        <span class="eyebrow reveal">What it does</span>
+        <h2 class="section-title reveal d1">From &ldquo;the internet is slow&rdquo; to the exact cable.</h2>
+        <div class="ns-feature-grid">
+          {features.map((f, i) => (
+            <article class:list={['fs-card tilt reveal', `d${(i % 3) + 1}`]}>
+              <span class="shine"></span>
+              <span class="ns-icon" aria-hidden="true">
+                {f.icon === 'web' && <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><path d="M12 2v7.5M12 14.5V22M2 12h7.5M14.5 12H22M4.9 4.9l5.3 5.3M13.8 13.8l5.3 5.3M19.1 4.9l-5.3 5.3M10.2 13.8l-5.3 5.3"/></svg>}
+                {f.icon === 'pulse' && <svg viewBox="0 0 24 24"><path d="M2 12h4l3-8 6 16 3-8h4"/></svg>}
+                {f.icon === 'path' && <svg viewBox="0 0 24 24"><circle cx="4" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="20" cy="12" r="2"/><path d="M6 12h4M14 12h4"/><path d="m17 6 3 3m0-3-3 3"/></svg>}
+                {f.icon === 'storm' && <svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg>}
+                {f.icon === 'wifi' && <svg viewBox="0 0 24 24"><path d="M2 8.5a15 15 0 0 1 20 0M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/></svg>}
+                {f.icon === 'export' && <svg viewBox="0 0 24 24"><path d="M14 3h7v7M21 3l-9 9M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/></svg>}
+              </span>
+              <h3>{f.title}</h3>
+              <p>{f.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="tour">
+      <div class="wrap">
+        <div class="center">
+          <span class="eyebrow reveal">Take the tour</span>
+          <h2 class="section-title reveal d1">See what NetSpider sees.</h2>
+        </div>
+        <div class="tour-tabs" role="tablist" aria-label="NetSpider views">
+          {tour.map((t, i) => (
+            <button type="button" role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{t.label}</button>
+          ))}
+        </div>
+        {tour.map((t, i) => (
+          <div class="tour-panel" role="tabpanel" id={`panel-${t.id}`} aria-labelledby={`tab-${t.id}`} hidden={i !== 0}>
+            <div><h3>{t.title}</h3><p>{t.body}</p></div>
+            <button type="button" class="zoomable" data-full={`${IMG}/${t.img}.webp`} data-caption={t.title} aria-label={`Enlarge: ${t.title}`}>
+              <img src={`${IMG}/${t.img}.webp`} alt={`NetSpider ${t.label} view`} loading={i === 0 ? 'eager' : 'lazy'} />
+            </button>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section id="gallery" style="padding-top:0">
+      <div class="wrap">
+        <span class="eyebrow reveal">More screens</span>
+        <h2 class="section-title reveal d1">Built to be lived in.</h2>
+        <div class="gallery-grid">
+          {gallery.map((g) => (
+            <figure class="reveal">
+              <button type="button" class="zoomable" data-full={`${IMG}/${g.img}.webp`} data-caption={g.caption} aria-label={`Enlarge: ${g.caption}`}>
+                <img src={`${IMG}/${g.img}-thumb.webp`} alt={g.caption} loading="lazy" />
+              </button>
+              <figcaption>{g.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="download">
+      <div class="wrap">
+        <div class="center">
+          <span class="eyebrow reveal">Download</span>
+          <h2 class="section-title reveal d1">Get NetSpider <span id="dl-version">{app.version}</span></h2>
+          <p class="lead-muted reveal d2">Free and open source. Pick your architecture, then the package that fits.</p>
+          <div class="arch-switch mt-3" role="radiogroup" aria-label="Architecture">
+            <button type="button" role="radio" data-arch="win-x64" aria-checked="true">x64<small>Most PCs</small></button>
+            <button type="button" role="radio" data-arch="win-arm64" aria-checked="false">ARM64<small>Snapdragon / ARM</small></button>
+            <button type="button" role="radio" data-arch="win-x86" aria-checked="false">x86<small>32-bit Windows 10</small></button>
+          </div>
+        </div>
+        <div class="dl-grid" id="dl-grid">
+          <a class="fs-card dl-card primary" href={app.releases} rel="noopener">
+            <strong>Download from GitHub Releases</strong>
+            <small>Installers, standalone exe, MSI and portable zip for x64, ARM64 and x86.</small>
+          </a>
+        </div>
+        <p class="dl-foot" id="dl-foot"><a href={app.releases} rel="noopener">All files and checksums on GitHub &rarr;</a></p>
+        <div class="notes-grid">
+          <article class="fs-card"><h3>Npcap required</h3><p>NetSpider needs <a href="https://npcap.com" rel="noopener">Npcap</a> for packet capture. Its license does not allow bundling, so NetSpider guides you through installing it on first start.</p></article>
+          <article class="fs-card"><h3>Administrator rights</h3><p>Raw packet capture needs elevation, so NetSpider asks for it at launch. The per-user installer itself needs no admin rights.</p></article>
+          <article class="fs-card"><h3>Not code-signed yet</h3><p>Windows SmartScreen may say &ldquo;Windows protected your PC&rdquo;. Choose <em>More info &rarr; Run anyway</em>, and verify files against <code>SHA256SUMS.txt</code>.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="changelog" style="padding-top:0">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow reveal">Changelog</span><h2 class="section-title reveal d1 mb-0">What's new in NetSpider</h2></div>
+          <p class="reveal d2">Read live from <a href={`${app.repo}/releases`} rel="noopener">GitHub Releases</a>, so this page is always current.</p>
+        </div>
+        <div class="changelog" id="changelog-list" aria-live="polite">
+          <article class="fs-card release">
+            <div class="release-head"><span class="release-tag">v{app.version}</span><span>4 October 2026</span></div>
+            <p class="mt-2 mb-0">First public release. <a href={app.releases} rel="noopener">Read the release notes on GitHub &rarr;</a></p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <dialog class="lightbox" id="lightbox" aria-label="Screenshot">
+    <form method="dialog"><button class="lb-close" aria-label="Close">&times;</button></form>
+    <div id="lb-frame"></div>
+    <p id="lb-caption"></p>
+  </dialog>
+</Base>
+
+<script>
+  import '../scripts/netspider.js';
+</script>

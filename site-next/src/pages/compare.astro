@@ -1,0 +1,190 @@
+---
+import Base from '../layouts/Base.astro';
+import { products, rows, notes, groupLabels, REVIEWED, type Group } from '../data/compare';
+
+const filters: { key: 'all' | Group; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'open', label: groupLabels.open },
+  { key: 'commercial', label: groupLabels.commercial },
+  { key: 'appliance', label: groupLabels.appliance },
+];
+const others = products.filter((p) => p.id !== 'freesense');
+const isGap = (v: string) => v === '—';
+
+const fleet = [
+  { t: 'Built in and free', d: 'Central management ships with FreeSense. Any FreeSense box, or a small VM, can be the controller. No cloud account and no per-device fee.' },
+  { t: 'Safe joining', d: 'A box joins with a link plus a separate security key, or zero-touch through cloud-init for cloud and batch deployments.' },
+  { t: 'Updates in rings', d: 'Roll updates out in stages. On ZFS, a box that does not come back healthy rolls back to its previous boot environment by itself.' },
+  { t: 'Templates and policies', d: 'Push configuration templates and security or operations baselines, with commit-confirm so a bad change undoes itself.' },
+  { t: 'Backups, SD-WAN, NOC view', d: 'Central encrypted backups with diffs, an optional SD-WAN mesh, and a live dashboard with a full-screen NOC mode. Boxes keep forwarding if the controller is down.' },
+];
+
+const connections = [
+  { t: 'Direct', d: 'Reach each box’s management API straight over your LAN, MPLS or an existing VPN.' },
+  { t: 'Fleet WireGuard', d: 'A built-in management tunnel that each box opens to the controller, so sites behind NAT or CGNAT can join. The management API is only reachable through it.' },
+  { t: 'Tailscale', d: 'Full integration with your existing tailnet, including self-hosted Headscale.' },
+];
+
+const faq = [
+  { q: 'Is FreeSense a fork of pfSense?', a: 'FreeSense started from pfSense CE and is rebuilt from source on FreeBSD 16. Vendor registration, telemetry and upsell prompts were removed, and the WebUI, REST API and package manager are being rebuilt. Both share the pf packet filter.' },
+  { q: 'Why choose FreeSense over OPNsense or pfSense?', a: 'Choose it if you value a fully open build you can trace from source to signed image, with no vendor account. If you need commercial support, a long track record or a large plugin catalogue today, OPNsense and pfSense Plus are more mature choices.' },
+  { q: 'Can I move my pfSense configuration to FreeSense?', a: 'FreeSense keeps a familiar configuration model, but there is no official migration tool yet. Test an import on a VM before you move production.' },
+  { q: 'Does FreeSense run on ARM or vendor appliances?', a: 'Stable releases are amd64. ARM64 builds, including Raspberry Pi, are in Development only. FreeSense runs on your own hardware, VMs and clouds; it does not sell appliances.' },
+  { q: 'What does "—" mean in the table?', a: 'We could not verify it from a public source when we reviewed the page. It does not mean the product lacks the feature. Corrections with a source are welcome on GitHub.' },
+  { q: 'When is Fleet available?', a: 'Fleet is part of FreeSense 1.2 and is planned for early 2027. Parts of it can be tried in Development builds today; it will not come to Stable 1.1.' },
+];
+
+const sources = products.flatMap((p) => p.source.map((s) => ({ ...s, product: p.name })))
+  .concat(notes.map((n) => ({ ...n.source, product: 'Arista ETM' })));
+---
+
+<Base
+  title="Compare FreeSense with pfSense, OPNsense, MikroTik and more"
+  description="A fair, sourced comparison of FreeSense with other self-hosted firewalls and routers: pfSense CE and Plus, OPNsense, MikroTik RouterOS, OpenWrt, IPFire, VyOS, Sophos, UniFi and FortiGate."
+  current="compare"
+>
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow reveal">Compare</span>
+      <h1 class="reveal d1">How FreeSense compares.</h1>
+      <p class="lead-muted reveal d2 compare-lead">
+        Open and closed, software and appliances: the firewalls people usually weigh against FreeSense. We only list
+        what we could verify from a public source, and we say where others are the better fit.
+      </p>
+      <p class="compare-reviewed reveal d3">Last reviewed {REVIEWED} &middot; <a href="#sources">Sources</a></p>
+    </div>
+  </section>
+
+  <section class="compare-table-section" aria-labelledby="table-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="section-title" id="table-title">Side by side</h2>
+        <div class="chip-row" role="group" aria-label="Filter products">
+          {filters.map((f, i) => (
+            <button type="button" class="chip" data-compare-filter={f.key} aria-pressed={i === 0 ? 'true' : 'false'}>{f.label}</button>
+          ))}
+        </div>
+      </div>
+      <p class="compare-hint">FreeSense stays in view while you filter. On small screens, swipe the table sideways.</p>
+      <div class="compare-scroll" tabindex="0" role="region" aria-labelledby="table-title">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th scope="col" class="c-feature">Feature</th>
+              {products.map((p) => (
+                <th scope="col" class:list={['c-prod', { 'is-fs': p.id === 'freesense' }]} data-col={p.id} data-groups={p.groups.join(' ')}>
+                  <span class="c-name">{p.name}</span>
+                  <span class="c-vendor">{p.vendor}</span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr>
+                <th scope="row" class="c-feature">{r.label}</th>
+                {products.map((p) => {
+                  const v = p.values[r.key] ?? '—';
+                  return (
+                    <td class:list={[{ 'is-fs': p.id === 'freesense', 'is-gap': isGap(v), 'is-soon': p.id === 'freesense' && r.key === 'central' }]} data-col={p.id}>
+                      {isGap(v) ? <span aria-label="Not verified">—</span> : v}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="compare-empty" hidden>No products in this filter.</p>
+    </div>
+  </section>
+
+  <section class="fleet-teaser" aria-labelledby="fleet-title">
+    <div class="wrap">
+      <div class="fleet-card">
+        <span class="soon-badge">Coming in FreeSense 1.2 &middot; planned for early 2027</span>
+        <h2 class="section-title" id="fleet-title">Fleet: central management, built in.</h2>
+        <p class="lead-muted">
+          Most vendors sell central management separately or tie it to their cloud. Fleet is planned as a free,
+          self-hosted part of FreeSense 1.2. It is in Development today and is not part of Stable 1.1.
+        </p>
+        <div class="fleet-connect" aria-labelledby="connect-title">
+          <h3 id="connect-title">Three ways to connect, per fleet, group or box</h3>
+          <div class="connect-grid">
+            {connections.map((c, i) => (
+              <div class="connect-item">
+                <span class="connect-num">{String(i + 1).padStart(2, '0')}</span>
+                <h4>{c.t}</h4>
+                <p>{c.d}</p>
+              </div>
+            ))}
+          </div>
+          <p class="connect-advisor">A connection advisor checks each site's requirements, recommends a method, and runs a preflight before anything is set up.</p>
+        </div>
+        <div class="fleet-grid">
+          {fleet.map((f) => (
+            <div class="fleet-item">
+              <h3>{f.t}</h3>
+              <p>{f.d}</p>
+            </div>
+          ))}
+        </div>
+        <p class="fleet-note">Features and timing can change before release. Follow progress in <a href="/news/">News</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="choose" aria-labelledby="choose-title">
+    <div class="wrap">
+      <h2 class="section-title" id="choose-title">Which one fits?</h2>
+      <p class="lead-muted choose-lead">Every option here is a good choice for someone. An honest summary of each:</p>
+      <div class="choose-grid">
+        {products.map((p) => (
+          <article class:list={['fs-card choose-card', { 'is-fs': p.id === 'freesense' }]} data-col={p.id} data-groups={p.groups.join(' ')}>
+            <div class="choose-head">
+              <h3>{p.name}</h3>
+              <span class="choose-tags">{p.groups.map((g) => groupLabels[g]).join(' · ')}</span>
+            </div>
+            <p><strong>Choose {p.name} if</strong> {p.chooseIf}</p>
+          </article>
+        ))}
+      </div>
+      {notes.map((n) => <p class="compare-note">{n.text}</p>)}
+    </div>
+  </section>
+
+  <section class="compare-faq" aria-labelledby="faq-title">
+    <div class="wrap narrow">
+      <h2 class="section-title" id="faq-title">Questions</h2>
+      {faq.map((f) => (
+        <details class="channel-details faq-item">
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <section class="compare-sources" id="sources" aria-labelledby="sources-title">
+    <div class="wrap narrow">
+      <h2 class="h4" id="sources-title">Sources</h2>
+      <p class="compare-small">Reviewed {REVIEWED}. Products change; if something here is out of date, please open an issue with a source.</p>
+      <ul class="source-list">
+        {sources.map((s) => (
+          <li><span>{s.product}</span><a href={s.href} rel="noopener nofollow">{s.label}</a></li>
+        ))}
+      </ul>
+      <p class="compare-small trademark">
+        pfSense and Netgate are trademarks of Rubicon Communications, LLC (Netgate). OPNsense is a trademark of Deciso B.V.
+        MikroTik and RouterOS, OpenWrt, IPFire, VyOS, Sophos, Ubiquiti and UniFi, Fortinet, FortiGate and FortiOS, and Arista
+        are trademarks of their respective owners. Names are used only to identify the products compared; FreeSense is not
+        affiliated with or endorsed by any of them.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import '../scripts/compare.js';
+</script>

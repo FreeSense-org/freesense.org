@@ -1,0 +1,81 @@
+/* FreeSense design tokens. Dark is the default; light has its own palette.
+   Bootstrap reads its --bs-* variables from here so components follow the theme. */
+:root,
+[data-bs-theme="dark"] {
+  --fs-bg-0: #060B1F;
+  --fs-bg-1: #0B1640;
+  --fs-surface: rgba(14, 22, 56, .62);
+  --fs-surface-2: #101a45;
+  --fs-surface-3: #0b1333;
+  --fs-line: rgba(150, 170, 255, .14);
+  --fs-line-2: rgba(150, 170, 255, .26);
+  --fs-text: #F4F6FF;
+  --fs-muted: #A3ACCD;
+  --fs-dim: #7C86AA;
+  --fs-orange: #EA4F2D;
+  --fs-orange-2: #FF7A45;
+  --fs-orange-text: #FF8A5C;
+  --fs-blue: #5B8DEF;
+  --fs-green: #22C58B;
+  --fs-green-text: #3DDBA2;
+  --fs-teal: #4DD6C1;
+  --fs-haze-blue: rgba(59, 107, 255, .28);
+  --fs-haze-warm: rgba(234, 79, 45, .20);
+  --fs-shadow: 0 30px 60px -30px rgba(0, 0, 0, .7);
+  --fs-scene-shadow: rgba(0, 0, 0, .45);
+
+  --font-head: "Schibsted Grotesk Variable", "IBM Plex Sans", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  --bs-body-bg: var(--fs-bg-0);
+  --bs-body-color: var(--fs-text);
+  --bs-border-color: var(--fs-line);
+  --bs-link-color: var(--fs-orange-text);
+  --bs-link-color-rgb: 255, 138, 92;
+  --bs-link-hover-color: #ffad8a;
+  --bs-link-hover-color-rgb: 255, 173, 138;
+  --bs-primary: #EA4F2D;
+  --bs-primary-rgb: 234, 79, 45;
+  --bs-secondary-color: var(--fs-muted);
+  --bs-emphasis-color: #fff;
+  --bs-tertiary-bg: var(--fs-surface-2);
+  --bs-code-color: var(--fs-orange-text);
+  color-scheme: dark;
+}
+
+[data-bs-theme="light"] {
+  --fs-bg-0: #F5F6FA;
+  --fs-bg-1: #E6EAF6;
+  --fs-surface: rgba(255, 255, 255, .82);
+  --fs-surface-2: #ffffff;
+  --fs-surface-3: #EEF1F8;
+  --fs-line: rgba(20, 30, 70, .11);
+  --fs-line-2: rgba(20, 30, 70, .21);
+  --fs-text: #111633;
+  --fs-muted: #475073;
+  --fs-dim: #646C8C;
+  --fs-orange: #D9441F;
+  --fs-orange-2: #EA4F2D;
+  --fs-orange-text: #B8360F;
+  --fs-blue: #2E5BD6;
+  --fs-green: #12a273;
+  --fs-green-text: #0b7a55;
+  --fs-teal: #138a7f;
+  --fs-haze-blue: rgba(59, 107, 255, .13);
+  --fs-haze-warm: rgba(234, 79, 45, .11);
+  --fs-shadow: 0 30px 60px -34px rgba(20, 30, 70, .35);
+  --fs-scene-shadow: rgba(20, 30, 70, .25);
+
+  --bs-body-bg: var(--fs-bg-0);
+  --bs-body-color: var(--fs-text);
+  --bs-border-color: var(--fs-line);
+  --bs-link-color: var(--fs-orange-text);
+  --bs-link-color-rgb: 184, 54, 15;
+  --bs-link-hover-color: #862508;
+  --bs-link-hover-color-rgb: 134, 37, 8;
+  --bs-emphasis-color: #0a0e24;
+  --bs-tertiary-bg: #fff;
+  --bs-code-color: var(--fs-orange-text);
+  color-scheme: light;
+}

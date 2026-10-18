@@ -518,7 +518,7 @@ html:not(.js) .reveal { opacity: 1; transform: none; }
 /* ---------- responsive ---------- */
 @media (max-width: 1140px) {
   .fs-nav { display: none; }
-  .fs-actions .theme-switch, .fs-actions .btn-grad { display: none; }
+  .fs-actions .btn-grad { display: none; }
 }
 @media (min-width: 1141px) { .menu-btn { display: none !important; } }
 @media (max-width: 1000px) {
@@ -644,3 +644,38 @@ html:not(.js) .reveal { opacity: 1; transform: none; }
 .source-list a { overflow-wrap: anywhere; }
 .trademark { border-top: 1px solid var(--fs-line); padding-top: 1rem; }
 .compare-table [hidden], .choose-card[hidden] { display: none !important; }
+
+/* packages page: Threat Shield kiosk board and the package catalog */
+.kiosk { margin-top: 2rem; }
+.kiosk-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-bottom: 1rem; }
+.kiosk-label { font-size: .74rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--fs-dim); margin-right: .35rem; }
+.kiosk-frame { margin: 0; border-radius: 18px; overflow: hidden; border: 1px solid var(--fs-line-2); background: #0b1220; box-shadow: var(--fs-shadow), 0 0 80px -30px rgba(234, 79, 45, .45); }
+.kiosk-frame img { display: block; width: 100%; height: auto; }
+.kiosk-note { margin: .75rem 0 0; font-size: .85rem; color: var(--fs-muted); }
+.ts-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: start; margin-top: clamp(32px, 5vw, 56px); }
+.shots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 3vw, 32px); margin-top: clamp(32px, 5vw, 56px); }
+.shots figure { margin: 0; }
+.shots figcaption { margin-top: .6rem; font-size: .88rem; color: var(--fs-muted); }
+.shots figcaption b { color: var(--fs-text); }
+.pkg-group { margin-top: 2rem; }
+.pkg-group[hidden] { display: none; }
+.pkg-group-title { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--fs-orange-text); margin: 0 0 .75rem; font-family: var(--font-body); }
+.pkg-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.fs-card.pkg { display: block; color: var(--fs-text); padding: 1.1rem 1.2rem; }
+.fs-card.pkg h4 { font-size: 1rem; margin: 0 0 .35rem; }
+.fs-card.pkg p { font-size: .88rem; }
+.chip small { opacity: .7; margin-left: .2rem; }
+@media (max-width: 991.98px) { .ts-grid, .shots { grid-template-columns: 1fr; } .pkg-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 575.98px) { .pkg-grid { grid-template-columns: 1fr; } }
+
+/* theme menu: one icon that opens Light / System / Dark */
+.theme-menu .icon-btn svg { width: 20px; height: 20px; }
+.theme-menu .ti-light { display: none; }
+[data-bs-theme="light"] .theme-menu .ti-light { display: block; }
+[data-bs-theme="light"] .theme-menu .ti-dark { display: none; }
+.theme-list { min-width: 10rem; padding: .35rem; border-radius: 14px; background: var(--fs-surface-2); border: 1px solid var(--fs-line-2); box-shadow: var(--fs-shadow); }
+.theme-list button { display: flex; align-items: center; gap: .6rem; width: 100%; min-height: 44px; padding: 0 .75rem; border: 0; border-radius: 10px; background: transparent; color: var(--fs-muted); font-weight: 600; font-size: .9rem; text-align: left; }
+.theme-list button:hover { color: var(--fs-text); background: color-mix(in srgb, var(--fs-orange) 10%, transparent); }
+.theme-list button svg { width: 16px; height: 16px; flex: none; }
+.theme-list button[aria-pressed="true"] { color: var(--bs-emphasis-color); }
+.theme-list button[aria-pressed="true"]::after { content: "✓"; margin-left: auto; color: var(--fs-orange-text); }

@@ -89,3 +89,15 @@ test('the compare page exists, is in the nav and footer, and every product cites
     assert.match(block, /source: \[\s*\{ label: '[^']+', href: 'https:\/\//, id);
   }
 });
+
+test('the packages page lists the 34 catalog packages and ships its Threat Shield images', async () => {
+  const data = await read('src/data/packages.ts');
+  const names = [...data.matchAll(/\{ name: '([^']+)', doc: '([^']+)'/g)];
+  assert.equal(names.length, 34);
+  assert.equal(new Set(names.map((m) => m[1])).size, 34, 'package names are unique');
+  for (const [, src] of [...data.matchAll(/src: '(\/packages\/[^']+)'/g)]) {
+    await read(`public${src}`).catch(() => assert.fail(`${src} is missing`));
+  }
+  assert.match(await read('src/components/Nav.astro'), /href="\/packages\/"/);
+  assert.match(await read('src/components/ThemeSwitch.astro'), /dropdown theme-menu/);
+});

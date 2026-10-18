@@ -14,6 +14,44 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
   {
+    slug: 'security-site',
+    date: '2026-10-18',
+    tag: 'Security',
+    title: 'security.freesense.org: every FreeBSD advisory, and what it means for FreeSense',
+    summary:
+      "A new site lists every FreeBSD security advisory since 2025 with a decision for FreeSense 1.0, 1.1 and 1.2, and FreeSense's own bugs and issues next to them.",
+    link: { href: 'https://security.freesense.org/', label: 'Open the security site' },
+    body: `
+      <p>FreeSense is built on FreeBSD, so FreeBSD's security advisories matter to us. The new
+      <a href="https://security.freesense.org/">security site</a> lists every one of them since 2025 and says what it
+      means for each FreeSense version.</p>
+      <h2>Open, fixed or not relevant</h2>
+      <p>Every advisory has a status for <strong>FreeSense 1.0, 1.1 and 1.2</strong>:</p>
+      <ul>
+        <li><strong>Open</strong>: it applies to code we build, and the fix is not in the FreeBSD snapshot that version builds from yet.</li>
+        <li><strong>Fixed</strong>: FreeBSD corrected it before that snapshot.</li>
+        <li><strong>Not relevant</strong>: it is about code FreeSense does not build or ship. The page names the evidence from our build configuration.</li>
+      </ul>
+      <p>Each advisory has its own page with the CVE IDs, the affected FreeBSD releases, the correction dates and any
+      workaround, and links to the original FreeBSD advisory. FreeSense 1.0 is frozen, so an advisory that is open on 1.0
+      stays open there; the fix is to update to 1.1.</p>
+      <h2>Bugs and issues, too</h2>
+      <p>FreeSense's own bugs and issues from GitHub are listed in the same place, each with a badge: Bug, Security
+      report or Issue. Open and closed ones are both shown.</p>
+      <h2>An honest note on the statuses</h2>
+      <p>Most statuses are decided automatically, by comparing the date FreeBSD corrected an advisory with the date of the
+      FreeBSD source each version is pinned to, and they are marked <em>auto</em> until a maintainer reviews them. They
+      do not tell you whether your own system is exposed: a bug in a kernel module only matters if the module is loaded.
+      FreeBSD advisories carry no severity score, so we do not invent one. The
+      <a href="https://security.freesense.org/triage/">triage page</a> explains the method and its limits.</p>
+      <p>For now the site covers the FreeBSD base system and FreeSense's GitHub issues. Advisories for ports and the
+      optional packages are planned next.</p>
+      <h2>Report a vulnerability</h2>
+      <p>Found a security problem in FreeSense? Please report it
+      <a href="https://security.freesense.org/report/">privately</a> so we can fix it before it is public.</p>
+    `,
+  },
+  {
     slug: 'freesense-1-1-9',
     date: '2026-10-17',
     tag: 'Release',

@@ -47,7 +47,7 @@ export const products: Product[] = [
       api: 'Built in, with API Explorer', wireguard: 'Package', ids: 'Suricata package', ha: 'CARP',
       central: 'Fleet (1.2 Development, experimental), free and built in', centralhost: 'On a FreeSense system you run; no cloud service', support: 'Community only', builds: 'Yes, public and signed',
     },
-    chooseIf: 'you want a fully open pf firewall with no accounts or telemetry and builds you can trace to source, you want to bring an existing pfSense CE or OPNsense configuration with you (OPNsense in part), and you can live with a young project that has community support only.',
+    chooseIf: 'you want a fully open pf firewall with no accounts or telemetry and builds you can trace to source, you want to bring an existing pfSense CE or OPNsense configuration with you (OPNsense in part), and you can live with a new project that has community support only.',
     source: [{ label: 'FreeSense documentation', href: 'https://docs.freesense.org' }],
   },
   {

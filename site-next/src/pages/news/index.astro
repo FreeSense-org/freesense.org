@@ -1,0 +1,52 @@
+---
+import Base from '../../layouts/Base.astro';
+import { news, formatDate } from '../../../../src/data/news';
+
+const categories = [...new Set(news.map((post) => post.tag))];
+const number = (title: string) => title.match(/\b\d+\.\d+(?:\.\d+)?\b/)?.[0];
+---
+
+<Base title="News — FreeSense" description="Releases, new apps and project news from FreeSense." current="news">
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow reveal">Newsroom</span>
+      <h1 class="reveal d1">What's happening at FreeSense</h1>
+      <p class="lead-muted reveal d2">Releases, new apps and updates from the project.</p>
+      <div class="filters" role="group" aria-label="Filter news">
+        <button type="button" class="chip" data-cat="all" aria-pressed="true">All</button>
+        {categories.map((c) => <button type="button" class="chip" data-cat={c} aria-pressed="false">{c}</button>)}
+        <label class="search">
+          <span class="visually-hidden">Search news</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="q" type="search" placeholder="Search news  ( / )" autocomplete="off" />
+        </label>
+      </div>
+      <p class="news-count" id="news-count" aria-live="polite">{news.length} posts</p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="news-feed">
+        {news.map((post) => (
+          <a class="fs-card news-row" href={`/news/${post.slug}/`} data-cat={post.tag}>
+            <div class="thumb" aria-hidden="true">
+              {post.image ? <img src={post.image} alt="" loading="lazy" /> : <span>{number(post.title) ?? post.tag}</span>}
+            </div>
+            <div>
+              <span class="cat">{post.tag}</span> <time class="meta d-inline" datetime={post.date}>&middot; {formatDate(post.date)}</time>
+              <h2 data-hl>{post.title}</h2>
+              <p data-hl>{post.summary}</p>
+            </div>
+            <span class="go">Read &rarr;</span>
+          </a>
+        ))}
+      </div>
+      <p class="empty-state d-none">No posts match. Try another word or category.</p>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import '../../scripts/news.js';
+</script>

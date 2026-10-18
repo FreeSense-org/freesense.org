@@ -1,0 +1,43 @@
+---
+// The two products, shared by the header dropdown and the mobile menu.
+import { apps } from '../../../src/data/apps';
+import { DOCS } from '../data/site';
+
+const netspider = apps.find((a) => a.slug === 'netspider')!;
+---
+<div class="product-row">
+  <span class="product-ico fs" aria-hidden="true"><img src="/brand/icon-white.svg" alt="" width="30" height="27" /></span>
+  <div>
+    <a class="product-item p-0" href="/freesense/"><span><b>FreeSense</b><small>Open-source firewall and router on FreeBSD. Signed builds, no accounts, no telemetry.</small></span></a>
+    <div class="product-links">
+      <a href="/freesense/">Overview</a>
+      <a href="/freesense/#features">Features</a>
+      <a href="/download/">Download</a>
+      <a href="/compare/">Compare</a>
+    </div>
+  </div>
+</div>
+<div class="product-row">
+  <span class="product-ico fl" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.2"/><circle cx="5" cy="18" r="2.2"/><circle cx="19" cy="18" r="2.2"/><path d="M12 7.2v4.3M12 11.5 6.2 16.2M12 11.5l5.8 4.7"/></svg>
+  </span>
+  <div>
+    <a class="product-item p-0" href="/fleet/"><span><b>FreeSense Fleet <span class="badge-soon ms-1">Coming soon in 1.2</span></b><small>Central management for many firewalls: a live dashboard, updates in rings, policies and HA pairs.</small></span></a>
+    <div class="product-links">
+      <a href="/fleet/">Overview</a>
+      <a href="/fleet/#features">Features</a>
+      <a href={`${DOCS}/1.2/configure/fleet/`}>Documentation</a>
+    </div>
+  </div>
+</div>
+<div class="product-row">
+  <span class="product-ico ns" aria-hidden="true"><img src={netspider.logo} alt="" width="44" height="44" /></span>
+  <div>
+    <a class="product-item p-0" href="/netspider/"><span><b>NetSpider {netspider.isNew && <span class="badge-new ms-1">NEW</span>}</b><small>Free Layer 2 / Layer 3 network diagnostics for Windows. Finds the failing hop.</small></span></a>
+    <div class="product-links">
+      <a href="/netspider/">Overview</a>
+      <a href="/netspider/#download">Download</a>
+      <a href="/netspider/#changelog">Releases</a>
+    </div>
+  </div>
+</div>

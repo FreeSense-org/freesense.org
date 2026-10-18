@@ -1,0 +1,129 @@
+---
+import Base from '../layouts/Base.astro';
+import { DOCS, GITHUB } from '../data/site';
+
+const features = [
+  { tag: 'Joining', title: 'Guided joining', body: 'Make an invitation, paste it into Add to fleet on the new firewall, compare a 6-digit code and approve. Over the Fleet tunnel, Tailscale or a direct connection.' },
+  { tag: 'Monitoring', title: 'One live dashboard', body: 'Groups, 24-hour availability, alerts and internet quality for every firewall, plus a wall-screen view that pages by itself.' },
+  { tag: 'Updates', title: 'Updates in rings', body: 'Maintenance windows, rolling reboots, templates and schedules. Risky changes run under commit-confirm and roll back on their own.' },
+  { tag: 'Policy', title: 'Policies', body: 'Audit, fix or lock settings across the fleet. Locked rules cannot be edited on the firewall itself.' },
+  { tag: 'High availability', title: 'HA pairs', body: 'Set up CARP with state and configuration sync from two firewalls in a step-by-step guide, optionally over an encrypted WireGuard link.' },
+  { tag: 'Backups', title: 'Backups', body: 'Configuration backups of every firewall, kept on the controller with retention rules.' },
+];
+
+const steps = [
+  { n: '1', title: 'Install the controller', body: 'On one firewall, install FreeSense Fleet from System → Package Manager and switch it on in the guide.' },
+  { n: '2', title: 'Invite a firewall', body: 'Make an invitation on the controller and paste it into Add to fleet on the new firewall.' },
+  { n: '3', title: 'Approve', body: 'Compare the 6-digit code on both screens, approve, and the firewall appears on the dashboard.' },
+];
+---
+
+<Base
+  title="FreeSense Fleet: central management for FreeSense firewalls"
+  description="FreeSense Fleet manages many FreeSense firewalls from one controller: guided joining, a live dashboard and wall-screen view, updates in rings, policies, backups and HA pairs. Coming in FreeSense 1.2."
+  current="fleet"
+>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow reveal">Product &middot; Coming soon in 1.2</span>
+        <h1 class="reveal d1">FreeSense Fleet</h1>
+        <p class="lead-muted reveal d2">
+          Every firewall, one control centre. Join firewalls with a pasted invitation, watch them live, then back up,
+          update and check them against policies together. Firewalls call home, so they can sit behind NAT.
+        </p>
+        <div class="hero-ctas reveal d3">
+          <a class="btn-pill btn-grad" href={`${DOCS}/1.2/configure/fleet/`}>Read the documentation</a>
+          <a class="btn-pill btn-ghost" href="/download/?channel=devel">Try the Development build</a>
+        </div>
+        <div class="hero-meta reveal d3">
+          <span><b>1.2</b>Development preview</span>
+          <span><b>Optional package</b>FreeSense-pkg-Fleet</span>
+          <span><b>Apache-2.0</b>No accounts, no telemetry</span>
+        </div>
+      </div>
+      <a class="ns-shot reveal d2" href={`${DOCS}/1.2/configure/fleet-status/`} aria-label="FreeSense Fleet dashboard">
+        <img src="/fleet/fleet-dashboard.png" alt="The FreeSense Fleet dashboard with firewall count, 24-hour availability, alerts and a pulse grid per firewall" width="910" height="753" />
+      </a>
+    </div>
+  </section>
+
+  <section id="features" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="eyebrow reveal">What Fleet does</span><h2 class="section-title reveal d1 mb-0">Many firewalls. One place.</h2></div>
+        <p class="reveal d2">One firewall runs the Fleet controller, an optional package. Every other firewall joins it with the agent that is already part of FreeSense, so managed firewalls need nothing installed.</p>
+      </div>
+      <div class="feat-grid">
+        {features.map((f, i) => (
+          <article class:list={['fs-card feat reveal', `d${i % 4}`]}>
+            <span class="t">{f.tag}</span>
+            <h3>{f.title}</h3>
+            <p>{f.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="noc">
+    <div class="wrap split rev">
+      <a class="ns-shot split-media reveal d1" href={`${DOCS}/1.2/configure/fleet-live-view/`} aria-label="Fleet NOC wall screen">
+        <img src="/fleet/fleet-noc.png" alt="The Fleet NOC wall-screen view with internet status, groups and a paged list of firewalls" width="910" height="433" loading="lazy" />
+      </a>
+      <div>
+        <span class="eyebrow reveal">Live view</span>
+        <h2 class="reveal d1">Built for a wall screen.</h2>
+        <p class="lead-muted reveal d2">Health, internet failovers and every firewall by group, with CPU, memory, traffic and HA role. It pages by itself and can sound an alert when something goes down.</p>
+        <div class="hero-ctas mt-4 reveal d3">
+          <a class="btn-pill btn-grad btn-sm-pill" href={`${DOCS}/1.2/configure/fleet-live-view/`}>About the live view</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="start">
+    <div class="wrap">
+      <div class="center">
+        <span class="eyebrow reveal">Getting started</span>
+        <h2 class="section-title reveal d1">Three steps to a fleet.</h2>
+      </div>
+      <div class="why-grid">
+        {steps.map((s, i) => (
+          <article class:list={['fs-card reveal', `d${i + 1}`]}>
+            <span class="t">Step {s.n}</span>
+            <h3 style="font-size:1.12rem">{s.title}</h3>
+            <p>{s.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="status">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow reveal">Honest status</span>
+        <h2 class="reveal d1">Tested in a lab. Not for production yet.</h2>
+        <p class="lead-muted reveal d2">Fleet is part of the Development line, is experimental and unsupported, and is not in Stable 1.1. It arrives with FreeSense 1.2.</p>
+        <ul class="ticks reveal d3">
+          <li><span>One controller managed <b>seven firewalls</b>, one of them over Tailscale.</span></li>
+          <li><span>A three-ring update of all seven took <b>20 minutes</b>.</span></li>
+          <li><span>An HA pair took over <b>within seconds</b> when its MASTER lost power.</span></li>
+        </ul>
+        <div class="hero-ctas mt-4 reveal d3">
+          <a class="btn-pill btn-ghost btn-sm-pill" href={`${DOCS}/1.2/configure/fleet-status/`}>What was tested, and what was not</a>
+        </div>
+      </div>
+      <div class="fs-card reveal d2">
+        <div class="panel-head"><h3>Where to go next</h3></div>
+        <ul class="ticks mt-0">
+          <li><span><a href={`${DOCS}/1.2/configure/fleet/`}><b>Fleet overview</b></a> and install steps.</span></li>
+          <li><span><a href={`${DOCS}/1.2/configure/fleet-join/`}><b>Add a firewall</b></a> to a Fleet.</span></li>
+          <li><span><a href={`${DOCS}/1.2/configure/fleet-ha/`}><b>HA pairs</b></a> from the controller.</span></li>
+          <li><span><a href={`${GITHUB}/freesense-packages`} rel="noopener"><b>Source</b></a> on GitHub.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>

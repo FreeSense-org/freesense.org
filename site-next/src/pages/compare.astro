@@ -28,7 +28,7 @@ const connections = [
 const faq = [
   { q: 'Is FreeSense a fork of pfSense?', a: 'FreeSense started from pfSense CE and is rebuilt from source on FreeBSD 16. Vendor registration, telemetry and upsell prompts were removed, and the WebUI, REST API and package manager are being rebuilt. Both share the pf packet filter.' },
   { q: 'Why choose FreeSense over OPNsense or pfSense?', a: 'Choose it if you value a fully open build you can trace from source to signed image, with no vendor account. If you need commercial support, a long track record or a large plugin catalogue today, OPNsense and pfSense Plus are more mature choices.' },
-  { q: 'Can I move my pfSense configuration to FreeSense?', a: 'FreeSense keeps a familiar configuration model, but there is no official migration tool yet. Test an import on a VM before you move production.' },
+  { q: 'Can I move my pfSense or OPNsense configuration to FreeSense?', a: 'Yes, FreeSense imports both. During installation choose Import config, or restore the file under Diagnostics → Backup & Restore on a running system. A pfSense CE configuration is kept whole, because the format is shared. An OPNsense configuration is converted: system settings, interfaces, VLANs, gateways, routes, DHCP, users and certificates carry over, while firewall rules, NAT, VPNs and plugin settings have to be set up again. Installed packages and plugins are mapped to FreeSense packages. Test the import on a VM before you move production.', link: { href: 'https://docs.freesense.org/guides/migrating/', label: 'Read the migration guide' } },
   { q: 'Does FreeSense run on ARM or vendor appliances?', a: 'Stable releases are amd64. ARM64 builds, including Raspberry Pi, are in Development only. FreeSense runs on your own hardware, VMs and clouds; it does not sell appliances.' },
   { q: 'What does "—" mean in the table?', a: 'We could not verify it from a public source when we reviewed the page. It does not mean the product lacks the feature. Corrections with a source are welcome on GitHub.' },
   { q: 'When is Fleet available?', a: 'Fleet is part of FreeSense 1.2 and is planned for early 2027. You can try it in Development builds today, where it is experimental; it will not come to Stable 1.1.' },
@@ -210,7 +210,7 @@ const sources = products.flatMap((p) => p.source.map((s) => ({ ...s, product: p.
       {faq.map((f) => (
         <details class="channel-details faq-item">
           <summary>{f.q}</summary>
-          <p>{f.a}</p>
+          <p>{f.a}{f.link && <> <a href={f.link.href} rel="noopener">{f.link.label}</a>.</>}</p>
         </details>
       ))}
     </div>

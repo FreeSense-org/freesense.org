@@ -105,3 +105,11 @@ test('the packages page lists the 34 catalog packages and ships its Threat Shiel
   assert.match(await read('src/components/Nav.astro'), /href="\/packages\/"/);
   assert.match(await read('src/components/ThemeSwitch.astro'), /dropdown theme-menu/);
 });
+
+test('the compare page says FreeSense imports both pfSense and OPNsense configurations', async () => {
+  const page = await read('src/pages/compare.astro');
+  assert.doesNotMatch(page, /no official migration/i);
+  assert.match(page, /FreeSense imports both/);
+  assert.match(page, /OPNsense configuration is converted/);
+  assert.match(page, /docs\.freesense\.org\/guides\/migrating\//);
+});

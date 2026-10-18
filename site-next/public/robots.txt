@@ -1,3 +1,4 @@
-# Beta of the next freesense.org. Not for indexing; the live site is https://freesense.org.
 User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: https://freesense.org/sitemap-index.xml

@@ -2,10 +2,10 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// Beta of the next freesense.org, deployed on Cloudflare Pages -> beta.freesense.org.
-// News and app data are shared with the current site in ../src/data until cutover.
+// The freesense.org website, deployed on Cloudflare Pages.
+// News and app data live in ../src/data and ../public/apps, shared with the root Functions.
 export default defineConfig({
-  site: 'https://beta.freesense.org',
+  site: 'https://freesense.org',
   build: { format: 'directory' },
   integrations: [sitemap()],
   vite: {

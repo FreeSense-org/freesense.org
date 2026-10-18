@@ -1,16 +1,15 @@
-# Cloudflare Pages headers (beta.freesense.org)
+# Cloudflare Pages headers (freesense.org)
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=()
-  X-Robots-Tag: noindex, nofollow
 
 /brand/*
   Cache-Control: public, max-age=31536000, immutable
 
 /_astro/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 /releases/*
   Cache-Control: public, max-age=60, must-revalidate

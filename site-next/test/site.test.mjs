@@ -30,10 +30,12 @@ test('scripts, styles and fonts are self-hosted: no CDN or Google Fonts', async 
   }
 });
 
-test('the beta is not indexed', async () => {
-  assert.match(await read('public/robots.txt'), /Disallow: \//);
-  assert.match(await read('public/_headers'), /X-Robots-Tag: noindex/);
-  assert.match(await read('src/layouts/Base.astro'), /name="robots" content="noindex/);
+test('the site is indexable', async () => {
+  assert.match(await read('public/robots.txt'), /Allow: \//);
+  assert.match(await read('public/robots.txt'), /Sitemap: https:\/\/freesense\.org\/sitemap-index\.xml/);
+  assert.doesNotMatch(await read('public/robots.txt'), /Disallow: \//);
+  assert.doesNotMatch(await read('public/_headers'), /noindex/);
+  assert.doesNotMatch(await read('src/layouts/Base.astro'), /noindex/);
 });
 
 test('the product page advertises cloud images and both supported filesystems', async () => {

@@ -25,6 +25,7 @@ const here = (key: string) => (current === key ? 'page' : undefined);
         </div>
       </div>
       <a href="/packages/" aria-current={here('packages')}>Packages</a>
+      <a href="/compare/" aria-current={here('compare')}>Compare</a>
       <a href="/news/" aria-current={here('news')}>News</a>
       <a href={SECURITY} rel="noopener">Security</a>
       <a href={DOCS}>Docs</a>
@@ -52,6 +53,7 @@ const here = (key: string) => (current === key ? 'page' : undefined);
     <ProductItems />
     <div class="m-label">Explore</div>
     <a class="m-link" href="/packages/">Packages</a>
+    <a class="m-link" href="/compare/">Compare</a>
     <a class="m-link" href="/news/">News</a>
     <a class="m-link" href={SECURITY} rel="noopener">Security</a>
     <a class="m-link" href={DOCS}>Documentation</a>

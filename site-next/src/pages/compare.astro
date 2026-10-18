@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { products, rows, notes, groupLabels, REVIEWED, type Group } from '../data/compare';
+import { products, rows, notes, groupLabels, REVIEWED, centralCols, centralRows, centralSources, type Group } from '../data/compare';
 
 const filters: { key: 'all' | Group; label: string }[] = [
   { key: 'all', label: 'All' },
@@ -12,17 +12,17 @@ const others = products.filter((p) => p.id !== 'freesense');
 const isGap = (v: string) => v === '—';
 
 const fleet = [
-  { t: 'Built in and free', d: 'Central management ships with FreeSense. Any FreeSense box, or a small VM, can be the controller. No cloud account and no per-device fee.' },
-  { t: 'Safe joining', d: 'A box joins with a link plus a separate security key, or zero-touch through cloud-init for cloud and batch deployments.' },
-  { t: 'Updates in rings', d: 'Roll updates out in stages. On ZFS, a box that does not come back healthy rolls back to its previous boot environment by itself.' },
-  { t: 'Templates and policies', d: 'Push configuration templates and security or operations baselines, with commit-confirm so a bad change undoes itself.' },
-  { t: 'Backups, SD-WAN, NOC view', d: 'Central encrypted backups with diffs, an optional SD-WAN mesh, and a live dashboard with a full-screen NOC mode. Boxes keep forwarding if the controller is down.' },
+  { t: 'Self-hosted and private', d: 'There is no Fleet cloud and no account. The controller is a FreeSense system you run, and your data stays on it. Fleet makes no connection to FreeSense servers.' },
+  { t: 'Safe joining', d: 'A firewall joins by pasting an invitation and comparing a 6-digit approval code, or zero-touch from a seed on USB or in cloud-init for batch deployments.' },
+  { t: 'Updates in rings', d: 'Roll updates out in stages, with maintenance windows and rolling reboots. Each firewall gets a fresh boot environment on ZFS.' },
+  { t: 'Templates and policies', d: 'Push configuration templates and policies that audit, remediate or lock settings, with commit-confirm on rules so a bad change undoes itself.' },
+  { t: 'Backups, HA and a NOC view', d: 'Backups of every firewall kept on the controller, CARP pairs set up from two firewalls, and a live dashboard with a full-screen NOC view. Firewalls keep forwarding if the controller is down.' },
 ];
 
 const connections = [
-  { t: 'Direct', d: 'Reach each box’s management API straight over your LAN, MPLS or an existing VPN.' },
-  { t: 'Fleet WireGuard', d: 'A built-in management tunnel that each box opens to the controller, so sites behind NAT or CGNAT can join. The management API is only reachable through it.' },
-  { t: 'Tailscale', d: 'Full integration with your existing tailnet, including self-hosted Headscale.' },
+  { t: 'Fleet tunnel', d: 'A built-in WireGuard management tunnel that each firewall opens to the controller, so sites behind NAT or CGNAT can join.' },
+  { t: 'Tailscale', d: 'Join over your tailnet, with no public port on the controller. Optional, and the one part that uses a third-party service.' },
+  { t: 'Direct', d: 'Reach the controller straight over your LAN, MPLS or an existing VPN.' },
 ];
 
 const faq = [
@@ -31,11 +31,13 @@ const faq = [
   { q: 'Can I move my pfSense configuration to FreeSense?', a: 'FreeSense keeps a familiar configuration model, but there is no official migration tool yet. Test an import on a VM before you move production.' },
   { q: 'Does FreeSense run on ARM or vendor appliances?', a: 'Stable releases are amd64. ARM64 builds, including Raspberry Pi, are in Development only. FreeSense runs on your own hardware, VMs and clouds; it does not sell appliances.' },
   { q: 'What does "—" mean in the table?', a: 'We could not verify it from a public source when we reviewed the page. It does not mean the product lacks the feature. Corrections with a source are welcome on GitHub.' },
-  { q: 'When is Fleet available?', a: 'Fleet is part of FreeSense 1.2 and is planned for early 2027. Parts of it can be tried in Development builds today; it will not come to Stable 1.1.' },
+  { q: 'When is Fleet available?', a: 'Fleet is part of FreeSense 1.2 and is planned for early 2027. You can try it in Development builds today, where it is experimental; it will not come to Stable 1.1.' },
+  { q: 'Does Fleet need a cloud service?', a: 'No. Fleet is self-hosted by design: the controller is a FreeSense system you run, and nothing is sent to FreeSense. You can still run the controller on a server or cloud account that you own, from a FreeSense cloud image, and manage your firewalls from there.' },
 ];
 
 const sources = products.flatMap((p) => p.source.map((s) => ({ ...s, product: p.name })))
-  .concat(notes.map((n) => ({ ...n.source, product: 'Arista ETM' })));
+  .concat(notes.map((n) => ({ ...n.source, product: 'Arista ETM' })))
+  .concat(centralSources.map((s) => ({ label: s.label, href: s.href, product: `${s.product} (central management)` })));
 ---
 
 <Base
@@ -103,14 +105,16 @@ const sources = products.flatMap((p) => p.source.map((s) => ({ ...s, product: p.
   <section class="fleet-teaser" aria-labelledby="fleet-title">
     <div class="wrap">
       <div class="fleet-card">
-        <span class="soon-badge">Coming in FreeSense 1.2 &middot; planned for early 2027</span>
-        <h2 class="section-title" id="fleet-title">Fleet: central management, built in.</h2>
+        <span class="soon-badge">Coming in FreeSense 1.2 &middot; planned for early 2027 &middot; try it in Development today</span>
+        <h2 class="section-title" id="fleet-title">Fleet: central management that is yours.</h2>
         <p class="lead-muted">
-          Most vendors sell central management separately or tie it to their cloud. Fleet is planned as a free,
-          self-hosted part of FreeSense 1.2. It is in Development today and is not part of Stable 1.1.
+          Most vendors sell central management separately or tie it to their cloud. Fleet is a free, self-hosted part of
+          FreeSense 1.2: <b>not a cloud service</b>, with no account and nothing leaving your network unless you choose it.
+          You can run the controller on your own network, on your own server, or on a public host that you control from a
+          cloud image. It is experimental in Development today and is not part of Stable 1.1.
         </p>
         <div class="fleet-connect" aria-labelledby="connect-title">
-          <h3 id="connect-title">Three ways to connect, per fleet, group or box</h3>
+          <h3 id="connect-title">Three ways to connect</h3>
           <div class="connect-grid">
             {connections.map((c, i) => (
               <div class="connect-item">
@@ -120,7 +124,7 @@ const sources = products.flatMap((p) => p.source.map((s) => ({ ...s, product: p.
               </div>
             ))}
           </div>
-          <p class="connect-advisor">A connection advisor checks each site's requirements, recommends a method, and runs a preflight before anything is set up.</p>
+          <p class="connect-advisor">Fleet shows warnings and recommendations for each method, and checks that the controller is reachable before anything is set up.</p>
         </div>
         <div class="fleet-grid">
           {fleet.map((f) => (
@@ -130,8 +134,54 @@ const sources = products.flatMap((p) => p.source.map((s) => ({ ...s, product: p.
             </div>
           ))}
         </div>
-        <p class="fleet-note">Features and timing can change before release. Follow progress in <a href="/news/">News</a>.</p>
+        <p class="fleet-note">Features and timing can change before release. <a href="/fleet/">See the Fleet page</a>, the <a href="https://docs.freesense.org/1.2/configure/fleet/" rel="noopener">documentation</a>, or follow progress in <a href="/news/">News</a>.</p>
       </div>
+    </div>
+  </section>
+
+  <section class="central-compare" id="central" aria-labelledby="central-title">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Central management</span>
+          <h2 class="section-title mb-0" id="central-title">Fleet next to the others.</h2>
+        </div>
+        <p>What each central manager does today, from the vendors' own documentation. Fleet is experimental; the others are released products.</p>
+      </div>
+      <div class="compare-scroll" tabindex="0" role="region" aria-labelledby="central-title">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th scope="col" class="c-feature">Capability</th>
+              {centralCols.map((c) => (
+                <th scope="col" class:list={['c-prod', { 'is-fs': c.id === 'fleet' }]}>
+                  <span class="c-name">{c.name}</span>
+                  <span class="c-vendor">{c.vendor}</span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {centralRows.map((r) => (
+              <tr>
+                <th scope="row" class="c-feature">{r.label}</th>
+                {r.values.map((v, i) => (
+                  <td class:list={[{ 'is-fs': i === 0, 'is-gap': isGap(v) }]}>
+                    {isGap(v) ? <span aria-label="Not stated in the cited sources">&mdash;</span> : v}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="compare-small" style="margin-top:.9rem">
+        &ldquo;&mdash;&rdquo; means the sources below do not say, not that the feature is missing. FortiManager and the other
+        products in the table above are not repeated here because we could not verify the same detail for them.
+      </p>
+      <ul class="source-list">
+        {centralSources.map((s) => <li><span>{s.product}</span><a href={s.href} rel="noopener nofollow">{s.label}</a></li>)}
+      </ul>
     </div>
   </section>
 

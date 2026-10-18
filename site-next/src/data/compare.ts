@@ -33,6 +33,7 @@ export const rows: { key: string; label: string }[] = [
   { key: 'ids', label: 'IDS / IPS' },
   { key: 'ha', label: 'High availability' },
   { key: 'central', label: 'Central management' },
+  { key: 'centralhost', label: 'Central management runs' },
   { key: 'support', label: 'Commercial support' },
   { key: 'builds', label: 'Public CI builds' },
 ];
@@ -44,7 +45,7 @@ export const products: Product[] = [
       model: 'Open source', license: 'Apache-2.0', base: 'FreeBSD 16', filter: 'pf', cost: 'Free',
       account: 'No', hardware: 'Your x86-64 hardware, VMs, cloud images (arm64 in Development)',
       api: 'Built in, with API Explorer', wireguard: 'Package', ids: 'Suricata package', ha: 'CARP',
-      central: 'Fleet (1.2, planned early 2027): Direct, Fleet WireGuard or Tailscale', support: 'Community only', builds: 'Yes, public and signed',
+      central: 'Fleet (1.2 Development, experimental), free and built in', centralhost: 'On a FreeSense system you run; no cloud service', support: 'Community only', builds: 'Yes, public and signed',
     },
     chooseIf: 'you want a fully open pf firewall with no accounts or telemetry and builds you can trace to source, and you can live with a young project that has community support only.',
     source: [{ label: 'FreeSense documentation', href: 'https://docs.freesense.org' }],
@@ -54,7 +55,7 @@ export const products: Product[] = [
     values: {
       model: 'Open source', license: 'Apache-2.0', base: 'FreeBSD', filter: 'pf', cost: 'Free',
       account: '—', hardware: 'Your x86-64 hardware', api: 'Third-party package', wireguard: 'Package',
-      ids: 'Snort / Suricata packages', ha: 'CARP, two-node clusters', central: 'No (Nexus is for pfSense Plus)', support: 'Paid support is for Plus',
+      ids: 'Snort / Suricata packages', ha: 'CARP, two-node clusters', central: 'No (Nexus is for pfSense Plus)', centralhost: '—', support: 'Paid support is for Plus',
       builds: '—',
     },
     chooseIf: 'you want the most widely documented pf firewall, with years of guides, forum answers and packages. FreeSense started from it.',
@@ -69,7 +70,7 @@ export const products: Product[] = [
       model: 'Closed source', license: 'EULA', base: 'FreeBSD', filter: 'pf',
       cost: 'From $129 per instance per year on your own hardware; included with Netgate appliances',
       account: '—', hardware: 'Netgate appliances, your x86-64 hardware, AWS, Azure', api: '—', wireguard: 'Package',
-      ids: 'Snort / Suricata packages', ha: 'CARP, two-node clusters', central: 'Netgate Nexus, licensed per managed device', support: 'Netgate TAC (Lite, Pro, Enterprise)',
+      ids: 'Snort / Suricata packages', ha: 'CARP, two-node clusters', central: 'Netgate Nexus, licensed per managed device', centralhost: 'Nexus controller on a pfSense Plus host (25.07 or later)', support: 'Netgate TAC (Lite, Pro, Enterprise)',
       builds: 'No',
     },
     chooseIf: 'you want pfSense with a vendor behind it: tested appliances, newer features first and paid support with response times.',
@@ -84,7 +85,7 @@ export const products: Product[] = [
       model: 'Open source', license: 'BSD-2-Clause', base: 'FreeBSD (formerly HardenedBSD)', filter: 'pf',
       cost: 'Free; optional Business Edition subscription', account: 'No', hardware: 'Your x86-64 hardware, Deciso appliances',
       api: 'Built in', wireguard: 'Built in', ids: 'Suricata, built in', ha: 'CARP',
-      central: 'OPNcentral (Business Edition)', support: 'Deciso and partners', builds: '—',
+      central: 'OPNcentral (Business Edition)', centralhost: 'OPNcentral plugin on an OPNsense system', support: 'Deciso and partners', builds: '—',
     },
     chooseIf: 'you want a mature, fully open pf firewall with a large plugin set, built-in WireGuard and Suricata, and a company offering commercial support.',
     source: [
@@ -152,7 +153,7 @@ export const products: Product[] = [
     values: {
       model: 'Closed source', license: 'Free home-use license', base: '—', filter: '—',
       cost: 'Free for home use; limited to 4 CPU cores', account: '—', hardware: 'A dedicated Intel-compatible PC',
-      api: '—', wireguard: '—', ids: 'Built in', ha: '—', central: 'Sophos Central', support: 'Community forum only', builds: 'No',
+      api: '—', wireguard: '—', ids: 'Built in', ha: '—', central: 'Sophos Central', centralhost: 'Sophos Central, hosted by Sophos; cannot run on-premises', support: 'Community forum only', builds: 'No',
     },
     chooseIf: 'you want a commercial next-gen firewall feature set (web filtering, IPS, anti-malware) at home for free, within its core limit.',
     source: [{ label: 'Sophos: Central management for Sophos Firewall', href: 'https://www.sophos.com/en-us/blog/new-sophos-central-management-and-reporting-for-xg-firewall' }, { label: 'Sophos: Firewall Home Edition', href: 'https://www.sophos.com/en-us/free-tools/sophos-xg-firewall-home-edition' }],
@@ -162,7 +163,7 @@ export const products: Product[] = [
     values: {
       model: 'Closed source', license: 'Proprietary', base: '—', filter: '—', cost: 'Hardware purchase',
       account: '—', hardware: 'Ubiquiti gateways and consoles only', api: '—', wireguard: 'Built in (server)',
-      ids: 'Built in', ha: '—', central: 'UniFi Site Manager, no license fee', support: 'Ubiquiti', builds: 'No',
+      ids: 'Built in', ha: '—', central: 'UniFi Site Manager, no license fee', centralhost: 'UniFi Site Manager at unifi.ui.com, signed in with a UI account', support: 'Ubiquiti', builds: 'No',
     },
     chooseIf: 'you already run UniFi switches and access points and want one polished controller for the whole network.',
     source: [{ label: 'Ubiquiti help: Remote management via Site Manager', href: 'https://help.ui.com/hc/en-us/articles/20680072882967-UniFi-Remote-Management-via-Site-Manager' }, { label: 'Ubiquiti: UniFi cloud gateways', href: 'https://ui.com/cloud-gateways' }],
@@ -173,7 +174,7 @@ export const products: Product[] = [
       model: 'Closed source', license: 'Proprietary', base: 'FortiOS', filter: 'FortiOS',
       cost: 'Appliance or VM license plus FortiGuard subscriptions', account: 'FortiCare account for the VM trial',
       hardware: 'Fortinet appliances, VMs, cloud', api: 'Built in', wireguard: '—', ids: 'Built in (FortiGuard subscription)',
-      ha: 'Built in', central: 'FortiManager / FortiManager Cloud', support: 'Fortinet and partners', builds: 'No',
+      ha: 'Built in', central: 'FortiManager / FortiManager Cloud', centralhost: 'FortiManager, or FortiManager Cloud through FortiCloud', support: 'Fortinet and partners', builds: 'No',
     },
     chooseIf: 'you need an enterprise firewall with dedicated security hardware, central management and a large vendor support organisation.',
     source: [
@@ -188,4 +189,102 @@ export const notes = [
     text: 'Untangle NG Firewall is now Arista Edge Threat Management. Arista ended sales of its Q-series NG Firewall appliances on 30 June 2026 and points customers to software editions or VeloCloud Edge, so it is not in the table.',
     source: { label: 'Arista: End of Sale of the ETM NG Firewall Q Series', href: 'https://www.arista.com/en/support/advisories-notices/end-of-sale/23673-end-of-sale-of-the-arista-edge-threat-management-ng-firewall-q-series-appliances' },
   },
+];
+
+// Central management compared: FreeSense Fleet against the central managers of the vendors above.
+// "—" means the sources we cite do not say; it does not mean the feature is missing.
+export const centralCols = [
+  { id: 'fleet', name: 'FreeSense Fleet', vendor: 'FreeSense project' },
+  { id: 'nexus', name: 'Netgate Nexus', vendor: 'Netgate, pfSense Plus' },
+  { id: 'opncentral', name: 'OPNcentral', vendor: 'Deciso, OPNsense' },
+  { id: 'sophos', name: 'Sophos Central', vendor: 'Sophos' },
+  { id: 'unifi', name: 'UniFi Site Manager', vendor: 'Ubiquiti' },
+];
+
+export const centralRows: { label: string; values: string[] }[] = [
+  { label: 'Status today', values: [
+    'Experimental: in Development 1.2, not in Stable 1.1',
+    'Documented by Netgate; the controller needs pfSense Plus 25.07 or later',
+    'Business Edition plugin',
+    'Released; Sophos says it has since evolved into Sophos Fusion',
+    'Released',
+  ] },
+  { label: 'Where it runs', values: [
+    'A FreeSense system you run: your network, your server, or your own cloud image',
+    'On a pfSense Plus host',
+    'A plugin on an OPNsense system',
+    'Hosted by Sophos; it cannot be adapted for on-premises use',
+    "Ubiquiti's Site Manager at unifi.ui.com",
+  ] },
+  { label: 'Vendor account or cloud needed', values: [
+    'No. Fleet makes no connection to FreeSense servers',
+    '—',
+    '—',
+    'Yes, it is a hosted service',
+    'Yes, you sign in with a UI account',
+  ] },
+  { label: 'Cost', values: [
+    'Free',
+    "Licensed; see Netgate's Nexus licensing",
+    'Business Edition subscription',
+    'Free for XG Firewall customers; longer report history is a planned paid tier',
+    'No license fee',
+  ] },
+  { label: 'Manage many firewalls in one place', values: [
+    'Yes, with groups',
+    'Yes, multi-instance management through a GUI and an API',
+    'Yes, remote firewalls over an encrypted connection',
+    'Yes, in custom groups',
+    'Yes, all the sites you administer',
+  ] },
+  { label: 'Update many at once', values: [
+    'Yes: rings, maintenance windows and rolling reboots',
+    '—',
+    'Yes, one or more firewalls at once',
+    'One-click firmware updates; scheduled updates were planned',
+    'Yes, through Update Manager',
+  ] },
+  { label: 'Push configuration and policy', values: [
+    'Templates, plus policies that audit, remediate or lock settings, with commit-confirm on rules',
+    'Instance configuration from one GUI',
+    '—',
+    'Group policy: changes go to every firewall in the group',
+    '—',
+  ] },
+  { label: 'Central backups', values: [
+    'Yes, kept on the controller',
+    '—',
+    '—',
+    'Yes, configuration backup storage',
+    '—',
+  ] },
+  { label: 'Monitoring and reporting', values: [
+    'Live dashboard, alerts, internet quality and a wall-screen view',
+    '—',
+    'Connection status and firmware version',
+    'Reports, graphs and log search; about seven days free',
+    '—',
+  ] },
+  { label: 'Set up HA pairs from the controller', values: [
+    'Yes: a CARP pair guide for two firewalls',
+    '—',
+    '—',
+    '—',
+    '—',
+  ] },
+  { label: 'Zero-touch joining', values: [
+    'Yes: a seed on USB or in cloud-init',
+    '—',
+    '—',
+    'Yes, a USB drive',
+    '—',
+  ] },
+];
+
+export const centralSources = [
+  { product: 'FreeSense Fleet', label: 'FreeSense Fleet documentation', href: 'https://docs.freesense.org/1.2/configure/fleet/' },
+  { product: 'Netgate Nexus', label: 'Netgate docs: Nexus', href: 'https://docs.netgate.com/pfsense/en/latest/nexus/index.html' },
+  { product: 'OPNcentral', label: 'Thomas-Krenn: OPNsense Business Edition', href: 'https://www.thomas-krenn.com/en/wiki/OPNsense_Business_Edition' },
+  { product: 'Sophos Central', label: 'Sophos: Central management for Sophos Firewall', href: 'https://www.sophos.com/en-us/blog/new-sophos-central-management-and-reporting-for-xg-firewall' },
+  { product: 'UniFi Site Manager', label: 'Ubiquiti help: Remote management via Site Manager', href: 'https://help.ui.com/hc/en-us/articles/20680072882967-UniFi-Remote-Management-via-Site-Manager' },
 ];

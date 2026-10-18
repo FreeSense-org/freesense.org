@@ -35,6 +35,12 @@ jobs:
           cache: npm
           cache-dependency-path: site-next/package-lock.json
 
+      # The shared data in ../src/data is resolved with the root tsconfig.json, which extends an Astro preset,
+      # so the root dependencies must be installed too.
+      - name: Install the current site's dependencies
+        run: npm ci
+        working-directory: .
+
       - name: Install dependencies
         run: npm ci
 

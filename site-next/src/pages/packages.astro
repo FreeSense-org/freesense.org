@@ -1,0 +1,184 @@
+---
+import Base from '../layouts/Base.astro';
+import { DOCS } from '../data/site';
+import { packageGroups, packageCount, kioskStyles } from '../data/packages';
+
+const threatShield = `${DOCS}/packages/threat-shield/`;
+const highlights = [
+  { tag: 'Security', title: 'Secure Web Gateway', href: `${DOCS}/packages/web-gateway/`, body: 'An outbound web gateway on Squid 7 with explicit and transparent proxying, TLS inspection modes, web policy and user authentication.' },
+  { tag: 'Security', title: 'Suricata IDS/IPS', href: `${DOCS}/packages/suricata/`, body: 'Network intrusion detection and prevention with ruleset management and event browsing.' },
+  { tag: 'Security', title: 'CrowdSec', href: `${DOCS}/packages/crowdsec/`, body: 'Behavior-based threat detection, enforced through a firewall alias and rule that FreeSense manages.' },
+  { tag: 'Development 1.2', title: 'FreeSense Fleet', href: '/fleet/', body: 'Central management for many firewalls, with a live dashboard and a wall-screen view. An optional package, experimental in 1.2.' },
+];
+---
+
+<Base
+  title="FreeSense packages — Threat Shield and 34 optional packages"
+  description="Optional packages built and signed by the FreeSense project: Threat Shield with its live threat map and kiosk board, VPN, routing, monitoring and more. Installed from the WebUI, off until you enable them."
+  current="packages"
+>
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow reveal">Packages</span>
+      <h1 class="reveal d1">Add what you need.<br />Nothing you don't.</h1>
+      <p class="lead-muted reveal d2" style="max-width:62ch">
+        FreeSense 1.1 has {packageCount} optional packages. Each is built from source and signed by the project, and
+        installed from <b>System → Package Manager</b>. A package is installed turned off, so nothing changes until you choose it.
+      </p>
+      <div class="hero-ctas reveal d3">
+        <a class="btn-pill btn-grad" href="#threat-shield">See Threat Shield</a>
+        <a class="btn-pill btn-ghost" href="#all">Browse all {packageCount}</a>
+        <a class="btn-pill btn-ghost" href={`${DOCS}/packages/catalog/`}>Package catalog</a>
+      </div>
+      <div class="hero-meta reveal d3">
+        <span><b>{packageCount}</b>Packages in 1.1</span>
+        <span><b>amd64 · arm64</b>Two are amd64 only</span>
+        <span><b>Signed</b>FreeSense-packages repository</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="threat-shield" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="eyebrow reveal">Featured &middot; Security</span><h2 class="section-title reveal d1 mb-0">Threat Shield.<br />See the threat. Stop it at the edge.</h2></div>
+        <p class="reveal d2">
+          DNS filtering, IP threat lists, country blocking and inbound protection for the whole network, with a live
+          threat map you can put on a wall. New in FreeSense 1.1, and it replaces pfBlockerNG.
+        </p>
+      </div>
+
+      <div class="kiosk reveal">
+        <div class="kiosk-bar" role="tablist" aria-label="Kiosk board style">
+          <span class="kiosk-label">Wall display style</span>
+          {kioskStyles.map((k, i) => (
+            <button type="button" class="chip" role="tab" data-kiosk={k.src} aria-pressed={i === 0 ? 'true' : 'false'}>{k.label}</button>
+          ))}
+        </div>
+        <figure class="kiosk-frame">
+          <img id="kiosk-img" src={kioskStyles[0].src} alt="The Threat Shield kiosk board: blocked, allowed and DNS-blocked counters, a world map of attacks, attack types, top countries, sources and networks, and a live feed" width="1920" height="1080" />
+        </figure>
+        <p class="kiosk-note">The full-screen kiosk board, in four styles. Screenshots use example data (documentation address ranges).</p>
+      </div>
+
+      <div class="ts-grid">
+        <ul class="ticks reveal d1">
+          <li><span><b>DNS filtering</b> with AdGuard Home: block lists at three levels, an allowlist with one-click Unblock, per-client profiles and a searchable query log.</span></li>
+          <li><span><b>Anti-bypass</b>: devices with their own DNS are redirected, and DNS-over-TLS and known DNS-over-HTTPS servers are blocked.</span></li>
+          <li><span><b>IP threat lists</b> such as Spamhaus DROP, FireHOL and abuse.ch, loaded into firewall tables, plus <b>GeoIP</b> country blocking.</span></li>
+          <li><span><b>Inbound protection</b>: reputation checks and flood limits for services you expose to the internet.</span></li>
+          <li><span><b>Health checks</b> that show what works and offer a one-click fix when something does not.</span></li>
+        </ul>
+        <div class="fs-card reveal d2">
+          <div class="panel-head"><h3>Get it</h3></div>
+          <ul class="ticks mt-0">
+            <li><span>Open <b>System → Package Manager</b> and install <b>Threat Shield &amp; DNS Protection</b>. It is installed turned off.</span></li>
+            <li><span>On Stable from <b>FreeSense 1.1.4</b>; package version 1.1.0. amd64 and arm64.</span></li>
+            <li><span>Under <b>Services → Threat Shield</b>; the dashboard under <b>Status → Threat Shield Status</b>.</span></li>
+          </ul>
+          <div class="hero-ctas mt-3">
+            <a class="btn-pill btn-grad btn-sm-pill" href={threatShield}>Read the guide</a>
+            <a class="btn-pill btn-ghost btn-sm-pill" href={`${DOCS}/packages/threat-shield-map/`}>Threat map docs</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="shots">
+        <figure class="reveal d1">
+          <a class="ns-shot" href={threatShield}><img src="/packages/threatshield-overview.webp" alt="The Threat Shield overview: protection state, health checks, block list and GeoIP status, and a small live threat map" width="1440" height="844" loading="lazy" /></a>
+          <figcaption><b>Overview.</b> Protection state, health checks and a live map in one place.</figcaption>
+        </figure>
+        <figure class="reveal d2">
+          <a class="ns-shot" href={`${DOCS}/packages/threat-shield-map/`}><img src="/packages/threatshield-map.webp" alt="The Threat Shield threat map page with time ranges, filters, counters, the world map and attack breakdowns" width="1440" height="1089" loading="lazy" /></a>
+          <figcaption><b>Threat map.</b> Time ranges, filters and a replay of the last hour.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="more" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="eyebrow reveal">Also from the project</span><h2 class="section-title reveal d1 mb-0">More built-in strength.</h2></div>
+        <p class="reveal d2">Security and management packages that use the same WebUI, firewall rules and audit trail.</p>
+      </div>
+      <div class="feat-grid">
+        {highlights.map((h, i) => (
+          <a class:list={['fs-card feat reveal', `d${i % 4}`]} href={h.href}>
+            <span class="t">{h.tag}</span>
+            <h3>{h.title}</h3>
+            <p>{h.body}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="all" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="eyebrow reveal">The catalog</span><h2 class="section-title reveal d1 mb-0">All {packageCount} packages.</h2></div>
+        <p class="reveal d2">Each one has a page in the documentation with its settings, services and where to find it in the WebUI.</p>
+      </div>
+      <div class="filters" role="group" aria-label="Filter packages" id="pkg-filters">
+        <button type="button" class="chip" data-group="" aria-pressed="true">All</button>
+        {packageGroups.map((g) => <button type="button" class="chip" data-group={g.key} aria-pressed="false">{g.label} <small>{g.items.length}</small></button>)}
+      </div>
+      {packageGroups.map((g) => (
+        <div class="pkg-group" data-group={g.key}>
+          <h3 class="pkg-group-title">{g.label}</h3>
+          <div class="pkg-grid">
+            {g.items.map((p) => (
+              <a class="fs-card pkg" href={`${DOCS}/packages/${p.doc}/`}>
+                <h4>{p.name}</h4>
+                <p>{p.desc}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+      <p class="mt-4" style="color:var(--fs-muted);font-size:.9rem">Suricata and the Web Gateway antivirus are not built for arm64. Fleet and the QEMU Guest Agent are in the Development line only.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="cta-box reveal">
+        <div>
+          <span class="eyebrow">Open and checkable</span>
+          <h2>Every package is built in public.</h2>
+          <p class="lead-muted mb-0">The sources, build recipes and signing are public on GitHub under Apache-2.0, like the rest of FreeSense.</p>
+        </div>
+        <div class="cta-links">
+          <a href={`${DOCS}/packages/installing-packages/`}>Installing packages <small>Guide</small></a>
+          <a href="https://github.com/FreeSense-org/freesense-packages" rel="noopener">freesense-packages <small>Source</small></a>
+          <a href="/download/">Download FreeSense <small>Stable &amp; Development</small></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import $ from 'jquery';
+
+  // Kiosk board: switch the screenshot between the four styles.
+  const $img = $('#kiosk-img');
+  const $tabs = $('[data-kiosk]');
+  $tabs.each(function (this: HTMLElement) { new Image().src = String($(this).attr('data-kiosk')); });
+  $tabs.on('click', function (this: HTMLElement) {
+    $img.attr('src', String($(this).attr('data-kiosk')));
+    $tabs.attr('aria-pressed', 'false');
+    $(this).attr('aria-pressed', 'true');
+  });
+
+  // Package catalog: show one category at a time.
+  $('#pkg-filters [data-group]').on('click', function (this: HTMLElement) {
+    const group = String($(this).attr('data-group'));
+    $('#pkg-filters [data-group]').attr('aria-pressed', 'false');
+    $(this).attr('aria-pressed', 'true');
+    $('.pkg-group').each(function (this: HTMLElement) {
+      $(this).prop('hidden', Boolean(group) && $(this).attr('data-group') !== group);
+    });
+  });
+</script>

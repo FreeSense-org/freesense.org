@@ -14,6 +14,80 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
   {
+    slug: 'security-site',
+    date: '2026-10-18',
+    tag: 'Security',
+    title: 'security.freesense.org: every FreeBSD advisory, and what it means for FreeSense',
+    summary:
+      "A new site lists every FreeBSD security advisory since 2025 with a decision for FreeSense 1.0, 1.1 and 1.2, and FreeSense's own bugs and issues next to them.",
+    link: { href: 'https://security.freesense.org/', label: 'Open the security site' },
+    body: `
+      <p>FreeSense is built on FreeBSD, so FreeBSD's security advisories matter to us. The new
+      <a href="https://security.freesense.org/">security site</a> lists every one of them since 2025 and says what it
+      means for each FreeSense version.</p>
+      <h2>Open, fixed or not relevant</h2>
+      <p>Every advisory has a status for <strong>FreeSense 1.0, 1.1 and 1.2</strong>:</p>
+      <ul>
+        <li><strong>Open</strong>: it applies to code we build, and the fix is not in the FreeBSD snapshot that version builds from yet.</li>
+        <li><strong>Fixed</strong>: FreeBSD corrected it before that snapshot.</li>
+        <li><strong>Not relevant</strong>: it is about code FreeSense does not build or ship. The page names the evidence from our build configuration.</li>
+      </ul>
+      <p>Each advisory has its own page with the CVE IDs, the affected FreeBSD releases, the correction dates and any
+      workaround, and links to the original FreeBSD advisory. FreeSense 1.0 is frozen, so an advisory that is open on 1.0
+      stays open there; the fix is to update to 1.1.</p>
+      <h2>Bugs and issues, too</h2>
+      <p>FreeSense's own bugs and issues from GitHub are listed in the same place, each with a badge: Bug, Security
+      report or Issue. Open and closed ones are both shown.</p>
+      <h2>An honest note on the statuses</h2>
+      <p>Most statuses are decided automatically, by comparing the date FreeBSD corrected an advisory with the date of the
+      FreeBSD source each version is pinned to, and they are marked <em>auto</em> until a maintainer reviews them. They
+      do not tell you whether your own system is exposed: a bug in a kernel module only matters if the module is loaded.
+      FreeBSD advisories carry no severity score, so we do not invent one. The
+      <a href="https://security.freesense.org/triage/">triage page</a> explains the method and its limits.</p>
+      <p>For now the site covers the FreeBSD base system and FreeSense's GitHub issues. Advisories for ports and the
+      optional packages are planned next.</p>
+      <h2>Report a vulnerability</h2>
+      <p>Found a security problem in FreeSense? Please report it
+      <a href="https://security.freesense.org/report/">privately</a> so we can fix it before it is public.</p>
+    `,
+  },
+  {
+    slug: 'freesense-fleet-preview',
+    date: '2026-10-18',
+    tag: 'Development',
+    title: 'FreeSense Fleet: manage every firewall from one place (1.2 preview)',
+    summary:
+      'Fleet is central management for FreeSense: guided joining, a live dashboard and wall-screen view, updates in rings, policies, backups and HA pairs. Available now in the Development build.',
+    image: '/fleet/fleet-dashboard.png',
+    imageAlt: 'The FreeSense Fleet dashboard showing seven firewalls online with a 24-hour pulse grid',
+    link: { href: 'https://docs.freesense.org/1.2/configure/fleet/', label: 'Read the Fleet documentation' },
+    body: `
+      <p><strong>FreeSense Fleet</strong> is the first big feature of the 1.2 line. One firewall runs the Fleet controller
+      (the optional package <code>FreeSense-pkg-Fleet</code>); every other firewall joins it with the agent that is part
+      of FreeSense itself. Firewalls open the connection, so they can sit behind NAT.</p>
+      <h2>What you get</h2>
+      <ul>
+        <li><strong>Guided joining:</strong> make an invitation, paste it into <em>Add to fleet</em> on the new firewall
+        and compare a 6-digit code before you approve. Use the Fleet tunnel, Tailscale or a direct connection.</li>
+        <li><strong>A live dashboard and a wall-screen view</strong> with groups, 24-hour availability, alerts and
+        internet quality for every firewall.</li>
+        <li><strong>Updates in rings</strong> with maintenance windows, rolling reboots, templates and schedules.</li>
+        <li><strong>Policies</strong> that audit, fix or lock settings on every firewall.</li>
+        <li><strong>HA pairs</strong> set up from two firewalls in a step-by-step guide, with an optional encrypted link.</li>
+        <li><strong>Backups</strong> of every firewall, kept on the controller.</li>
+      </ul>
+      <h2>How far it has been tested</h2>
+      <p>In our lab, one controller managed seven firewalls (one of them over Tailscale). A three-ring update of all
+      seven took 20 minutes, and an HA pair failed over within seconds when its MASTER lost power. The
+      <a href="https://docs.freesense.org/1.2/configure/fleet-status/">status page</a> lists what was tested and what has not
+      been proven yet.</p>
+      <h2>Development only</h2>
+      <p>Fleet is part of the Development line, is experimental and unsupported, and is <strong>not in Stable 1.1</strong>.
+      Do not manage production firewalls with it yet. Installed Development systems receive it with the nightly build;
+      the controller is installed from <em>System &rarr; Package Manager</em>.</p>
+    `,
+  },
+  {
     slug: 'freesense-1-1-9',
     date: '2026-10-17',
     tag: 'Release',

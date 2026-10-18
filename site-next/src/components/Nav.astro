@@ -1,11 +1,11 @@
 ---
 import ThemeSwitch from './ThemeSwitch.astro';
 import ProductItems from './ProductItems.astro';
-import { DOCS, GITHUB } from '../data/site';
+import { DOCS, GITHUB, SECURITY } from '../data/site';
 
 interface Props { current?: string }
 const { current = '' } = Astro.props;
-const productPage = ['freesense', 'netspider', 'download'].includes(current);
+const productPage = ['freesense', 'fleet', 'netspider', 'download'].includes(current);
 const here = (key: string) => (current === key ? 'page' : undefined);
 ---
 <a class="skip" href="#main">Skip to content</a>
@@ -25,6 +25,7 @@ const here = (key: string) => (current === key ? 'page' : undefined);
         </div>
       </div>
       <a href="/news/" aria-current={here('news')}>News</a>
+      <a href={SECURITY} rel="noopener">Security</a>
       <a href={DOCS}>Docs</a>
       <a href="/about/" aria-current={here('about')}>About</a>
       <a href={GITHUB} rel="noopener">GitHub</a>
@@ -50,6 +51,7 @@ const here = (key: string) => (current === key ? 'page' : undefined);
     <ProductItems />
     <div class="m-label">Explore</div>
     <a class="m-link" href="/news/">News</a>
+    <a class="m-link" href={SECURITY} rel="noopener">Security</a>
     <a class="m-link" href={DOCS}>Documentation</a>
     <a class="m-link" href="/about/">About</a>
     <a class="m-link" href={GITHUB} rel="noopener">GitHub</a>

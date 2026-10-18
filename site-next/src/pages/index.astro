@@ -43,6 +43,31 @@ const marks = [
       </div>
       <div class="hero-art reveal d2"><IsoScene /></div>
     </div>
+    <div class="wrap">
+      <div class="news-rail reveal d3" data-news-rail aria-roledescription="carousel" aria-label="Latest news">
+        <div class="news-rail-head">
+          <span class="eyebrow">Latest news</span>
+          <div class="news-rail-nav">
+            <button type="button" class="rail-btn" data-rail="prev" aria-label="Previous news">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+            </button>
+            <button type="button" class="rail-btn" data-rail="next" aria-label="Next news">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+            </button>
+            <a class="rail-all" href="/news/">All news</a>
+          </div>
+        </div>
+        <div class="news-rail-track" tabindex="0">
+          {news.slice(0, 6).map((post) => (
+            <a class="rail-card" href={`/news/${post.slug}/`}>
+              <span class="rail-meta"><span class="rail-tag">{post.tag}</span><time datetime={post.date}>{formatDate(post.date)}</time></span>
+              <span class="rail-title">{post.title}</span>
+            </a>
+          ))}
+        </div>
+        <div class="news-rail-progress" aria-hidden="true"><span></span></div>
+      </div>
+    </div>
   </section>
 
   <section class="trusted center" style="padding-top:clamp(16px,3vw,40px)">
@@ -204,6 +229,23 @@ const marks = [
     </div>
   </section>
 
+  <section id="fleet">
+    <div class="wrap split rev">
+      <a class="ns-shot split-media reveal d2" href="/fleet/" aria-label="FreeSense Fleet dashboard">
+        <img src="/fleet/fleet-dashboard.png" alt="The FreeSense Fleet dashboard: all seven firewalls online, availability over 24 hours and a pulse grid per firewall" width="910" height="753" loading="lazy" />
+      </a>
+      <div>
+        <span class="eyebrow reveal">New in 1.2 &middot; Development preview</span>
+        <h2 class="reveal d1">FreeSense Fleet. Every firewall, one control centre.</h2>
+        <p class="lead-muted reveal d2">Join firewalls with a pasted invitation, watch them on a live dashboard or a wall screen, then back up, update and check them against policies together. Firewalls call home, so they can sit behind NAT.</p>
+        <div class="hero-ctas mt-4 reveal d3">
+          <a class="btn-pill btn-grad" href="/fleet/">See Fleet</a>
+          <a class="btn-pill btn-ghost" href={`${DOCS}/1.2/configure/fleet/`}>Read the docs</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="netspider" class="ns-accent">
     <div class="wrap split">
       <div>
@@ -269,4 +311,5 @@ const marks = [
 
 <script>
   import '../scripts/live.js';
+  import '../scripts/news-rail.js';
 </script>

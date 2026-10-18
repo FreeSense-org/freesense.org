@@ -1,5 +1,5 @@
 ---
-import { DOCS, GITHUB } from '../data/site';
+import { DOCS, GITHUB, SECURITY } from '../data/site';
 ---
 <footer class="fs-footer">
   <div class="wrap">
@@ -11,11 +11,14 @@ import { DOCS, GITHUB } from '../data/site';
       </div>
       <div><h4>Products</h4><ul>
         <li><a href="/freesense/">FreeSense</a></li>
+        <li><a href="/fleet/">FreeSense Fleet</a></li>
         <li><a href="/download/">Download</a></li>
         <li><a href="/netspider/">NetSpider</a></li>
       </ul></div>
       <div><h4>Project</h4><ul>
+        <li><a href="/compare/">Compare</a></li>
         <li><a href="/news/">News</a></li>
+        <li><a href={SECURITY} rel="noopener">Security</a></li>
         <li><a href="/about/">About</a></li>
         <li><a href={DOCS}>Documentation</a></li>
         <li><a href={`${GITHUB}/freesense/issues`} rel="noopener">Issues</a></li>

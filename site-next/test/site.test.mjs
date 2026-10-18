@@ -71,3 +71,19 @@ test('Pages Functions reuse the handlers of the current site', async () => {
   const routes = JSON.parse(await read('public/_routes.json'));
   assert.deepEqual(routes.include.sort(), ['/activity.json', '/apps/netspider/releases.json', '/releases/devel.json', '/releases/stable.json']);
 });
+
+test('the compare page exists, is in the nav and footer, and every product cites a source', async () => {
+  const page = await read('src/pages/compare.astro');
+  const data = await read('src/data/compare.ts');
+  assert.match(page, /id="sources"/);
+  assert.match(page, /trademarks of/);
+  assert.match(page, /planned for early 2027/);
+  assert.match(await read('src/components/ProductItems.astro'), /href="\/compare\/"/);
+  assert.match(await read('src/components/Footer.astro'), /href="\/compare\/"/);
+  const ids = [...data.matchAll(/id: '([^']+)'/g)].map((m) => m[1]);
+  assert.ok(ids.length >= 10);
+  for (const id of ids) {
+    const block = data.slice(data.indexOf(`id: '${id}'`)).split(/\n  \},/)[0];
+    assert.match(block, /source: \[\s*\{ label: '[^']+', href: 'https:\/\//, id);
+  }
+});

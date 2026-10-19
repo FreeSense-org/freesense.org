@@ -1,7 +1,7 @@
 ---
 /* GDPR cookie / storage consent bar.
-   This site sets NO tracking or advertising cookies. The only client storage is the
-   visitor's own consent choice (localStorage 'fs-cookie-consent'). The bar is wired so
+   This site sets NO tracking or advertising cookies. The only cookie is the visitor's own consent
+   choice ('fs-cookie-consent', shared across freesense.org, one year), mirrored in localStorage. The bar is wired so
    that any future non-essential script (e.g. analytics) can gate itself on the
    'fs-consent' event / window.fsConsent before loading. */
 ---
@@ -9,7 +9,7 @@
   <div class="wrap cb-inner">
     <p class="cb-text">
       We use only <strong>essential</strong> storage to make this site work and to remember this
-      choice — no advertising or cross-site tracking. See our
+      choice for a year in one cookie shared by all freesense.org sites — no advertising or cross-site tracking. See our
       <a href="/privacy">Privacy&nbsp;Policy</a>.
     </p>
     <div class="cb-actions">
@@ -25,10 +25,14 @@
     var bar = document.getElementById('cookie-bar');
     if (!bar) return;
     var stored = null;
-    try { stored = localStorage.getItem(KEY); } catch (e) {}
+    var SHARED = /(^|\.)freesense\.org$/.test(location.hostname);
+    var m = document.cookie.match(/(?:^|; )fs-cookie-consent=(accepted|declined)/);
+    if (m) stored = m[1];
+    else { try { stored = localStorage.getItem(KEY); } catch (e) {} }
     if (!stored) bar.hidden = false;
     function choose(v) {
       try { localStorage.setItem(KEY, v); } catch (e) {}
+      if (SHARED) document.cookie = KEY + '=' + v + '; Domain=.freesense.org; Path=/; Max-Age=31536000; SameSite=Lax; Secure';
       bar.hidden = true;
       window.fsConsent = v;
       window.dispatchEvent(new CustomEvent('fs-consent', { detail: v }));

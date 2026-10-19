@@ -113,3 +113,15 @@ test('the compare page says FreeSense imports both pfSense and OPNsense configur
   assert.match(page, /OPNsense configuration is converted/);
   assert.match(page, /docs\.freesense\.org\/guides\/migrating\//);
 });
+
+test('every page has the cookie notice, a way to reopen it, and the privacy policy explains the saved choice', async () => {
+  assert.match(await read('src/layouts/Base.astro'), /<CookieBar \/>/);
+  assert.match(await read('src/components/Footer.astro'), /data-cookie-settings/);
+  const bar = await read('src/components/CookieBar.astro');
+  assert.match(bar, /fs-cookie-consent/);
+  assert.match(bar, /Decline/);
+  assert.match(bar, /Accept/);
+  const privacy = await read('src/pages/privacy.astro');
+  assert.match(privacy, /fs-cookie-consent/);
+  assert.match(privacy, /Cookie settings/);
+});

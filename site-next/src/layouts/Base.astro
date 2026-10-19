@@ -43,7 +43,12 @@ const canonical = new URL(Astro.url.pathname, 'https://freesense.org').href;
       (function () {
         var d = document.documentElement, p = 'dark';
         d.classList.add('js');
-        try { p = (/(?:^|; )fs-cookie-consent=declined/.test(document.cookie) || (!/(?:^|; )fs-cookie-consent=/.test(document.cookie) && localStorage.getItem('fs-cookie-consent') === 'declined') ? sessionStorage : localStorage).getItem('fs-theme') || 'dark'; } catch (e) {}
+        try {
+          var declined = /(?:^|; )fs-cookie-consent=declined/.test(document.cookie) || (!/(?:^|; )fs-cookie-consent=/.test(document.cookie) && localStorage.getItem('fs-cookie-consent') === 'declined');
+          // A choice made on another freesense.org site applies here too: an older persisted theme moves to this visit only.
+          if (declined) { var kept = localStorage.getItem('fs-theme'); if (kept !== null) { sessionStorage.setItem('fs-theme', kept); localStorage.removeItem('fs-theme'); } }
+          p = (declined ? sessionStorage : localStorage).getItem('fs-theme') || 'dark';
+        } catch (e) {}
         if (p === 'auto') p = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         d.setAttribute('data-bs-theme', p === 'light' ? 'light' : 'dark');
       })();

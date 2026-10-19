@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-const updated = '17 October 2026';
+const updated = '19 October 2026';
 ---
 
 <Base title="Privacy Policy — FreeSense" description="How freesense.org handles your data: no tracking, no advertising cookies, minimal essential storage.">
@@ -21,7 +21,7 @@ const updated = '17 October 2026';
         <h2 class="mt-0" style="font-size:1.3rem">The short version</h2>
         <ul class="ticks">
           <li><span>No advertising or tracking cookies, and no analytics that profile you.</span></li>
-          <li><span>The only browser storage is your own colour-theme choice.</span></li>
+          <li><span>The only browser storage is your colour-theme choice and your answer to the cookie notice, which is kept in one cookie shared across freesense.org. Declining keeps the theme for the visit only.</span></li>
           <li><span>Fonts and scripts are served from this site; no third-party CDNs.</span></li>
           <li><span>The installed firewall sends no telemetry, device ID or configuration to us.</span></li>
           <li><span>We never sell or share personal data; we do not collect any to begin with.</span></li>
@@ -32,7 +32,9 @@ const updated = '17 October 2026';
       <p>This site is operated by <strong>The FreeSense Project</strong>, an open-source community project. For privacy questions, contact us via the <a href="https://github.com/FreeSense-org" rel="noopener">FreeSense-org GitHub organization</a>.</p>
 
       <h2>2. Cookies &amp; local storage</h2>
-      <p>We do not set cookies. The site stores a single value in your browser's <code>localStorage</code>, <code>fs-theme</code>, which remembers whether you chose the light, dark or system colour theme. It contains no personal information and is never sent to a server. You can clear it any time in your browser settings.</p>
+      <p>We set no advertising or tracking cookies. When you answer the cookie notice, your answer is saved in <strong>one cookie</strong>, <code>fs-cookie-consent</code> (<code>accepted</code> or <code>declined</code>). It is set for all of freesense.org, including the documentation and security sites, so you are asked once and the notice does not return on any other page or site. It lasts one year, is not used to identify you and is sent only to freesense.org sites. Accepting or declining is what allows this cookie to be saved, and you can delete it or change your answer at any time with <strong>Cookie settings</strong> in the footer. The same answer is also kept as a copy in your browser's <code>localStorage</code>. The only other value is <code>fs-theme</code> in <code>localStorage</code>, which remembers whether you chose the light, dark or system colour theme. Neither contains personal information.</p>
+      <p>If you decline, the theme choice is kept in your browser's <code>sessionStorage</code> instead, which your browser clears when you close the tab; only the notice choice stays (in the cookie), so we do not ask again. You can change your choice at any time with <strong>Cookie settings</strong> in the footer, and you can clear the cookie and both values from your browser's site data.</p>
+      <p>The documentation (<code>docs.freesense.org</code>) and the security site (<code>security.freesense.org</code>) share the same cookie and notice, and keep their own theme values: the documentation remembers your theme as <code>starlight-theme</code>, the security site as <code>fs-theme</code>.</p>
 
       <h2>3. Server logs (hosting)</h2>
       <p>The website, package service and download images are served by <strong>Cloudflare</strong> (Pages and R2). As part of delivering and protecting them, Cloudflare processes standard request metadata such as your IP address, browser user-agent and the page or file requested. This is used only for operating the service, security and abuse prevention, under Cloudflare's own privacy terms. We do not combine it with anything else or use it to identify you.</p>

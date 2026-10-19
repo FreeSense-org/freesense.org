@@ -9,8 +9,16 @@ export const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)'
 
 /* ---- theme ---- */
 const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+// After the cookie notice is declined, the theme is kept for this visit only (sessionStorage).
+function themeStore() {
+  try {
+    const cookie = document.cookie.match(/(?:^|; )fs-cookie-consent=(accepted|declined)/);
+    const choice = cookie ? cookie[1] : localStorage.getItem('fs-cookie-consent');
+    return choice === 'declined' ? sessionStorage : localStorage;
+  } catch { return sessionStorage; }
+}
 function storedTheme() {
-  try { return localStorage.getItem('fs-theme') || 'dark'; } catch { return 'dark'; }
+  try { return themeStore().getItem('fs-theme') || 'dark'; } catch { return 'dark'; }
 }
 function applyTheme(pref) {
   const theme = pref === 'auto' ? (darkQuery.matches ? 'dark' : 'light') : pref;
@@ -23,7 +31,7 @@ function applyTheme(pref) {
 applyTheme(storedTheme());
 $(document).on('click', '[data-theme-set]', function () {
   const pref = String($(this).data('theme-set'));
-  try { localStorage.setItem('fs-theme', pref); } catch { /* storage blocked: the choice lasts for this page */ }
+  try { themeStore().setItem('fs-theme', pref); } catch { /* storage blocked: the choice lasts for this page */ }
   applyTheme(pref);
 });
 darkQuery.addEventListener('change', () => { if (storedTheme() === 'auto') applyTheme('auto'); });

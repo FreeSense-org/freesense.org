@@ -1,0 +1,72 @@
+---
+// Cookie and storage notice. The site has no analytics and sets one cookie, the notice's own choice (fs-cookie-consent, Domain=.freesense.org,
+// one year), so every freesense.org site asks once. The colour-theme choice (fs-theme) stays in localStorage. Declining keeps the theme for the
+// current visit only (sessionStorage). Anything non-essential added later must wait for the 'fs-consent' event.
+interface Props { privacyHref?: string }
+const { privacyHref = '/privacy/' } = Astro.props;
+---
+<div id="cookie-bar" class="cookie-bar" role="dialog" aria-labelledby="cookie-title" aria-describedby="cookie-text" hidden>
+  <div class="cb-inner">
+    <p class="cb-text" id="cookie-text">
+      <strong id="cookie-title">Cookies and storage.</strong>{' '}
+      This site has no tracking, analytics or ads. It keeps only your colour-theme choice and this choice. The choice is
+      saved for a year in one cookie shared by all freesense.org sites, so you are asked once. <em>Decline</em> keeps your theme for this visit only.{' '}
+      <a href={privacyHref}>Privacy policy</a>
+    </p>
+    <div class="cb-actions">
+      <button id="cb-decline" class="btn-pill btn-ghost btn-sm-pill" type="button">Decline</button>
+      <button id="cb-accept" class="btn-pill btn-grad btn-sm-pill" type="button">Accept</button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var KEY = 'fs-cookie-consent', THEME = 'fs-theme';
+    var bar = document.getElementById('cookie-bar');
+    if (!bar) return;
+    // The choice is kept in one cookie shared by every freesense.org site, so it is asked once; localStorage mirrors it for other hosts.
+    var SHARED = /(^|\.)freesense\.org$/.test(location.hostname);
+    function read() {
+      var m = document.cookie.match(/(?:^|; )fs-cookie-consent=(accepted|declined)/);
+      if (m) return m[1];
+      try { return localStorage.getItem(KEY); } catch (e) { return null; }
+    }
+    function write(v) {
+      try { localStorage.setItem(KEY, v); } catch (e) { /* storage blocked: the choice lasts for this page */ }
+      if (SHARED) document.cookie = KEY + '=' + v + '; Domain=.freesense.org; Path=/; Max-Age=31536000; SameSite=Lax; Secure';
+    }
+    // After Decline the theme lives in sessionStorage (cleared when the tab closes); after Accept it lives in localStorage.
+    function moveTheme(declined) {
+      try {
+        var from = declined ? localStorage : sessionStorage, to = declined ? sessionStorage : localStorage;
+        var t = from.getItem(THEME);
+        if (t !== null) { to.setItem(THEME, t); from.removeItem(THEME); }
+      } catch (e) {}
+    }
+    function choose(v) {
+      write(v);
+      moveTheme(v === 'declined');
+      bar.hidden = true;
+      window.fsConsent = v;
+      window.dispatchEvent(new CustomEvent('fs-consent', { detail: v }));
+    }
+    function open() {
+      bar.hidden = false;
+      var current = read();
+      document.getElementById('cb-accept').setAttribute('aria-pressed', String(current === 'accepted'));
+      document.getElementById('cb-decline').setAttribute('aria-pressed', String(current === 'declined'));
+      document.getElementById('cb-accept').focus({ preventScroll: true });
+    }
+    window.fsConsent = read();
+    window.fsCookieSettings = open;
+    if (!read()) bar.hidden = false;
+    document.getElementById('cb-accept').addEventListener('click', function () { choose('accepted'); });
+    document.getElementById('cb-decline').addEventListener('click', function () { choose('declined'); });
+    document.addEventListener('click', function (e) {
+      var t = e.target && e.target.closest && e.target.closest('[data-cookie-settings]');
+      if (t) { e.preventDefault(); open(); }
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !bar.hidden && read()) bar.hidden = true; });
+  })();
+</script>

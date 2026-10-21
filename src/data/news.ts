@@ -14,6 +14,53 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
   {
+    slug: 'freesense-1-1-10',
+    date: '2026-10-21', // set to the seal date when 1.1.10 is published
+    tag: 'Security',
+    title: 'FreeSense 1.1.10: update now, two critical PHP vulnerabilities are fixed',
+    summary:
+      'A Stable security patch. PHP 8.5.12 fixes CVE-2026-109618 and CVE-2026-109619, two critical remote code execution flaws in PHP itself. It also hardens the WebUI, updates HAProxy to 3.4.7 and fixes two smaller problems.',
+    link: { href: 'https://docs.freesense.org/releases/1.1.10/', label: 'Read the release notes' },
+    body: `
+      <p><strong>FreeSense 1.1.10</strong> is a Stable security patch. The PHP project fixed two critical
+      vulnerabilities on 21 October 2026, and 1.1.10 ships the fixed PHP. <strong>Update promptly.</strong></p>
+      <h2>The PHP vulnerabilities</h2>
+      <ul>
+        <li><strong><a href="https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w" rel="noopener">CVE-2026-109618</a></strong>:
+        memory left in an invalid state when a request runs out of memory early, for example during a crafted
+        multipart upload.</li>
+        <li><strong><a href="https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp" rel="noopener">CVE-2026-109619</a></strong>:
+        state left over from a finished request that a later request on the same worker can reach.</li>
+      </ul>
+      <p>The PHP project rates both as critical (CVSS 4.0 score 9.2) and says they can allow remote code execution
+      without logging in. It says updating PHP is the only complete mitigation. The FreeSense WebUI runs PHP-FPM behind
+      nginx; the PHP advisories describe a demonstrated exploit only for Apache's mod_php and say PHP-FPM is affected
+      under some conditions, so do not rely on that. FreeSense 1.1.9 and earlier ship PHP 8.5.11, which is affected.</p>
+      <p>Until you can update, do not expose the WebUI to the internet. Management access should be limited to
+      trusted networks.</p>
+      <h2>What else is in 1.1.10</h2>
+      <ul>
+        <li><strong>WebUI hardening</strong> from our security audit: XML-RPC code execution is limited to the admin
+        user, captive portal file names and CSRF checks are tightened, disconnecting a client from the Captive Portal
+        widget is a CSRF-checked POST, stored data is no longer unserialized into objects, and old password hashes are
+        upgraded to bcrypt at the next login.</li>
+        <li><strong>HAProxy 3.4.7</strong> (Optional package, from 3.4.2) fixes buffer overflows in JWT and JWE
+        handling, HTTP/2 and HTTP/3 framing problems that could be used for request smuggling, and a number of crashes.</li>
+        <li><strong>VXLAN</strong> multicast tunnels with a non-default local port work.</li>
+        <li><strong>Cloud images</strong> keep an administrator's password when the cloud configuration is applied again.</li>
+      </ul>
+      <h2>How to update</h2>
+      <p>Systems on 1.1.0, 1.1.5 and 1.1.9 update from System &rarr; Update as usual; update the Optional Packages
+      afterwards so HAProxy gets its fix. Systems on 1.1.1 to 1.1.4 need
+      <a href="https://docs.freesense.org/releases/1.1.9/#before-you-update-from-111-to-114">one console command</a>
+      first. Every release is upgrade-tested on a virtual machine before it is published. FreeSense 1.1.9 is not
+      withdrawn; it works, but it carries the vulnerable PHP.</p>
+      <p><a href="/download">Download FreeSense 1.1.10</a> or read the
+      <a href="https://docs.freesense.org/releases/1.1.10/">full release notes</a>. The advisories that apply to each
+      release are listed on <a href="https://security.freesense.org/all/?version=1.1" rel="noopener">security.freesense.org</a>.</p>
+    `,
+  },
+  {
     slug: 'fleet-self-hosted',
     date: '2026-10-19',
     tag: 'Development',

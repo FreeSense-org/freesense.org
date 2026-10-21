@@ -13,8 +13,8 @@ const slides: Slide[] = [
   {
     id: 'stable', label: 'Taking shape', theme: 'coral', eyebrow: 'A young project · now on a Stable path',
     title: 'A new firewall,', accent: 'taking shape.',
-    body: 'FreeSense is a young open-source firewall built in public on FreeBSD. It now has a real Stable release path: signed, upgrade-tested patch releases. The latest, 1.1.9, is a solid foundation for everything that comes next.',
-    href: '/download', cta: 'Download 1.1.9', secondary: { href: '/news/freesense-1-1-9', label: "What's in 1.1.9" }, visual: 'stable',
+    body: 'FreeSense is a young open-source firewall built in public on FreeBSD. It now has a real Stable release path: signed, upgrade-tested patch releases. The latest, 1.1.10, is a security update and a solid foundation for everything that comes next.',
+    href: '/download', cta: 'Download 1.1.10', secondary: { href: '/news/freesense-1-1-10', label: "What's in 1.1.10" }, visual: 'stable',
   },
   {
     id: 'devel', label: 'Live development', theme: 'green', eyebrow: 'Development 1.2 · built in public',
@@ -70,6 +70,13 @@ const latestNews = news.slice(0, 3);
   title="FreeSense — the modern open firewall"
   description="FreeSense is a modern open-source firewall and router with signed installer and cloud images, no accounts, and no telemetry or phone-home."
 >
+  <aside class="sec-alert" aria-label="Security update">
+    <div class="wrap sec-alert-inner">
+      <span><strong>Security update:</strong> FreeSense 1.1.10 fixes two critical PHP vulnerabilities (CVE-2026-109618 and CVE-2026-109619). Update Stable systems promptly.</span>
+      <a href="/news/freesense-1-1-10">Read the details →</a>
+    </div>
+  </aside>
+
   <Slider slides={slides} />
 
   <section class="pulse" aria-label="Live project status">
@@ -153,7 +160,7 @@ const latestNews = news.slice(0, 3);
       <div class="wn-actions">
         <a href={DOCS + '/releases/whats-new-1.1/'} class="btn btn-primary">Tour what's new</a>
         <a href={DOCS + '/guides/upgrading-from-1.0/'} class="btn btn-ghost">Upgrade from 1.0</a>
-        <a href={DOCS + '/releases/1.1.9/'} class="wn-link">Release notes 1.1.9 →</a>
+        <a href={DOCS + '/releases/1.1.10/'} class="wn-link">Release notes 1.1.10 →</a>
       </div>
     </div>
   </section>
@@ -282,6 +289,13 @@ const latestNews = news.slice(0, 3);
   .wn-link { font-weight: 600; font-size: 14.5px; }
   @media (max-width: 1100px) { .wn-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 640px) { .wn-grid { grid-template-columns: 1fr; } .whatsnew { padding-top: 60px; } }
+
+  /* Security notice */
+  .sec-alert { background: var(--coral-soft); border-bottom: 1px solid var(--coral); }
+  .sec-alert-inner { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; padding-top: 12px; padding-bottom: 12px; color: var(--text); }
+  .sec-alert-inner strong { color: var(--coral-hi); }
+  .sec-alert-inner a { margin-left: auto; font-weight: 600; white-space: nowrap; }
+  @media (max-width: 640px) { .sec-alert-inner a { margin-left: 0; } }
 
   /* Live status bar */
   .pulse { padding: 0; background: rgba(17,23,32,.92); border-bottom: 1px solid var(--border); }

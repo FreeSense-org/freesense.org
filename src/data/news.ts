@@ -38,6 +38,10 @@ export const news: NewsPost[] = [
       under some conditions, so do not rely on that. FreeSense 1.1.9 and earlier ship PHP 8.5.11, which is affected.</p>
       <p>Until you can update, do not expose the WebUI to the internet. Management access should be limited to
       trusted networks.</p>
+      <p><strong>Development 1.2</strong> gets the same PHP 8.5.12 fix in its next build, expected tonight; until
+      then it runs the affected PHP. Development is experimental and unsupported. <strong>FreeSense 1.0</strong> is
+      frozen and receives no fix: upgrade to 1.1.10 (the upgrade is one-way, so read
+      <a href="https://docs.freesense.org/guides/upgrading-from-1.0/">Upgrading from 1.0</a> first).</p>
       <h2>What else is in 1.1.10</h2>
       <ul>
         <li><strong>WebUI hardening</strong> from our security audit: XML-RPC code execution is limited to the admin

@@ -15,7 +15,7 @@ export interface NewsPost {
 export const news: NewsPost[] = [
   {
     slug: 'freesense-1-1-10',
-    date: '2026-10-21', // set to the seal date when 1.1.10 is published
+    date: '2026-10-22',
     tag: 'Security',
     title: 'FreeSense 1.1.10: update now, two critical PHP vulnerabilities are fixed',
     summary:

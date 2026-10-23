@@ -14,6 +14,41 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
   {
+    slug: 'freesense-1-1-11',
+    date: '2026-10-23',
+    tag: 'Release',
+    title: 'FreeSense 1.1.11: cloud images are back, same PHP security fix',
+    summary:
+      'A Stable patch that supersedes 1.1.10. It carries the same PHP 8.5.12 security fix and brings the ZFS and UFS cloud images back, now with the VMware guest tools. Nothing to do first.',
+    link: { href: 'https://docs.freesense.org/releases/1.1.11/', label: 'Read the release notes' },
+    body: `
+      <p><strong>FreeSense 1.1.11</strong> is a Stable patch that supersedes 1.1.10. If you are already on 1.1.10 you
+      have the PHP fix for CVE-2026-109618 and CVE-2026-109619 and nothing is urgent; 1.1.11 is a normal update. If you
+      are still on 1.1.9 or earlier, <strong>update promptly</strong>: see
+      <a href="/news/freesense-1-1-10/">the 1.1.10 announcement</a> for why.</p>
+      <h2>What is in 1.1.11</h2>
+      <ul>
+        <li><strong>Cloud images are back.</strong> 1.1.10 shipped without them: the image assembly requires the VMware
+        guest tools (<code>open-vm-tools-nox11</code>) in the System repository, and on the 1.1 line that package was not
+        built. It is now, as on 1.2, so the ZFS and UFS cloud images are published again and carry the VMware tools next
+        to the QEMU guest agent and the FreeSense cloud-init.</li>
+        <li><strong>Same PHP 8.5.12</strong>, now compiled by FreeSense on amd64 as it already was on arm64. The installed
+        version and configuration do not change.</li>
+      </ul>
+      <p>Optional Packages are unchanged since 1.1.10. <strong>Development 1.2</strong> gets PHP 8.5.12 with its next
+      nightly build; the fix is on its main branch. <strong>FreeSense 1.0</strong> is frozen and receives no fix: upgrade to
+      1.1 (the upgrade is one-way, so read
+      <a href="https://docs.freesense.org/guides/upgrading-from-1.0/">Upgrading from 1.0</a> first).</p>
+      <h2>How to update</h2>
+      <p>Systems on 1.1.0, 1.1.5, 1.1.9 and 1.1.10 update from System &rarr; Update as usual. Systems on 1.1.1 to 1.1.4
+      need <a href="https://docs.freesense.org/releases/1.1.9/#before-you-update-from-111-to-114">one console command</a>
+      first. This release was upgrade-tested from 1.1.9 on a virtual machine before it was published.</p>
+      <p><a href="/download">Download FreeSense 1.1.11</a> or read the
+      <a href="https://docs.freesense.org/releases/1.1.11/">full release notes</a>. The advisories that apply to each
+      release are listed on <a href="https://security.freesense.org/all/?version=1.1" rel="noopener">security.freesense.org</a>.</p>
+    `,
+  },
+  {
     slug: 'freesense-1-1-10',
     date: '2026-10-22',
     tag: 'Security',

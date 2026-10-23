@@ -35,13 +35,13 @@ export const news: NewsPost[] = [
         <li><strong>Same PHP 8.5.12</strong>, now compiled by FreeSense on amd64 as it already was on arm64. The installed
         version and configuration do not change.</li>
       </ul>
-      <p>Optional Packages are unchanged since 1.1.10. <strong>Development 1.2</strong> gets PHP 8.5.12 with its next
-      nightly build; the fix is on its main branch. <strong>FreeSense 1.0</strong> is frozen and receives no fix: upgrade to
+      <p>Optional Packages are unchanged since 1.1.10. <strong>Development 1.2</strong> ships PHP 8.5.12 since build
+      1.2.0-dev.20261020.1792754032, published on 23 October. <strong>FreeSense 1.0</strong> is frozen and receives no fix: upgrade to
       1.1 (the upgrade is one-way, so read
       <a href="https://docs.freesense.org/guides/upgrading-from-1.0/">Upgrading from 1.0</a> first).</p>
       <h2>How to update</h2>
       <p>Systems on 1.1.0, 1.1.5, 1.1.9 and 1.1.10 update from System &rarr; Update as usual. Systems on 1.1.1 to 1.1.4
-      need <a href="https://docs.freesense.org/releases/1.1.9/#before-you-update-from-111-to-114">one console command</a>
+      need <a href="https://docs.freesense.org/releases/previous-1.1/#before-you-update-from-111-to-114-in-119">one console command</a>
       first. This release was upgrade-tested from 1.1.9 on a virtual machine before it was published.</p>
       <p><a href="/download">Download FreeSense 1.1.11</a> or read the
       <a href="https://docs.freesense.org/releases/1.1.11/">full release notes</a>. The advisories that apply to each
@@ -55,7 +55,7 @@ export const news: NewsPost[] = [
     title: 'FreeSense 1.1.10: update now, two critical PHP vulnerabilities are fixed',
     summary:
       'A Stable security patch. PHP 8.5.12 fixes CVE-2026-109618 and CVE-2026-109619, two critical remote code execution flaws in PHP itself. It also hardens the WebUI, updates HAProxy to 3.4.7 and fixes two smaller problems.',
-    link: { href: 'https://docs.freesense.org/releases/1.1.10/', label: 'Read the release notes' },
+    link: { href: 'https://docs.freesense.org/releases/previous-1.1/#freesense-1110', label: 'Read the release notes' },
     body: `
       <p><strong>FreeSense 1.1.10</strong> is a Stable security patch. The PHP project fixed two critical
       vulnerabilities on 21 October 2026, and 1.1.10 ships the fixed PHP. <strong>Update promptly.</strong></p>
@@ -73,9 +73,9 @@ export const news: NewsPost[] = [
       under some conditions, so do not rely on that. FreeSense 1.1.9 and earlier ship PHP 8.5.11, which is affected.</p>
       <p>Until you can update, do not expose the WebUI to the internet. Management access should be limited to
       trusted networks.</p>
-      <p><strong>Development 1.2</strong> gets the same PHP 8.5.12 fix in its next build, expected tonight; until
-      then it runs the affected PHP. Development is experimental and unsupported. <strong>FreeSense 1.0</strong> is
-      frozen and receives no fix: upgrade to 1.1.10 (the upgrade is one-way, so read
+      <p><strong>Development 1.2</strong> ships the same PHP 8.5.12 since build 1.2.0-dev.20261020.1792754032,
+      published on 23 October. Development is experimental and unsupported. <strong>FreeSense 1.0</strong> is
+      frozen and receives no fix: upgrade to 1.1 (the upgrade is one-way, so read
       <a href="https://docs.freesense.org/guides/upgrading-from-1.0/">Upgrading from 1.0</a> first).</p>
       <h2>What else is in 1.1.10</h2>
       <ul>
@@ -91,11 +91,11 @@ export const news: NewsPost[] = [
       <h2>How to update</h2>
       <p>Systems on 1.1.0, 1.1.5 and 1.1.9 update from System &rarr; Update as usual; update the Optional Packages
       afterwards so HAProxy gets its fix. Systems on 1.1.1 to 1.1.4 need
-      <a href="https://docs.freesense.org/releases/1.1.9/#before-you-update-from-111-to-114">one console command</a>
+      <a href="https://docs.freesense.org/releases/previous-1.1/#before-you-update-from-111-to-114-in-119">one console command</a>
       first. Every release is upgrade-tested on a virtual machine before it is published. FreeSense 1.1.9 is not
       withdrawn; it works, but it carries the vulnerable PHP.</p>
       <p><a href="/download">Download FreeSense 1.1.10</a> or read the
-      <a href="https://docs.freesense.org/releases/1.1.10/">full release notes</a>. The advisories that apply to each
+      <a href="https://docs.freesense.org/releases/previous-1.1/#freesense-1110">full release notes</a>. The advisories that apply to each
       release are listed on <a href="https://security.freesense.org/all/?version=1.1" rel="noopener">security.freesense.org</a>.</p>
     `,
   },
@@ -218,7 +218,7 @@ export const news: NewsPost[] = [
     title: 'FreeSense 1.1.9: RADIUS works again, plus hardening and PHP 8 fixes',
     summary:
       'A Stable patch release: RADIUS logins work again, older boot environments are locked in the WebUI, PHP 8 warnings are cleared across the WebUI and Optional Packages, and serial-console installs work.',
-    link: { href: 'https://docs.freesense.org/releases/1.1.9/', label: 'Read the release notes' },
+    link: { href: 'https://docs.freesense.org/releases/previous-1.1/#freesense-119', label: 'Read the release notes' },
     body: `
       <p><strong>FreeSense 1.1.9</strong> is the new Stable release. It follows 1.1.5 and collects the fixes made on
       the 1.1 line since then. The numbers 1.1.6 to 1.1.8 were test builds that were withdrawn before release and
@@ -240,10 +240,10 @@ export const news: NewsPost[] = [
       <h2>How to update</h2>
       <p>Systems on 1.1.0 and 1.1.5 update from System &rarr; Update as usual; update the Optional Packages
       afterwards. Systems on 1.1.1 to 1.1.4 need
-      <a href="https://docs.freesense.org/releases/1.1.9/#before-you-update-from-111-to-114">one console command</a>
+      <a href="https://docs.freesense.org/releases/previous-1.1/#before-you-update-from-111-to-114-in-119">one console command</a>
       first. Every release is upgrade-tested on a virtual machine before it is published.</p>
       <p><a href="/download">Download FreeSense 1.1.9</a> or read the
-      <a href="https://docs.freesense.org/releases/1.1.9/">full release notes</a>. Older notes are on
+      <a href="https://docs.freesense.org/releases/previous-1.1/#freesense-119">full release notes</a>. Older notes are on
       <a href="https://docs.freesense.org/releases/previous-1.1/">Previous 1.1 releases</a>.</p>
     `,
   },
@@ -263,7 +263,7 @@ export const news: NewsPost[] = [
       <h2>Before you update from 1.1.1 to 1.1.4</h2>
       <p>The broken updater on those systems cannot install the fix by itself. Open a shell once (console option 8,
       or SSH), run the command from the
-      <a href="https://docs.freesense.org/releases/1.1.9/#before-you-update-from-111-to-114">1.1.5 release notes</a>,
+      <a href="https://docs.freesense.org/releases/previous-1.1/#before-you-update-from-111-to-114-in-119">1.1.5 release notes</a>,
       then update from System &rarr; Update as usual. Systems on 1.1.0 update normally.</p>
       <h2>What's new</h2>
       <ul>

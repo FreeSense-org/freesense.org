@@ -14,13 +14,51 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
   {
+    slug: 'freesense-1-1-12',
+    date: '2026-11-01',
+    tag: 'Release',
+    title: 'FreeSense 1.1.12: a two-row top bar, a notifications panel and package fixes',
+    summary:
+      'A Stable patch that supersedes 1.1.11. The menu moves to its own row and pages are 1200 px wide by default, the bell gets a notifications panel, the WebUI is hardened, and Telegraf, ThreatShield and CrowdSec work as they should. Nothing to do first.',
+    link: { href: 'https://docs.freesense.org/releases/1.1.12/', label: 'Read the release notes' },
+    body: `
+      <p><strong>FreeSense 1.1.12</strong> is a Stable patch that supersedes 1.1.11. Nothing is urgent and nothing has to be done
+      first: it is a normal update from System &rarr; Update.</p>
+      <h2>What is in 1.1.12</h2>
+      <ul>
+        <li><strong>A two-row top bar.</strong> The menu has its own row under the header, within the page width, so a long menu
+        fits at every width. Pages are <strong>Classic, 1200 px wide</strong> by default; <strong>Wide</strong>,
+        <strong>Full window width</strong> and an icons-only menu are options in System &rarr; General Setup.</li>
+        <li><strong>A notifications panel</strong> under the bell, with or without waiting notices.</li>
+        <li><strong>WebUI hardening</strong> from the security audit: deleting a shaper queue, a gateway or a package needs a
+        POST request, and serialized data, redirects and shell arguments are handled safely.</li>
+        <li><strong>Telegraf starts again</strong> (its generated configuration used two options the installed version no
+        longer accepts) and <strong>CrowdSec starts after a reboot</strong>.</li>
+        <li><strong>ThreatShield</strong> keeps local DNS names working, loads its lists in the background with a progress bar
+        instead of making Save wait, and no longer overwrites settings saved while it works.</li>
+        <li><strong>Package catalog:</strong> the Configure links of Avahi, lldpd, net-snmp, syslog-ng and UDP Broadcast Relay
+        open their settings, and Open-VM-Tools no longer shows a service that always looked stopped.</li>
+        <li><strong>Cloud images</strong> start the guest tool that matches the hypervisor and keep the domain of a NoCloud
+        <code>local-hostname</code>.</li>
+      </ul>
+      <p>PHP stays at 8.5.12. The FreeBSD snapshot is newer. Which advisories apply to each release is listed on
+      <a href="https://security.freesense.org/all/?version=1.1" rel="noopener">security.freesense.org</a>.</p>
+      <h2>How to update</h2>
+      <p>Systems on 1.1.0, 1.1.5, 1.1.9, 1.1.10 and 1.1.11 update as usual. Systems on 1.1.1 to 1.1.4 need
+      <a href="https://docs.freesense.org/releases/previous-1.1/#before-you-update-from-111-to-114-in-119">one console command</a>
+      first. This release was upgrade-tested from 1.1.11 on a virtual machine before it was published.</p>
+      <p><a href="/download">Download FreeSense 1.1.12</a> or read the
+      <a href="https://docs.freesense.org/releases/1.1.12/">full release notes</a>.</p>
+    `,
+  },
+  {
     slug: 'freesense-1-1-11',
     date: '2026-10-23',
     tag: 'Release',
     title: 'FreeSense 1.1.11: cloud images are back, same PHP security fix',
     summary:
       'A Stable patch that supersedes 1.1.10. It carries the same PHP 8.5.12 security fix and brings the ZFS and UFS cloud images back, now with the VMware guest tools. Nothing to do first.',
-    link: { href: 'https://docs.freesense.org/releases/1.1.11/', label: 'Read the release notes' },
+    link: { href: 'https://docs.freesense.org/releases/previous-1.1/#freesense-1111', label: 'Read the release notes' },
     body: `
       <p><strong>FreeSense 1.1.11</strong> is a Stable patch that supersedes 1.1.10. If you are already on 1.1.10 you
       have the PHP fix for CVE-2026-109618 and CVE-2026-109619 and nothing is urgent; 1.1.11 is a normal update. If you
@@ -44,7 +82,7 @@ export const news: NewsPost[] = [
       need <a href="https://docs.freesense.org/releases/previous-1.1/#before-you-update-from-111-to-114-in-119">one console command</a>
       first. This release was upgrade-tested from 1.1.9 on a virtual machine before it was published.</p>
       <p><a href="/download">Download FreeSense 1.1.11</a> or read the
-      <a href="https://docs.freesense.org/releases/1.1.11/">full release notes</a>. The advisories that apply to each
+      <a href="https://docs.freesense.org/releases/previous-1.1/#freesense-1111">full release notes</a>. The advisories that apply to each
       release are listed on <a href="https://security.freesense.org/all/?version=1.1" rel="noopener">security.freesense.org</a>.</p>
     `,
   },

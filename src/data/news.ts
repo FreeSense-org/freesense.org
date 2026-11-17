@@ -14,6 +14,34 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
   {
+    slug: 'freesense-1-1-13',
+    date: '2026-11-17',
+    tag: 'Release preparation',
+    title: 'Preparing FreeSense 1.1.13: security and maintenance fixes',
+    summary: 'The next Stable patch is being prepared. Review the planned security fixes and upgrade precautions; 1.1.12 remains the published release.',
+    link: { href: 'https://docs.freesense.org/releases/1.1.13/', label: 'Read the preparation notes' },
+    body: `
+      <p><strong>FreeSense 1.1.13 is in preparation.</strong> It has not been published. The current
+      Stable release remains 1.1.12. This draft must be updated with the verified release date,
+      availability and final source revisions before the release announcement is published.</p>
+      <h2>The planned security batch</h2>
+      <p>The update strengthens account and privilege checks, protects routing and recovery state,
+      verifies alias downloads and separates DNS custom-configuration permissions. It includes the
+      earlier November hardening batch, package security fixes and updated runtime requirements.</p>
+      <p>PPPoE RADIUS settings and the kernel-memory status panel are also corrected. The full
+      notes distinguish confirmed changes from the package and appliance validation still required.</p>
+      <h2>Prepare for the update</h2>
+      <p>Export a configuration backup and keep console access available. Review private-CA HTTPS
+      alias feeds, delegated DNS custom options and saved settings affected by stricter validation.
+      Expect affected accounts to need a new sign-in after credentials or account state change.</p>
+      <p>The intended coverage retains amd64 installer/cloud images and the generic arm64 UEFI
+      installer. Raspberry Pi images remain Development-only. Availability is confirmed per
+      architecture only after publication and download checks pass.</p>
+      <p>Read the <a href="https://docs.freesense.org/releases/1.1.13/">release preparation notes</a>.
+      The <a href="/download">download page</a> continues to show the actual published Stable release.</p>
+    `,
+  },
+  {
     slug: 'freesense-1-1-12',
     date: '2026-11-01',
     tag: 'Release',
